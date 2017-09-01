@@ -1,0 +1,5 @@
+# Namespace for Long-lived GCP service account key.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: google-oauth

@@ -1,0 +1,16 @@
+# Using the secret for the already created service account, connects to
+# GCP broker at the URL. Will get the list of services the GCP broker
+# provides. After creating this resource, a user should be able to
+# successfully list these services with:
+#   kubectl get serviceclasses
+apiVersion: servicecatalog.k8s.io/v1alpha1
+kind: ServiceBroker
+metadata:
+  name: gcp-broker
+spec:
+  url: https://staging-servicebroker.sandbox.googleapis.com/v1alpha1/projects/plori-dm-demo
+  authInfo:
+    bearer:
+      secretRef:
+        name: gcp-svc-account-secret
+        namespace: service-catalog

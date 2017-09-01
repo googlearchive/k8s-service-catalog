@@ -1,0 +1,5 @@
+# Namespace for provisioned GCP instances and bindings.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gcp-instances

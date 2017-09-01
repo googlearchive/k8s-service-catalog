@@ -1,0 +1,43 @@
+# Deployment for Google's oauth module. Transforms a service accounts
+# long-lived JSON key to a short-lived bearer token to talk to the GCP
+# broker. The "-n" arg is the namespace to search for the secret
+# containing the long-lived service account JSON key. The default
+# namespace is "google-oauth". This binary tries the transformation
+# on all secrets in this namespace.
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: google-oauth
+  namespace: service-catalog
+  labels:
+    app: service-catalog-google-oauth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-catalog-google-oauth
+  template:
+    metadata:
+      labels:
+        app: service-catalog-google-oauth
+    spec:
+      serviceAccountName: "controller-manager"
+      containers:
+      - name: catalog-oauth
+        image: gcr.io/seans-sandbox/catalog-oauth:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 100m
+            memory: 20Mi
+          limits:
+            cpu: 100m
+            memory: 30Mi
+        args:
+        - -n
+        - "google-oauth"
+        - -v
+        - "6"
+        - -alsologtostderr
+        ports:
+        - containerPort: 8443

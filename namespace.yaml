@@ -1,0 +1,6 @@
+# Service catalog namespace. Service catalog resources should be
+# created and managed in this namespace.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: service-catalog

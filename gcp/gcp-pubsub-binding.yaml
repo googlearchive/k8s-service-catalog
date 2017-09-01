@@ -1,0 +1,12 @@
+# Binding an already provisioned instance of the GCP PubSub.
+# The binding returns the credentials for talking to PubSub
+# in the secret names: gcp-pubsub-credentials
+apiVersion: servicecatalog.k8s.io/v1alpha1
+kind: ServiceInstanceCredential
+metadata:
+  name: gcp-pubsub-binding
+  namespace: gcp-instances
+spec:
+  instanceRef:
+    name: gcp-pubsub-instance
+  secretName: gcp-pubsub-credentials

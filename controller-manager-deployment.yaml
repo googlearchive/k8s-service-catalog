@@ -1,0 +1,76 @@
+# Deployment for service catalog controller manager.
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: controller-manager
+  namespace: service-catalog
+  labels:
+    app: service-catalog-controller-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-catalog-controller-manager
+  template:
+    metadata:
+      labels:
+        app: service-catalog-controller-manager
+    spec:
+      serviceAccountName: "controller-manager"
+      containers:
+      - name: controller-manager
+        image: gcr.io/seans-sandbox/controller-manager:canary
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 100m
+            memory: 20Mi
+          limits:
+            cpu: 100m
+            memory: 30Mi
+        env:
+        - name: K8S_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        args:
+        - --port
+        - "8080"        
+        - "--leader-elect=false"
+        - -v
+        - "10"
+        - --resync-interval
+        - 5m
+        - --broker-relist-interval
+        - 24h
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: service-catalog-cert
+          mountPath: /etc/service-catalog-ssl
+          readOnly: true
+        readinessProbe:
+          httpGet:
+            port: 8080
+            path: /healthz
+          failureThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            port: 8080
+            path: /healthz
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+      volumes:
+      - name: service-catalog-cert
+        secret:
+          secretName: apiserver-cert
+          items:
+          - key: tls.crt
+            path: apiserver.crt

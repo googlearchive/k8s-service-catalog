@@ -1,0 +1,16 @@
+# The API to register and expose with the main/aggregated API server.
+# caBundle must be a templated variable, and inserted dynamically.
+apiVersion: apiregistration.k8s.io/v1beta1
+kind: APIService
+metadata:
+  name: v1alpha1.servicecatalog.k8s.io
+spec:
+  group: servicecatalog.k8s.io
+  version: v1alpha1
+  priority: 200
+  groupPriorityMinimum: 2000
+  versionPriority: 10
+  service:
+    name: service-catalog-api
+    namespace: service-catalog
+  caBundle: CA_PUBLIC_KEY

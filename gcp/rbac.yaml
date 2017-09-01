@@ -1,0 +1,36 @@
+# Source: catalog/templates/rbac.yaml
+apiVersion: v1
+kind: List
+items:
+
+### Controller-Manager ###
+
+- apiVersion: rbac.authorization.k8s.io/v1beta1
+  kind: Role
+  metadata:
+    name: "servicecatalog.k8s.io:controller-manager-gcp"
+    namespace: gcp-instances
+  rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs:     ["get","create","delete"]
+  - apiGroups: ["servicecatalog.k8s.io"]
+    resources: ["bindings","instances"]
+    verbs:     ["get"]
+  - apiGroups: ["servicecatalog.k8s.io"]
+    resources: ["bindings/status","instances/status"]
+    verbs:     ["update"]
+- apiVersion: rbac.authorization.k8s.io/v1beta1
+  kind: RoleBinding
+  metadata:
+    name: "servicecatalog.k8s.io:controller-manager-gcp"
+    namespace: gcp-instances
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: "servicecatalog.k8s.io:controller-manager-gcp"
+  subjects:
+  - apiGroup: ""
+    kind: ServiceAccount
+    name: "controller-manager"
+    namespace: "service-catalog"
