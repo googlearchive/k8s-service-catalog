@@ -1,10 +1,21 @@
 #!/bin/bash
 ##################################################################
+# Copyright 2017 Google Inc.
 #
-# Author: Sean Sullivan (seans)
-# Date:   08/02/2017
-# Description: Helper script to bring up service catalog using
-# the YAML files in this directory. The flow is basically:
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Helper script to bring up service catalog using the YAML files
+# in this directory. The flow is basically:
 #   *) Create namespace
 #   *) Create service account, roles, and bindings
 #   *) Create service and register
@@ -16,8 +27,8 @@
 #
 ##################################################################
 
-SVC_ROOT=$(dirname "${BASH_SOURCE}")/..
-SVC_DIR=${SVC_ROOT}/config
+SVC_ROOT=$(dirname "${BASH_SOURCE}")
+SVC_DIR=${SVC_ROOT}
 
 # Create the TLS key files for secure communication between
 # main APIServer and service catalog.
