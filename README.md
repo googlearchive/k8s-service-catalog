@@ -297,3 +297,5 @@ $ kubectl get secrets gcp-pubsub-credentials -n gcp-instances -o yaml
 
 I.e. run a k8s app that exploits GCP pubsub via these broker bindings.
 
+## This is not an official Google product.
+
