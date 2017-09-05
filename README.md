@@ -1,4 +1,4 @@
-# GCE/GKE Service Catalog Demo
+# Using Google Cloud Platform Broker with Service Catalog
 
 [cfssl]: https://github.com/cloudflare/cfssl
 [service catalog walkthrough]: https://github.com/kubernetes-incubator/service-catalog/blob/master/docs/walkthrough.md
@@ -17,11 +17,11 @@ After bringing up a kubernetes cluster, and from within the service catalog base
 ```
 1) Bring up service catalog
 
-$ config/service-catalog-up.sh
+$ ./service-catalog-up.sh
 
 2) Connect to GCP Broker
 
-$ config/gcp/gcp-broker-up.sh
+$ ./gcp/gcp-broker-up.sh
 
 ```
 
@@ -29,8 +29,7 @@ $ config/gcp/gcp-broker-up.sh
 
  * A [GCloud project]. Export the project name in the PROJECT_ID environment
  variable. Example: PROJECT_ID=seans-sandbox.
- * A Kubernetes cluster running in [GCE](./gce-k8s-cluster.md) or GKE. Google
-   developers interested in a development environment for [GKE](./gke-k8s-cluster.md).
+ * A Kubernetes cluster. Steps for running in [GCE](./gce-k8s-cluster.md).
  * The user running these scripts must have cluster-admin role for the
    Kubernetes cluster:
 
@@ -66,7 +65,7 @@ image, you need to change the *image:* tag in both **apiserver-deployment.yaml**
 Within the service catalog base directory (ex: *.../github.com/kubernetes-incubator/service-catalog*):
 
 ```
-$ config/service-catalog-up.sh
+$ ./service-catalog-up.sh
 ```
 
 This script performs the following steps:
@@ -115,18 +114,18 @@ etcd-0                                1/1       Running   0          28s
 Finally, when checking for brokers, the user should see:
 
 ```
-$ kubectl get brokers
+$ kubectl get servicebrokers
 
 No resources found.
 ```
 
-Which means the main APIServer understands the brokers resource (but none were
+Which means the main APIServer understands the servicebrokers resource (but none were
 found yet).
 
 In order to cleanly take down the service catalog:
 
 ```
-$ config/service-catalog-down.sh
+$ ./service-catalog-down.sh
 ```
 
 ## Connect to the GCP Broker
@@ -134,7 +133,7 @@ $ config/service-catalog-down.sh
 Within the service catalog base directory:
 
 ```
-$ config/gcp/gcp-broker-up.sh
+$ ./gcp/gcp-broker-up.sh
 ```
 
 This script performs the following steps:
@@ -150,12 +149,12 @@ This script performs the following steps:
 Sanity checks after running script:
 
 ```
-$ kubectl get brokers
+$ kubectl get servicebrokers
 
 NAME         KIND
 gcp-broker   Broker.v1alpha1.servicecatalog.k8s.io
 
-$ kubectl get brokers gcp-broker -n service-catalog -o yaml
+$ kubectl get servicebrokers gcp-broker -n service-catalog -o yaml
 
 ...
 
@@ -192,7 +191,7 @@ gcloud service-management list --available | grep staging | egrep '(broker|regis
 In order to cleanly take down the GCP broker:
 
 ```
-$ config/gcp/gcp-broker-down.sh
+$ ./gcp/gcp-broker-down.sh
 ```
 
 ## Consume GCP Services
@@ -237,7 +236,7 @@ instance "gcp-pubsub-instance" created
 Sanity check after provisioning the instance:
 
 ```
-$ kubectl get instances gcp-pubsub-instance -n gcp-instances -o yaml
+$ kubectl get serviceinstances gcp-pubsub-instance -n gcp-instances -o yaml
 
 ...
 status:
@@ -272,7 +271,7 @@ Sanity checks after binding:
 
 # Do a fully qualified group.kind.version because of a namespace
 # bug currently in service catalog.
-$ kubectl get binding.servicecatalog.k8s.io gcp-pubsub-binding -n gcp-instances -o yaml
+$ kubectl get serviceinstancecredentials gcp-pubsub-binding -n gcp-instances -o yaml
 
 ...
 status:
@@ -292,8 +291,6 @@ Also, the credentials should have been populated in the secret *gcp-pubsub-crede
 
 $ kubectl get secrets gcp-pubsub-credentials -n gcp-instances -o yaml
 
-TODO: Update the result of this command. It looks like this doesn't work yet,
-since the 'rootUrl' is base64 encoded.
 ```
 
 ## TODO insert real pubsub example
