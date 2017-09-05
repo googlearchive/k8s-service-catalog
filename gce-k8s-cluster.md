@@ -3,7 +3,6 @@
 [gcloud sdk]: https://cloud.google.com/sdk/downloads
 [Create a new GCP project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [billable]: https://support.google.com/cloud/answer/6158867?hl=en
-[Googler billing]: https://g3doc.corp.google.com/cloud/kubernetes/g3doc/dev/dev_project_setup.md#2-setup-billign
 
 ## TL;DR
 
@@ -29,11 +28,6 @@ $ cluster/kube-up.sh
   `gcloud version`.
 * [Create a new GCP project] to avoid config collisions with
   existing projects. Make sure the project is [billable].
-* Use a `@google.com` account for authentication, since the GCP
-  broker API below is only enabled for Google accounts.
-  Specifically:
-  * `gcloud auth` must be done in context of that Google account.
-  * Also, the GCP project must list said account as one of its owners.
 
 ## Crucial environment variables
 
@@ -62,8 +56,7 @@ CONSOLE_URL=https://console.cloud.google.com
 This section covers things a user would likely already have
 done - e.g. choose a project, install gcloud, start a k8s
 cluster, compile the service-catalog, etc.  This may inform an
-integration test later.  Helm installation included for now but
-may go away soon.
+integration test later.
 
 This section takes around 5 minutes to perform, while the rest of
 the (key generation, kubectl resource instantiation, etc.) takes
@@ -90,8 +83,7 @@ gcloud config list
 ```
 
 Verify `billingEnabled: true` for your project
-(see [how to enable billing][billable]; Googlers
-see [Googler billing]).
+(see [how to enable billing][billable].
 
 ```
 gcloud alpha billing accounts list
@@ -102,8 +94,7 @@ gcloud alpha billing accounts projects describe $PROJECT_ID
 
 #### Install and Run Kubernetes
 
-Before bringing up a cluster as a Googler, one
-must enable these alpha features.
+Before bringing up a cluster, one must enable these alpha features.
 
 ```
 gcloud alpha service-management enable container --project $PROJECT_ID
