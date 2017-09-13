@@ -43,10 +43,12 @@ if [ -z "$PROJECT_ID" ]; then
 fi
 
 SVC_ROOT=$(dirname "${BASH_SOURCE}")/../..
-SVC_DIR=${SVC_ROOT}/config/gcp
+SVC_DIR=${SVC_ROOT}/installer/gcp
 
 SVC_ACCT=service-catalog-gcp
 FULL_SVC_ACCT=${SVC_ACCT}@${PROJECT_ID}.iam.gserviceaccount.com
+
+echo "Service Dir: $SVC_DIR"
 
 echo "GCloud Project: $PROJECT_ID"
 

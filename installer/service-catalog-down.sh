@@ -18,8 +18,8 @@
 #
 ##################################################################
 
-SVC_ROOT=$(dirname "${BASH_SOURCE}")
-SVC_DIR=${SVC_ROOT}
+SVC_ROOT=$(dirname "${BASH_SOURCE}")/..
+SVC_DIR=${SVC_ROOT}/installer
 
 NAMESPACE=service-catalog
 DELETE_VOLUME=false

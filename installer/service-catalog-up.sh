@@ -27,8 +27,8 @@
 #
 ##################################################################
 
-SVC_ROOT=$(dirname "${BASH_SOURCE}")
-SVC_DIR=${SVC_ROOT}
+SVC_ROOT=$(dirname "${BASH_SOURCE}")/..
+SVC_DIR=${SVC_ROOT}/installer
 
 # Create the TLS key files for secure communication between
 # main APIServer and service catalog.
