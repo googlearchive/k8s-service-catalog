@@ -44,7 +44,7 @@ spec:
             memory: 20Mi
           limits:
             cpu: 100m
-            memory: 30Mi
+            memory: 50Mi
         env:
         - name: K8S_NAMESPACE
           valueFrom:
