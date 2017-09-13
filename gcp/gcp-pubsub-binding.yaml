@@ -27,3 +27,5 @@ spec:
   instanceRef:
     name: gcp-pubsub-instance
   secretName: gcp-pubsub-credentials
+  parameters: {"parameters": {"serviceAccount": "test-583@seans-dev.iam.gserviceaccount.com", "bindingType": "publisher"}}
+

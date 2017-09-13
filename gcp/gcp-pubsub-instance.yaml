@@ -26,15 +26,5 @@ metadata:
   namespace: gcp-instances
 spec:
   serviceClassName: pubsub
-  planName: default
-  parameters:
-    resources:
-    - name: my-topic
-      type: pubsub.v1.topic
-      properties:
-        topic: my-topic
-    - name: my-subscription
-      type: pubsub.v1.subscription
-      properties:
-        subscription: my-subscription
-        topic: "$(ref.my-topic.name)"
+  planName: pubsub-plan2
+  parameters: {"parameters": {"topic": "seans-4-topic"}}
