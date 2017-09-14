@@ -19,8 +19,8 @@
 #
 ##################################################################
 
-SVC_ROOT=$(dirname "${BASH_SOURCE}")/../..
-SVC_DIR=${SVC_ROOT}/installer/gcp
+SVC_ROOT=$(dirname "${BASH_SOURCE}")
+SVC_DIR=${SVC_ROOT}
 
 echo "Uninstalling GCP Broker..."
 echo
