@@ -17,11 +17,11 @@ After bringing up a kubernetes cluster, and from within the service catalog base
 ```
 1) Bring up service catalog
 
-$ ./service-catalog-up.sh
+$ ./hack/service-catalog-up.sh
 
 2) Connect to GCP Broker
 
-$ ./gcp/gcp-broker-up.sh
+$ ./hack/gcp/gcp-broker-up.sh
 
 ```
 
@@ -65,7 +65,7 @@ image, you need to change the *image:* tag in both **apiserver-deployment.yaml**
 Within the service catalog base directory (ex: *.../github.com/kubernetes-incubator/service-catalog*):
 
 ```
-$ ./service-catalog-up.sh
+$ ./hack/service-catalog-up.sh
 ```
 
 This script performs the following steps:
@@ -125,7 +125,7 @@ found yet).
 In order to cleanly take down the service catalog:
 
 ```
-$ ./service-catalog-down.sh
+$ ./hack/service-catalog-down.sh
 ```
 
 ## Connect to the GCP Broker
@@ -133,7 +133,7 @@ $ ./service-catalog-down.sh
 Within the service catalog base directory:
 
 ```
-$ ./gcp/gcp-broker-up.sh
+$ ./hack/gcp/gcp-broker-up.sh
 ```
 
 This script performs the following steps:
@@ -191,7 +191,7 @@ gcloud service-management list --available | grep staging | egrep '(broker|regis
 In order to cleanly take down the GCP broker:
 
 ```
-$ ./gcp/gcp-broker-down.sh
+$ ./hack/gcp/gcp-broker-down.sh
 ```
 
 ## Consume GCP Services

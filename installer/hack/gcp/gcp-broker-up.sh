@@ -42,8 +42,8 @@ if [ -z "$PROJECT_ID" ]; then
   exit 1
 fi
 
-SVC_ROOT=$(dirname "${BASH_SOURCE}")/../..
-SVC_DIR=${SVC_ROOT}/installer/gcp
+SVC_ROOT=$(dirname "${BASH_SOURCE}")
+SVC_DIR=${SVC_ROOT}
 
 SVC_ACCT=service-catalog-gcp
 FULL_SVC_ACCT=${SVC_ACCT}@${PROJECT_ID}.iam.gserviceaccount.com
