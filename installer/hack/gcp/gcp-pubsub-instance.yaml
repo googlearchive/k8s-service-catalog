@@ -16,7 +16,7 @@
 # Example for provisioning an instance of a GCP service.
 # In this case this example is for Google PubSub service.
 # As all instances and bindings, created in gcp-instances
-# namespace. Parameters are "topic" and "subscription".
+# namespace. No parameters needed.
 #
 ##################################################################
 apiVersion: servicecatalog.k8s.io/v1alpha1
@@ -26,5 +26,5 @@ metadata:
   namespace: gcp-instances
 spec:
   serviceClassName: pubsub
-  planName: pubsub-plan2
-  parameters: {"parameters": {"topic": "seans-4-topic"}}
+  planName: pubsub-plan
+

@@ -25,7 +25,7 @@ kind: ServiceBroker
 metadata:
   name: gcp-broker
 spec:
-  url: https://staging-servicebroker.sandbox.googleapis.com/v1alpha1/projects/plori-dm-demo
+  url:  https://staging-servicebroker.sandbox.googleapis.com/v1alpha1/projects/gcp-services/brokers/gcp-broker
   authInfo:
     bearer:
       secretRef:

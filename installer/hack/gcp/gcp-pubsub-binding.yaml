@@ -16,6 +16,17 @@
 # Binding an already provisioned instance of the GCP PubSub.
 # The binding returns the credentials for talking to PubSub
 # in the secret names: gcp-pubsub-credentials
+#   Parameters:
+#     serviceAccount -- created in user GCP project
+#     roles:
+#       "roles/pubsub.subscriber"
+#  OR   "roles/pubsub.publisher"
+#
+# Creates artifacts in the passed "secretName". Artifacts include:
+#   project
+#   serviceAccount
+#   subscription (pubsub-specific)
+#   topic (pubsub-specific)
 #
 ##################################################################
 apiVersion: servicecatalog.k8s.io/v1alpha1
@@ -27,5 +38,8 @@ spec:
   instanceRef:
     name: gcp-pubsub-instance
   secretName: gcp-pubsub-credentials
-  parameters: {"parameters": {"serviceAccount": "test-583@seans-dev.iam.gserviceaccount.com", "bindingType": "publisher"}}
+  parameters:
+    parameters:
+      serviceAccount: "test-583@seans-dev.iam.gserviceaccount.com"
+      roles: ["roles/pubsub.subscriber"]
 
