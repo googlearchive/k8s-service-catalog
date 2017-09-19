@@ -30,15 +30,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Binary names that we depend on.
 const (
-	CmdGCloud    = "gcloud"
-	CmdKubectl   = "kubectl"
-	CmdCFSSL     = "cfssl"
-	CmdCFSSLJson = "cfssljson"
+	GcloudBinaryName    = "gcloud"
+	KubectlBinaryName   = "kubectl"
+	CfsslBinaryName     = "cfssl"
+	CfssljsonBinaryName = "cfssljson"
 )
 
 func main() {
-
 	var cmdCheck = &cobra.Command{
 		Use:   "check",
 		Short: "performs a dependency check",
@@ -61,7 +61,14 @@ present in PATH. This command performs the dependency check.`,
 assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		// Args: cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			if err := installServiceCatalog(); err != nil {
+
+			ic := &InstallConfig{
+				Namespace:               "service-catalog",
+				APIServerServiceName:    "service-catalog-api",
+				CleanupTempDirOnSuccess: false,
+			}
+
+			if err := installServiceCatalog(ic); err != nil {
 				fmt.Println("Service Catalog could not be installed")
 				fmt.Println(err)
 				return
@@ -98,7 +105,7 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 // TODO(droot): enhance it to perform connectivity check with Kubernetes Cluster
 // and user permissions etc.
 func checkDependencies() error {
-	requiredCmds := []string{CmdGCloud, CmdKubectl, CmdCFSSL, CmdCFSSLJson}
+	requiredCmds := []string{GcloudBinaryName, KubectlBinaryName, CfsslBinaryName, CfssljsonBinaryName}
 
 	var missingCmds []string
 	for _, cmd := range requiredCmds {
@@ -112,6 +119,22 @@ func checkDependencies() error {
 		return fmt.Errorf("%s commands not found in the PATH", strings.Join(missingCmds, ","))
 	}
 	return nil
+}
+
+// InstallConfig contains installation configuration.
+type InstallConfig struct {
+	// namespace for service catalog
+	Namespace string
+
+	// APIServerServiceName refers to the API Server's service name
+	APIServerServiceName string
+
+	// whether to delete temporary files
+	CleanupTempDirOnSuccess bool
+
+	// CA options (self sign or use kubernetes root CA)
+
+	// storage options to be implemented
 }
 
 func uninstallServiceCatalog(dir string) error {
@@ -142,35 +165,30 @@ func uninstallServiceCatalog(dir string) error {
 	return nil
 }
 
-func installServiceCatalog() error {
+func installServiceCatalog(ic *InstallConfig) error {
+
 	if err := checkDependencies(); err != nil {
 		return err
 	}
 
-	ns := "service-catalog"
-
+	// create temporary directory for k8s artifacts and other temporary files
 	dir, err := ioutil.TempDir("/tmp", "service-catalog")
 	if err != nil {
 		return fmt.Errorf("error creating temporary dir: %v", err)
 	}
 
-	err = generateCSRs(dir)
-	if err != nil {
-		return fmt.Errorf("error generating ca csr :%v", err)
-	}
-	// defer os.RemoveAll(dir)
-	err = dumpYAML("templates/ca_config.json", filepath.Join(dir, "ca_config.json"))
-	if err != nil {
-		return err
+	if ic.CleanupTempDirOnSuccess {
+		defer os.RemoveAll(dir)
 	}
 
-	caFilePath, apiServerCertFilePath, apiServerPKFilePath, err := generateSSLArtificats(ns, dir)
+	caFilePath, apiServerCertFilePath, apiServerPKFilePath, err := generateSSLArtificats(dir, ic)
 	if err != nil {
 		return fmt.Errorf("error generating SSL artifacts : %v", err)
 	}
 
 	fmt.Printf("generated caFilePath: %s, apiServerCertFilePath: %s, apiServerPKFilePath: %v \n",
 		caFilePath, apiServerCertFilePath, apiServerPKFilePath)
+
 	err = generateYAMLs(dir, caFilePath, apiServerCertFilePath, apiServerPKFilePath)
 	if err != nil {
 		return fmt.Errorf("error generating YAML files: %v", err)
@@ -185,29 +203,30 @@ func installServiceCatalog() error {
 	return nil
 }
 
-func generateCSRs(dir string) error {
-	apiServerSvcName := "service-catalog-api"
-	ns := "service-catalog"
-
-	host1 := fmt.Sprintf("%s.%s", apiServerSvcName, ns)
+// generateCertConfig generates config files required for generating CA and
+// SSL certificates for API Server.
+func generateCertConfig(dir string, ic *InstallConfig) (caCSRFilepath, certConfigFilePath string, err error) {
+	host1 := fmt.Sprintf("%s.%s", ic.APIServerServiceName, ic.Namespace)
 	host2 := host1 + ".svc"
 
 	data := map[string]string{
 		"Host1":          host1,
 		"Host2":          host2,
-		"APIServiceName": "service-catalog-api",
+		"APIServiceName": ic.APIServerServiceName,
 	}
 
-	err := generateYAML(filepath.Join(dir, "ca_csr.json"), "templates/ca_csr.json.tmpl", data)
+	caCSRFilepath = filepath.Join(dir, "ca_csr.json")
+	err = generateYAML(caCSRFilepath, "templates/ca_csr.json.tmpl", data)
 	if err != nil {
-		return err
+		return
 	}
 
-	err = generateYAML(filepath.Join(dir, "gencert_config.json"), "templates/gencert_config.json.tmpl", data)
+	certConfigFilePath = filepath.Join(dir, "gencert_config.json")
+	err = generateYAML(certConfigFilePath, "templates/gencert_config.json.tmpl", data)
 	if err != nil {
-		return err
+		return
 	}
-	return nil
+	return
 }
 
 func generateYAMLs(dir, caFilePath, apiServerCertFilePath, apiServerPKFilePath string) error {
@@ -313,9 +332,19 @@ func base64FileContent(filePath string) (encoded string, err error) {
 	return
 }
 
-func generateSSLArtificats(ns, dir string) (caFilePath, apiServerCertFilePath, apiServerPKFilePath string, err error) {
+func generateSSLArtificats(dir string, ic *InstallConfig) (caFilePath, apiServerCertFilePath, apiServerPKFilePath string, err error) {
+	csrInputJSON, certGenJSON, err := generateCertConfig(dir, ic)
+	if err != nil {
+		err = fmt.Errorf("error generating cert config :%v", err)
+		return
+	}
 
-	csrInputJSON := filepath.Join(dir, "ca_csr.json")
+	certConfigFilePath := filepath.Join(dir, "ca_config.json")
+	err = dumpYAML("templates/ca_config.json", certConfigFilePath)
+	if err != nil {
+		err = fmt.Errorf("error generating ca config: %v", err)
+		return
+	}
 
 	genKeyCmd := exec.Command("cfssl", "genkey", "--initca", csrInputJSON)
 
@@ -324,18 +353,14 @@ func generateSSLArtificats(ns, dir string) (caFilePath, apiServerCertFilePath, a
 
 	out, outErr, err := Pipeline(genKeyCmd, cmd2)
 	if err != nil {
+		err = fmt.Errorf("error generating ca: stdout: %v stderr: %v err: %v", string(out), string(outErr), err)
 		return
 	}
 
-	fmt.Printf("%s: %s\n", out, outErr)
-
-	certConfigFilePath := filepath.Join(dir, "ca_config.json")
-	certGenJSON := filepath.Join(dir, "gencert_config.json")
-
 	certGenCmd := exec.Command("cfssl", "gencert",
-		"-ca="+caFilePath+".pem",
-		"-ca-key="+caFilePath+"-key.pem",
-		"-config="+certConfigFilePath, certGenJSON)
+		"-ca", caFilePath+".pem",
+		"-ca-key", caFilePath+"-key.pem",
+		"-config", certConfigFilePath, certGenJSON)
 
 	apiServerCertFilePath = filepath.Join(dir, "apiserver")
 	certSignCmd := exec.Command("cfssljson", "-bare", apiServerCertFilePath)
