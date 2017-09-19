@@ -154,7 +154,15 @@ func installServiceCatalog() error {
 		return fmt.Errorf("error creating temporary dir: %v", err)
 	}
 
+	err = generateCSRs(dir)
+	if err != nil {
+		return fmt.Errorf("error generating ca csr :%v", err)
+	}
 	// defer os.RemoveAll(dir)
+	err = dumpYAML("templates/ca_config.json", filepath.Join(dir, "ca_config.json"))
+	if err != nil {
+		return err
+	}
 
 	caFilePath, apiServerCertFilePath, apiServerPKFilePath, err := generateSSLArtificats(ns, dir)
 	if err != nil {
@@ -174,6 +182,31 @@ func installServiceCatalog() error {
 	}
 	fmt.Println("Service Catalog installed successfully")
 
+	return nil
+}
+
+func generateCSRs(dir string) error {
+	apiServerSvcName := "service-catalog-api"
+	ns := "service-catalog"
+
+	host1 := fmt.Sprintf("%s.%s", apiServerSvcName, ns)
+	host2 := host1 + ".svc"
+
+	data := map[string]string{
+		"Host1":          host1,
+		"Host2":          host2,
+		"APIServiceName": "service-catalog-api",
+	}
+
+	err := generateYAML(filepath.Join(dir, "ca_csr.json"), "templates/ca_csr.json.tmpl", data)
+	if err != nil {
+		return err
+	}
+
+	err = generateYAML(filepath.Join(dir, "gencert_config.json"), "templates/gencert_config.json.tmpl", data)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -208,7 +241,6 @@ func generateYAMLs(dir, caFilePath, apiServerCertFilePath, apiServerPKFilePath s
 	}
 
 	files := []string{"namespace.yaml", "service-accounts.yaml", "rbac.yaml", "service.yaml", "etcd.yaml", "etcd-svc.yaml", "apiserver-deployment.yaml", "controller-manager-deployment.yaml"}
-
 	for _, f := range files {
 		err := dumpYAML("templates/"+f, filepath.Join(dir, f))
 		if err != nil {
@@ -278,41 +310,14 @@ func base64FileContent(filePath string) (encoded string, err error) {
 		return
 	}
 	encoded = base64.StdEncoding.EncodeToString(b)
-	fmt.Printf("\n['%s']\n", encoded)
 	return
 }
 
 func generateSSLArtificats(ns, dir string) (caFilePath, apiServerCertFilePath, apiServerPKFilePath string, err error) {
-	apiServerSvcName := "service-catalog-api"
 
-	host1 := fmt.Sprintf("%s.%s", apiServerSvcName, ns)
-	host2 := host1 + ".svc"
+	csrInputJSON := filepath.Join(dir, "ca_csr.json")
 
-	csrInputJSON := fmt.Sprintf(`{
-"hosts": [ "%s","%s" ],
-"key": {
-	"algo": "rsa",
-	"size": 2048
-},
-"names": [
-	{
-		"C": "US",
-		"L": "san jose",
-		"O": "kube",
-		"OU": "WWW",
-		"ST": "California"
-	}
-]
-}`, host1, host2)
-
-	// fmt.Println(csrInputJSON)
-	genKeyCmd := exec.Command("cfssl", "genkey", "--initca", "-")
-	genKeyCmd.Stdin = strings.NewReader(csrInputJSON)
-
-	// getKeyOut, err := genKeyCmd.CombinedOutput()
-	// if err != nil {
-	// 	return
-	// }
+	genKeyCmd := exec.Command("cfssl", "genkey", "--initca", csrInputJSON)
 
 	caFilePath = filepath.Join(dir, "ca")
 	cmd2 := exec.Command("cfssljson", "-bare", caFilePath)
@@ -324,37 +329,13 @@ func generateSSLArtificats(ns, dir string) (caFilePath, apiServerCertFilePath, a
 
 	fmt.Printf("%s: %s\n", out, outErr)
 
-	certGenConfigContent := `{
-"signing": { 
-  "default": {
-	"expiry": "43800h",
-	"usages": [ "signing", "key encipherment", "server" ]
-  }
-}
-}
-`
-	certConfigFilePath := filepath.Join(dir, "cert-config.json")
-	err = ioutil.WriteFile(certConfigFilePath, []byte(certGenConfigContent), 0666)
-	if err != nil {
-		err = fmt.Errorf("error generating cert config : %v", err)
-		return
-	}
+	certConfigFilePath := filepath.Join(dir, "ca_config.json")
+	certGenJSON := filepath.Join(dir, "gencert_config.json")
 
-	certGenJSON := fmt.Sprintf(`
-{
-"CN": "%s",
-"hosts": [ "%s","%s" ],
-"key": {
-  "algo": "rsa",
-  "size": 2048
-}
-}
-`, apiServerSvcName, host1, host2)
 	certGenCmd := exec.Command("cfssl", "gencert",
 		"-ca="+caFilePath+".pem",
 		"-ca-key="+caFilePath+"-key.pem",
-		"-config="+certConfigFilePath, "-")
-	certGenCmd.Stdin = strings.NewReader(certGenJSON)
+		"-config="+certConfigFilePath, certGenJSON)
 
 	apiServerCertFilePath = filepath.Join(dir, "apiserver")
 	certSignCmd := exec.Command("cfssljson", "-bare", apiServerCertFilePath)
