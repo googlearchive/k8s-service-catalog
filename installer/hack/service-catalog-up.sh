@@ -46,6 +46,7 @@ sed -e 's|SVC_PUBLIC_KEY|'"${SVC_PUBLIC_KEY}"'|g' \
     -e 's|SVC_PRIVATE_KEY|'"${SVC_PRIVATE_KEY}"'|g' \
     ${SVC_DIR}/tls-cert-secret.yaml.tmpl > ${SVC_DIR}/tls-cert-secret.yaml
 
+echo $TEMP_DIR
 # Create namespace for service catalog resources
 kubectl create -f ${SVC_DIR}/namespace.yaml
 
