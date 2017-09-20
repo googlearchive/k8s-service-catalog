@@ -55,24 +55,28 @@ type SSLArtifacts struct {
 	APIServerPrivateKeyFile string
 }
 
+var (
+	svcCatalogFileNames = []string{
+		"namespace",
+		"tls-cert-secret",
+		"api-registration",
+		"service-accounts",
+		"rbac",
+		"service",
+		"etcd",
+		"etcd-svc",
+		"apiserver-deployment",
+		"controller-manager-deployment",
+	}
+)
+
 func uninstallServiceCatalog(dir string) error {
 	// ns := "service-catalog"
 
-	files := []string{
-		"apiserver-deployment.yaml",
-		"controller-manager-deployment.yaml",
-		"tls-cert-secret.yaml",
-		"etcd-svc.yaml",
-		"etcd.yaml",
-		"api-registration.yaml",
-		"service.yaml",
-		"rbac.yaml",
-		"service-accounts.yaml",
-		"namespace.yaml",
-	}
-
-	for _, f := range files {
-		output, err := exec.Command("kubectl", "delete", "-f", filepath.Join(dir, f)).CombinedOutput()
+	// delete the service catalog artifacts in reverse order
+	for i := len(svcCatalogFileNames) - 1; i >= 0; i-- {
+		f := svcCatalogFileNames[i]
+		output, err := exec.Command("kubectl", "delete", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
 		if err != nil {
 			fmt.Errorf("error deleting resources in file: %v :: %v", f, string(output))
 			// TODO(droot): ignore failures and continue for deleting
@@ -170,56 +174,19 @@ func generateDeploymentConfigs(dir string, sslArtifacts *SSLArtifacts) error {
 		"APIServicePrivateKey": apiServerPK,
 	}
 
-	// err = generateFileFromTmpl(filepath.Join(dir, "api-registration.yaml"), "templates/api-registration.yaml.tmpl", data)
-	// if err != nil {
-	// 	return err
-	// }
-	//
-	// err = generateFileFromTmpl(filepath.Join(dir, "tls-cert-secret.yaml"), "templates/tls-cert-secret.yaml.tmpl", data)
-	// if err != nil {
-	// 	return err
-	// }
-
-	files := []string{
-		"tls-cert-secret",
-		"api-registration",
-		"namespace",
-		"service-accounts",
-		"rbac",
-		"service",
-		"etcd",
-		"etcd-svc",
-		"apiserver-deployment",
-		"controller-manager-deployment",
-	}
-	for _, f := range files {
+	for _, f := range svcCatalogFileNames {
 		err = generateFileFromTmpl(filepath.Join(dir, f+".yaml"), "templates/"+f+".yaml.tmpl", data)
 		if err != nil {
 			return err
 		}
-		// err := generateFile("templates/"+f, filepath.Join(dir, f))
-		// if err != nil {
-		// 	return err
-		// }
 	}
 	return nil
 }
 
 func deploy(dir string) error {
-	files := []string{
-		"namespace.yaml",
-		"service-accounts.yaml",
-		"rbac.yaml",
-		"service.yaml",
-		"api-registration.yaml",
-		"etcd.yaml",
-		"etcd-svc.yaml",
-		"tls-cert-secret.yaml",
-		"apiserver-deployment.yaml",
-		"controller-manager-deployment.yaml"}
 
-	for _, f := range files {
-		output, err := exec.Command("kubectl", "create", "-f", filepath.Join(dir, f)).CombinedOutput()
+	for _, f := range svcCatalogFileNames {
+		output, err := exec.Command("kubectl", "create", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
 		// TODO(droot): cleanup
 		if err != nil {
 			return fmt.Errorf("deploy failed with output: %s :%v", err, string(output))

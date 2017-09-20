@@ -95,7 +95,7 @@ func templatesApiRegistrationYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/api-registration.yaml.tmpl", size: 1302, mode: os.FileMode(416), modTime: time.Unix(1505939403, 0)}
+	info := bindataFileInfo{name: "templates/api-registration.yaml.tmpl", size: 1302, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -115,7 +115,7 @@ func templatesApiserverDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/apiserver-deployment.yaml.tmpl", size: 2721, mode: os.FileMode(416), modTime: time.Unix(1505927033, 0)}
+	info := bindataFileInfo{name: "templates/apiserver-deployment.yaml.tmpl", size: 2721, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -175,7 +175,7 @@ func templatesControllerManagerDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/controller-manager-deployment.yaml.tmpl", size: 2645, mode: os.FileMode(416), modTime: time.Unix(1505927033, 0)}
+	info := bindataFileInfo{name: "templates/controller-manager-deployment.yaml.tmpl", size: 2645, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -195,7 +195,7 @@ func templatesEtcdSvcYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/etcd-svc.yaml.tmpl", size: 913, mode: os.FileMode(416), modTime: time.Unix(1505927033, 0)}
+	info := bindataFileInfo{name: "templates/etcd-svc.yaml.tmpl", size: 913, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -215,7 +215,7 @@ func templatesEtcdYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/etcd.yaml.tmpl", size: 2340, mode: os.FileMode(416), modTime: time.Unix(1505927033, 0)}
+	info := bindataFileInfo{name: "templates/etcd.yaml.tmpl", size: 2340, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -255,7 +255,7 @@ func templatesNamespaceYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/namespace.yaml.tmpl", size: 885, mode: os.FileMode(416), modTime: time.Unix(1505927033, 0)}
+	info := bindataFileInfo{name: "templates/namespace.yaml.tmpl", size: 885, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -275,7 +275,7 @@ func templatesRbacYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/rbac.yaml.tmpl", size: 6066, mode: os.FileMode(416), modTime: time.Unix(1505927033, 0)}
+	info := bindataFileInfo{name: "templates/rbac.yaml.tmpl", size: 6066, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -295,7 +295,7 @@ func templatesServiceAccountsYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/service-accounts.yaml.tmpl", size: 1129, mode: os.FileMode(416), modTime: time.Unix(1505927033, 0)}
+	info := bindataFileInfo{name: "templates/service-accounts.yaml.tmpl", size: 1129, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -315,7 +315,7 @@ func templatesServiceYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/service.yaml.tmpl", size: 1034, mode: os.FileMode(416), modTime: time.Unix(1505927033, 0)}
+	info := bindataFileInfo{name: "templates/service.yaml.tmpl", size: 1034, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -335,7 +335,7 @@ func templatesTlsCertSecretYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/tls-cert-secret.yaml.tmpl", size: 1209, mode: os.FileMode(416), modTime: time.Unix(1505944284, 0)}
+	info := bindataFileInfo{name: "templates/tls-cert-secret.yaml.tmpl", size: 1209, mode: os.FileMode(416), modTime: time.Unix(1505947699, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
