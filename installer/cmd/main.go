@@ -132,9 +132,22 @@ type InstallConfig struct {
 	// whether to delete temporary files
 	CleanupTempDirOnSuccess bool
 
+	// generate YAML files for deployment, do not deploy them
+	DryRun bool
+
 	// CA options (self sign or use kubernetes root CA)
 
 	// storage options to be implemented
+}
+
+type SSLArtifacts struct {
+	// CA related SSL files
+	CAFile           string
+	CAPrivateKeyFile string
+
+	// API Server related SSL files
+	APIServerCertFile       string
+	APIServerPrivateKeyFile string
 }
 
 func uninstallServiceCatalog(dir string) error {
@@ -181,25 +194,28 @@ func installServiceCatalog(ic *InstallConfig) error {
 		defer os.RemoveAll(dir)
 	}
 
-	caFilePath, apiServerCertFilePath, apiServerPKFilePath, err := generateSSLArtificats(dir, ic)
+	sslArtifacts, err := generateSSLArtificats(dir, ic)
 	if err != nil {
 		return fmt.Errorf("error generating SSL artifacts : %v", err)
 	}
 
-	fmt.Printf("generated caFilePath: %s, apiServerCertFilePath: %s, apiServerPKFilePath: %v \n",
-		caFilePath, apiServerCertFilePath, apiServerPKFilePath)
+	fmt.Printf("generated ssl artifacts: %+v \n", sslArtifacts)
 
-	err = generateYAMLs(dir, caFilePath, apiServerCertFilePath, apiServerPKFilePath)
+	err = generateDeploymentConfigs(dir, sslArtifacts)
 	if err != nil {
 		return fmt.Errorf("error generating YAML files: %v", err)
 	}
 
-	err = deployYAML(dir)
+	if ic.DryRun {
+		return nil
+	}
+
+	err = deploy(dir)
 	if err != nil {
 		return fmt.Errorf("error deploying YAML files: %v", err)
 	}
-	fmt.Println("Service Catalog installed successfully")
 
+	fmt.Println("Service Catalog installed successfully")
 	return nil
 }
 
@@ -216,29 +232,29 @@ func generateCertConfig(dir string, ic *InstallConfig) (caCSRFilepath, certConfi
 	}
 
 	caCSRFilepath = filepath.Join(dir, "ca_csr.json")
-	err = generateYAML(caCSRFilepath, "templates/ca_csr.json.tmpl", data)
+	err = generateFileFromTmpl(caCSRFilepath, "templates/ca_csr.json.tmpl", data)
 	if err != nil {
 		return
 	}
 
 	certConfigFilePath = filepath.Join(dir, "gencert_config.json")
-	err = generateYAML(certConfigFilePath, "templates/gencert_config.json.tmpl", data)
+	err = generateFileFromTmpl(certConfigFilePath, "templates/gencert_config.json.tmpl", data)
 	if err != nil {
 		return
 	}
 	return
 }
 
-func generateYAMLs(dir, caFilePath, apiServerCertFilePath, apiServerPKFilePath string) error {
-	ca, err := base64FileContent(caFilePath)
+func generateDeploymentConfigs(dir string, sslArtifacts *SSLArtifacts) error {
+	ca, err := base64FileContent(sslArtifacts.CAFile)
 	if err != nil {
 		return err
 	}
-	apiServerCert, err := base64FileContent(apiServerCertFilePath)
+	apiServerCert, err := base64FileContent(sslArtifacts.APIServerCertFile)
 	if err != nil {
 		return err
 	}
-	apiServerPK, err := base64FileContent(apiServerPKFilePath)
+	apiServerPK, err := base64FileContent(sslArtifacts.APIServerPrivateKeyFile)
 	if err != nil {
 		return err
 	}
@@ -249,19 +265,28 @@ func generateYAMLs(dir, caFilePath, apiServerCertFilePath, apiServerPKFilePath s
 		"SVC_PRIVATE_KEY": apiServerPK,
 	}
 
-	err = generateYAML(filepath.Join(dir, "api-registration.yaml"), "templates/api-registration.yaml.tmpl", data)
+	err = generateFileFromTmpl(filepath.Join(dir, "api-registration.yaml"), "templates/api-registration.yaml.tmpl", data)
 	if err != nil {
 		return err
 	}
 
-	err = generateYAML(filepath.Join(dir, "tls-cert-secret.yaml"), "templates/tls-cert-secret.yaml.tmpl", data)
+	err = generateFileFromTmpl(filepath.Join(dir, "tls-cert-secret.yaml"), "templates/tls-cert-secret.yaml.tmpl", data)
 	if err != nil {
 		return err
 	}
 
-	files := []string{"namespace.yaml", "service-accounts.yaml", "rbac.yaml", "service.yaml", "etcd.yaml", "etcd-svc.yaml", "apiserver-deployment.yaml", "controller-manager-deployment.yaml"}
+	files := []string{
+		"namespace.yaml",
+		"service-accounts.yaml",
+		"rbac.yaml",
+		"service.yaml",
+		"etcd.yaml",
+		"etcd-svc.yaml",
+		"apiserver-deployment.yaml",
+		"controller-manager-deployment.yaml",
+	}
 	for _, f := range files {
-		err := dumpYAML("templates/"+f, filepath.Join(dir, f))
+		err := generateFile("templates/"+f, filepath.Join(dir, f))
 		if err != nil {
 			return err
 		}
@@ -269,7 +294,7 @@ func generateYAMLs(dir, caFilePath, apiServerCertFilePath, apiServerPKFilePath s
 	return nil
 }
 
-func deployYAML(dir string) error {
+func deploy(dir string) error {
 	files := []string{
 		"namespace.yaml",
 		"service-accounts.yaml",
@@ -292,7 +317,7 @@ func deployYAML(dir string) error {
 	return nil
 }
 
-func generateYAML(dst, src string, data map[string]string) error {
+func generateFileFromTmpl(dst, src string, data map[string]string) error {
 	b, err := Asset(src)
 	if err != nil {
 		return err
@@ -315,7 +340,7 @@ func generateYAML(dst, src string, data map[string]string) error {
 	return nil
 }
 
-func dumpYAML(src, dst string) error {
+func generateFile(src, dst string) error {
 	b, err := Asset(src)
 	if err != nil {
 		return err
@@ -332,7 +357,7 @@ func base64FileContent(filePath string) (encoded string, err error) {
 	return
 }
 
-func generateSSLArtificats(dir string, ic *InstallConfig) (caFilePath, apiServerCertFilePath, apiServerPKFilePath string, err error) {
+func generateSSLArtificats(dir string, ic *InstallConfig) (result *SSLArtifacts, err error) {
 	csrInputJSON, certGenJSON, err := generateCertConfig(dir, ic)
 	if err != nil {
 		err = fmt.Errorf("error generating cert config :%v", err)
@@ -340,7 +365,7 @@ func generateSSLArtificats(dir string, ic *InstallConfig) (caFilePath, apiServer
 	}
 
 	certConfigFilePath := filepath.Join(dir, "ca_config.json")
-	err = dumpYAML("templates/ca_config.json", certConfigFilePath)
+	err = generateFile("templates/ca_config.json", certConfigFilePath)
 	if err != nil {
 		err = fmt.Errorf("error generating ca config: %v", err)
 		return
@@ -348,7 +373,7 @@ func generateSSLArtificats(dir string, ic *InstallConfig) (caFilePath, apiServer
 
 	genKeyCmd := exec.Command("cfssl", "genkey", "--initca", csrInputJSON)
 
-	caFilePath = filepath.Join(dir, "ca")
+	caFilePath := filepath.Join(dir, "ca")
 	cmd2 := exec.Command("cfssljson", "-bare", caFilePath)
 
 	out, outErr, err := Pipeline(genKeyCmd, cmd2)
@@ -362,7 +387,7 @@ func generateSSLArtificats(dir string, ic *InstallConfig) (caFilePath, apiServer
 		"-ca-key", caFilePath+"-key.pem",
 		"-config", certConfigFilePath, certGenJSON)
 
-	apiServerCertFilePath = filepath.Join(dir, "apiserver")
+	apiServerCertFilePath := filepath.Join(dir, "apiserver")
 	certSignCmd := exec.Command("cfssljson", "-bare", apiServerCertFilePath)
 
 	_, _, err = Pipeline(certGenCmd, certSignCmd)
@@ -371,9 +396,12 @@ func generateSSLArtificats(dir string, ic *InstallConfig) (caFilePath, apiServer
 		return
 	}
 
-	caFilePath = caFilePath + ".pem"
-	apiServerPKFilePath = apiServerCertFilePath + "-key.pem"
-	apiServerCertFilePath = apiServerCertFilePath + ".pem"
+	result = &SSLArtifacts{
+		CAFile:                  caFilePath + ".pem",
+		CAPrivateKeyFile:        caFilePath + "-key.pem",
+		APIServerPrivateKeyFile: apiServerCertFilePath + "-key.pem",
+		APIServerCertFile:       apiServerCertFilePath + ".pem",
+	}
 	return
 }
 
