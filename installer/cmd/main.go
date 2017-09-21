@@ -76,9 +76,10 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		Short: "uninstalls Service Catalog in Kubernetes cluster",
 		Long: `uninstalls Service Catalog in Kubernetes cluster.
 assumes kubectl is configured to connect to the Kubernetes cluster.`,
-		Args: cobra.MinimumNArgs(1),
+		// Args: cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			if err := uninstallServiceCatalog(args[0]); err != nil {
+			ns := "service-catalog"
+			if err := uninstallServiceCatalog(ns); err != nil {
 				fmt.Println("Service Catalog could not be installed")
 				fmt.Println(err)
 				return
