@@ -20,6 +20,7 @@ SHELL := /bin/bash
 
 OUT_DIR ?=output
 BIN_DIR := $(OUT_DIR)/bin
+SC_INSTALLER_NAME :="sc"
 
 all: generated_files build
 
@@ -27,7 +28,7 @@ generated_files:
 	@go-bindata -pkg "main" -o cmd/templates.go templates/
 
 build:
-	@mkdir -p $(BIN_DIR) && go build -o $(BIN_DIR)/installer cmd/*.go
+	@mkdir -p $(BIN_DIR) && go build -o $(BIN_DIR)/sc cmd/*.go
 
 clean:
 	@rm -rf $(OUT_DIR)

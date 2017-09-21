@@ -70,20 +70,26 @@ var (
 	}
 )
 
-func uninstallServiceCatalog(dir string) error {
-	// ns := "service-catalog"
-
-	// delete the service catalog artifacts in reverse order
-	for i := len(svcCatalogFileNames) - 1; i >= 0; i-- {
-		f := svcCatalogFileNames[i]
-		output, err := exec.Command("kubectl", "delete", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
-		if err != nil {
-			fmt.Errorf("error deleting resources in file: %v :: %v", f, string(output))
-			// TODO(droot): ignore failures and continue for deleting
-			continue
-			// return fmt.Errorf("deploy failed with output: %s :%v", err, output)
-		}
+func uninstallServiceCatalog(ns string) error {
+	if err := checkDependencies(); err != nil {
+		return err
 	}
+
+	ic := &InstallConfig{Namespace: ns}
+
+	dir, err := generateDeploymentConfigs(ic)
+	if err != nil {
+		return fmt.Errorf("error generating YAML files: %v", err)
+	}
+
+	defer os.RemoveAll(dir)
+
+	err = deleteConfig(dir)
+	if err != nil {
+		return fmt.Errorf("error deploying YAML files: %v", err)
+	}
+
+	fmt.Println("uninstalled service catalog successfully")
 	return nil
 }
 
@@ -93,33 +99,22 @@ func installServiceCatalog(ic *InstallConfig) error {
 		return err
 	}
 
-	// create temporary directory for k8s artifacts and other temporary files
-	dir, err := ioutil.TempDir("/tmp", "service-catalog")
+	dir, err := generateDeploymentConfigs(ic)
 	if err != nil {
-		return fmt.Errorf("error creating temporary dir: %v", err)
+		return fmt.Errorf("error generating YAML files: %v", err)
 	}
+
+	fmt.Printf("generated service catalog deployment config in dir: %s \n", dir)
 
 	if ic.CleanupTempDirOnSuccess {
 		defer os.RemoveAll(dir)
-	}
-
-	sslArtifacts, err := generateSSLArtificats(dir, ic)
-	if err != nil {
-		return fmt.Errorf("error generating SSL artifacts : %v", err)
-	}
-
-	fmt.Printf("generated ssl artifacts: %+v \n", sslArtifacts)
-
-	err = generateDeploymentConfigs(dir, sslArtifacts)
-	if err != nil {
-		return fmt.Errorf("error generating YAML files: %v", err)
 	}
 
 	if ic.DryRun {
 		return nil
 	}
 
-	err = deploy(dir)
+	err = deployConfig(dir)
 	if err != nil {
 		return fmt.Errorf("error deploying YAML files: %v", err)
 	}
@@ -154,18 +149,30 @@ func generateCertConfig(dir string, ic *InstallConfig) (caCSRFilepath, certConfi
 	return
 }
 
-func generateDeploymentConfigs(dir string, sslArtifacts *SSLArtifacts) error {
+func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
+
+	// create temporary directory for k8s artifacts and other temporary files
+	dir, err := ioutil.TempDir("/tmp", "service-catalog")
+	if err != nil {
+		return "", fmt.Errorf("error creating temporary dir: %v", err)
+	}
+
+	sslArtifacts, err := generateSSLArtificats(dir, ic)
+	if err != nil {
+		return dir, fmt.Errorf("error generating SSL artifacts : %v", err)
+	}
+
 	ca, err := base64FileContent(sslArtifacts.CAFile)
 	if err != nil {
-		return err
+		return dir, err
 	}
 	apiServerCert, err := base64FileContent(sslArtifacts.APIServerCertFile)
 	if err != nil {
-		return err
+		return dir, err
 	}
 	apiServerPK, err := base64FileContent(sslArtifacts.APIServerPrivateKeyFile)
 	if err != nil {
-		return err
+		return dir, err
 	}
 
 	data := map[string]string{
@@ -177,19 +184,33 @@ func generateDeploymentConfigs(dir string, sslArtifacts *SSLArtifacts) error {
 	for _, f := range svcCatalogFileNames {
 		err = generateFileFromTmpl(filepath.Join(dir, f+".yaml"), "templates/"+f+".yaml.tmpl", data)
 		if err != nil {
-			return err
+			return dir, err
 		}
 	}
-	return nil
+	return dir, nil
 }
 
-func deploy(dir string) error {
-
+func deployConfig(dir string) error {
 	for _, f := range svcCatalogFileNames {
 		output, err := exec.Command("kubectl", "create", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
 		// TODO(droot): cleanup
 		if err != nil {
 			return fmt.Errorf("deploy failed with output: %s :%v", err, string(output))
+		}
+	}
+	return nil
+}
+
+func deleteConfig(dir string) error {
+	// delete the service catalog artifacts in reverse order
+	for i := len(svcCatalogFileNames) - 1; i >= 0; i-- {
+		f := svcCatalogFileNames[i]
+		output, err := exec.Command("kubectl", "delete", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
+		if err != nil {
+			fmt.Errorf("error deleting resources in file: %v :: %v", f, string(output))
+			// TODO(droot): ignore failures and continue for deleting
+			continue
+			// return fmt.Errorf("deploy failed with output: %s :%v", err, output)
 		}
 	}
 	return nil
