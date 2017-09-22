@@ -126,7 +126,7 @@ func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
 	}
 
 	for _, f := range svcCatalogFileNames {
-		err = generateFileFromTmpl(filepath.Join(dir, f+".yaml"), "templates/"+f+".yaml.tmpl", data)
+		err = generateFileFromTmpl(filepath.Join(dir, f+".yaml"), "templates/sc/"+f+".yaml.tmpl", data)
 		if err != nil {
 			return dir, err
 		}
@@ -170,13 +170,13 @@ func generateCertConfig(dir string, ic *InstallConfig) (caCSRFilepath, certConfi
 	}
 
 	caCSRFilepath = filepath.Join(dir, "ca_csr.json")
-	err = generateFileFromTmpl(caCSRFilepath, "templates/ca_csr.json.tmpl", data)
+	err = generateFileFromTmpl(caCSRFilepath, "templates/sc/ca_csr.json.tmpl", data)
 	if err != nil {
 		return
 	}
 
 	certConfigFilePath = filepath.Join(dir, "gencert_config.json")
-	err = generateFileFromTmpl(certConfigFilePath, "templates/gencert_config.json.tmpl", data)
+	err = generateFileFromTmpl(certConfigFilePath, "templates/sc/gencert_config.json.tmpl", data)
 	if err != nil {
 		return
 	}
@@ -191,7 +191,7 @@ func generateSSLArtificats(dir string, ic *InstallConfig) (result *sslArtifacts,
 	}
 
 	certConfigFilePath := filepath.Join(dir, "ca_config.json")
-	err = generateFile("templates/ca_config.json", certConfigFilePath)
+	err = generateFile("templates/sc/ca_config.json", certConfigFilePath)
 	if err != nil {
 		err = fmt.Errorf("error generating ca config: %v", err)
 		return

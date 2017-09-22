@@ -50,7 +50,7 @@ present in PATH. This command performs the dependency check.`,
 	}
 
 	var cmdInstallServiceCatalog = &cobra.Command{
-		Use:   "install-service-catalog",
+		Use:   "install",
 		Short: "installs Service Catalog in Kubernetes cluster",
 		Long: `installs Service Catalog in Kubernetes cluster.
 assumes kubectl is configured to connect to the Kubernetes cluster.`,
@@ -72,7 +72,7 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 	}
 
 	var cmdUninstallServiceCatalog = &cobra.Command{
-		Use:   "uninstall-service-catalog",
+		Use:   "uninstall",
 		Short: "uninstalls Service Catalog in Kubernetes cluster",
 		Long: `uninstalls Service Catalog in Kubernetes cluster.
 assumes kubectl is configured to connect to the Kubernetes cluster.`,
@@ -87,7 +87,7 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		},
 	}
 
-	var rootCmd = &cobra.Command{Use: "installer"}
+	var rootCmd = &cobra.Command{Use: "sc"}
 	rootCmd.AddCommand(
 		cmdCheck,
 		cmdInstallServiceCatalog,
