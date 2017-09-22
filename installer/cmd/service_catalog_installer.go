@@ -26,6 +26,22 @@ import (
 	"path/filepath"
 )
 
+// service catalog resources that will be created as part of deployment.
+var (
+	svcCatalogFileNames = []string{
+		"namespace",
+		"tls-cert-secret",
+		"api-registration",
+		"service-accounts",
+		"rbac",
+		"service",
+		"etcd",
+		"etcd-svc",
+		"apiserver-deployment",
+		"controller-manager-deployment",
+	}
+)
+
 // InstallConfig contains installation configuration.
 type InstallConfig struct {
 	// namespace for service catalog
@@ -45,56 +61,7 @@ type InstallConfig struct {
 	// storage options to be implemented
 }
 
-type SSLArtifacts struct {
-	// CA related SSL files
-	CAFile           string
-	CAPrivateKeyFile string
-
-	// API Server related SSL files
-	APIServerCertFile       string
-	APIServerPrivateKeyFile string
-}
-
-var (
-	svcCatalogFileNames = []string{
-		"namespace",
-		"tls-cert-secret",
-		"api-registration",
-		"service-accounts",
-		"rbac",
-		"service",
-		"etcd",
-		"etcd-svc",
-		"apiserver-deployment",
-		"controller-manager-deployment",
-	}
-)
-
-func uninstallServiceCatalog(ns string) error {
-	if err := checkDependencies(); err != nil {
-		return err
-	}
-
-	ic := &InstallConfig{Namespace: ns}
-
-	dir, err := generateDeploymentConfigs(ic)
-	if err != nil {
-		return fmt.Errorf("error generating YAML files: %v", err)
-	}
-
-	defer os.RemoveAll(dir)
-
-	err = deleteConfig(dir)
-	if err != nil {
-		return fmt.Errorf("error deploying YAML files: %v", err)
-	}
-
-	fmt.Println("uninstalled service catalog successfully")
-	return nil
-}
-
 func installServiceCatalog(ic *InstallConfig) error {
-
 	if err := checkDependencies(); err != nil {
 		return err
 	}
@@ -123,32 +90,9 @@ func installServiceCatalog(ic *InstallConfig) error {
 	return nil
 }
 
-// generateCertConfig generates config files required for generating CA and
-// SSL certificates for API Server.
-func generateCertConfig(dir string, ic *InstallConfig) (caCSRFilepath, certConfigFilePath string, err error) {
-	host1 := fmt.Sprintf("%s.%s", ic.APIServerServiceName, ic.Namespace)
-	host2 := host1 + ".svc"
-
-	data := map[string]string{
-		"Host1":          host1,
-		"Host2":          host2,
-		"APIServiceName": ic.APIServerServiceName,
-	}
-
-	caCSRFilepath = filepath.Join(dir, "ca_csr.json")
-	err = generateFileFromTmpl(caCSRFilepath, "templates/ca_csr.json.tmpl", data)
-	if err != nil {
-		return
-	}
-
-	certConfigFilePath = filepath.Join(dir, "gencert_config.json")
-	err = generateFileFromTmpl(certConfigFilePath, "templates/gencert_config.json.tmpl", data)
-	if err != nil {
-		return
-	}
-	return
-}
-
+// generateDeploymentConfigs create configuration files for all the service
+// catalog resources in a temporary directory under /tmp. It returns absolute
+// path to the temporary directory containing the config.
 func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
 
 	// create temporary directory for k8s artifacts and other temporary files
@@ -190,6 +134,7 @@ func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
 	return dir, nil
 }
 
+// this function assumes kubectl executable already exists in PATH.
 func deployConfig(dir string) error {
 	for _, f := range svcCatalogFileNames {
 		output, err := exec.Command("kubectl", "create", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
@@ -201,19 +146,89 @@ func deployConfig(dir string) error {
 	return nil
 }
 
-func deleteConfig(dir string) error {
-	// delete the service catalog artifacts in reverse order
-	for i := len(svcCatalogFileNames) - 1; i >= 0; i-- {
-		f := svcCatalogFileNames[i]
-		output, err := exec.Command("kubectl", "delete", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
-		if err != nil {
-			fmt.Errorf("error deleting resources in file: %v :: %v", f, string(output))
-			// TODO(droot): ignore failures and continue for deleting
-			continue
-			// return fmt.Errorf("deploy failed with output: %s :%v", err, output)
-		}
+// sslArtifacts contains SSL artifacts needed
+type sslArtifacts struct {
+	// CA related SSL files
+	CAFile           string
+	CAPrivateKeyFile string
+
+	// API Server related SSL files
+	APIServerCertFile       string
+	APIServerPrivateKeyFile string
+}
+
+// generateCertConfig generates config files required for generating CA and
+// SSL certificates for API Server.
+func generateCertConfig(dir string, ic *InstallConfig) (caCSRFilepath, certConfigFilePath string, err error) {
+	host1 := fmt.Sprintf("%s.%s", ic.APIServerServiceName, ic.Namespace)
+	host2 := host1 + ".svc"
+
+	data := map[string]string{
+		"Host1":          host1,
+		"Host2":          host2,
+		"APIServiceName": ic.APIServerServiceName,
 	}
-	return nil
+
+	caCSRFilepath = filepath.Join(dir, "ca_csr.json")
+	err = generateFileFromTmpl(caCSRFilepath, "templates/ca_csr.json.tmpl", data)
+	if err != nil {
+		return
+	}
+
+	certConfigFilePath = filepath.Join(dir, "gencert_config.json")
+	err = generateFileFromTmpl(certConfigFilePath, "templates/gencert_config.json.tmpl", data)
+	if err != nil {
+		return
+	}
+	return
+}
+
+func generateSSLArtificats(dir string, ic *InstallConfig) (result *sslArtifacts, err error) {
+	csrInputJSON, certGenJSON, err := generateCertConfig(dir, ic)
+	if err != nil {
+		err = fmt.Errorf("error generating cert config :%v", err)
+		return
+	}
+
+	certConfigFilePath := filepath.Join(dir, "ca_config.json")
+	err = generateFile("templates/ca_config.json", certConfigFilePath)
+	if err != nil {
+		err = fmt.Errorf("error generating ca config: %v", err)
+		return
+	}
+
+	genKeyCmd := exec.Command("cfssl", "genkey", "--initca", csrInputJSON)
+
+	caFilePath := filepath.Join(dir, "ca")
+	cmd2 := exec.Command("cfssljson", "-bare", caFilePath)
+
+	out, outErr, err := Pipeline(genKeyCmd, cmd2)
+	if err != nil {
+		err = fmt.Errorf("error generating ca: stdout: %v stderr: %v err: %v", string(out), string(outErr), err)
+		return
+	}
+
+	certGenCmd := exec.Command("cfssl", "gencert",
+		"-ca", caFilePath+".pem",
+		"-ca-key", caFilePath+"-key.pem",
+		"-config", certConfigFilePath, certGenJSON)
+
+	apiServerCertFilePath := filepath.Join(dir, "apiserver")
+	certSignCmd := exec.Command("cfssljson", "-bare", apiServerCertFilePath)
+
+	_, _, err = Pipeline(certGenCmd, certSignCmd)
+	if err != nil {
+		err = fmt.Errorf("error signing api server cert: %v", err)
+		return
+	}
+
+	result = &sslArtifacts{
+		CAFile:                  caFilePath + ".pem",
+		CAPrivateKeyFile:        caFilePath + "-key.pem",
+		APIServerPrivateKeyFile: apiServerCertFilePath + "-key.pem",
+		APIServerCertFile:       apiServerCertFilePath + ".pem",
+	}
+	return
 }
 
 func generateFileFromTmpl(dst, src string, data map[string]string) error {
@@ -256,50 +271,40 @@ func base64FileContent(filePath string) (encoded string, err error) {
 	return
 }
 
-func generateSSLArtificats(dir string, ic *InstallConfig) (result *SSLArtifacts, err error) {
-	csrInputJSON, certGenJSON, err := generateCertConfig(dir, ic)
+func uninstallServiceCatalog(ns string) error {
+	if err := checkDependencies(); err != nil {
+		return err
+	}
+
+	ic := &InstallConfig{Namespace: ns}
+
+	dir, err := generateDeploymentConfigs(ic)
 	if err != nil {
-		err = fmt.Errorf("error generating cert config :%v", err)
-		return
+		return fmt.Errorf("error generating YAML files: %v", err)
 	}
 
-	certConfigFilePath := filepath.Join(dir, "ca_config.json")
-	err = generateFile("templates/ca_config.json", certConfigFilePath)
+	defer os.RemoveAll(dir)
+
+	err = deleteConfig(dir)
 	if err != nil {
-		err = fmt.Errorf("error generating ca config: %v", err)
-		return
+		return fmt.Errorf("error deploying YAML files: %v", err)
 	}
 
-	genKeyCmd := exec.Command("cfssl", "genkey", "--initca", csrInputJSON)
+	fmt.Println("uninstalled service catalog successfully")
+	return nil
+}
 
-	caFilePath := filepath.Join(dir, "ca")
-	cmd2 := exec.Command("cfssljson", "-bare", caFilePath)
-
-	out, outErr, err := Pipeline(genKeyCmd, cmd2)
-	if err != nil {
-		err = fmt.Errorf("error generating ca: stdout: %v stderr: %v err: %v", string(out), string(outErr), err)
-		return
+func deleteConfig(dir string) error {
+	// delete the service catalog artifacts in reverse order
+	for i := len(svcCatalogFileNames) - 1; i >= 0; i-- {
+		f := svcCatalogFileNames[i]
+		output, err := exec.Command("kubectl", "delete", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
+		if err != nil {
+			fmt.Errorf("error deleting resources in file: %v :: %v", f, string(output))
+			// TODO(droot): ignore failures and continue with deleting
+			continue
+			// return fmt.Errorf("deploy failed with output: %s :%v", err, output)
+		}
 	}
-
-	certGenCmd := exec.Command("cfssl", "gencert",
-		"-ca", caFilePath+".pem",
-		"-ca-key", caFilePath+"-key.pem",
-		"-config", certConfigFilePath, certGenJSON)
-
-	apiServerCertFilePath := filepath.Join(dir, "apiserver")
-	certSignCmd := exec.Command("cfssljson", "-bare", apiServerCertFilePath)
-
-	_, _, err = Pipeline(certGenCmd, certSignCmd)
-	if err != nil {
-		err = fmt.Errorf("error signing api server cert: %v", err)
-		return
-	}
-
-	result = &SSLArtifacts{
-		CAFile:                  caFilePath + ".pem",
-		CAPrivateKeyFile:        caFilePath + "-key.pem",
-		APIServerPrivateKeyFile: apiServerCertFilePath + "-key.pem",
-		APIServerCertFile:       apiServerCertFilePath + ".pem",
-	}
-	return
+	return nil
 }
