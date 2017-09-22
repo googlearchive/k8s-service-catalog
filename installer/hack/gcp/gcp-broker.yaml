@@ -25,7 +25,17 @@ kind: ServiceBroker
 metadata:
   name: gcp-broker
 spec:
-  url:  https://staging-servicebroker.sandbox.googleapis.com/v1alpha1/projects/gcp-services/brokers/gcp-broker
+  # URL to connect to  GCP Broker.
+  # 
+  # Production servicebroker API; not staging
+  # Project: seans-walkthrough, local user project, requires inital creation of virtual broker through CLI.
+  # url:  https://servicebroker.googleapis.com/v1alpha1/projects/seans-walkthrough/brokers/gcp-broker
+  #
+  # Project: gcp-services, which is used by all. Needs to be user project.
+  # url:  https://servicebroker.googleapis.com/v1alpha1/projects/gcp-services/brokers/gcp-broker
+  #
+  url:  https://staging-servicebroker.sandbox.googleapis.com/v1alpha1/projects/seans-walkthrough/brokers/gcp-broker
+  # Describes the secret which contains the short-lived bearer token
   authInfo:
     bearer:
       secretRef:

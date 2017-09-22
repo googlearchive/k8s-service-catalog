@@ -53,15 +53,19 @@ echo "Service Dir: $SVC_DIR"
 echo "GCloud Project: $PROJECT_ID"
 
 # Enable the GCP API's we're going to use for the broker.
+# TODO: ENABLE DM API
+# TODO: GRANT ROLES/OWNER on DM Service Account
 GCLOUD_ENABLED_APIS=$(gcloud service-management list --enabled)
-export BROKER_API_HOST=staging-servicebroker.sandbox.googleapis.com
+# BROKER_API_HOST=staging-servicebroker.sandbox.googleapis.com
+BROKER_API_HOST=servicebroker.googleapis.com
 if echo "$GCLOUD_ENABLED_APIS" | grep -q $BROKER_API_HOST; then
   echo "GCloud Project API already enabled: $BROKER_API_HOST"
 else
   echo "Enabling: $BROKER_API_HOST"
   gcloud service-management enable $BROKER_API_HOST
 fi
-export REGISTRY_API_HOST=staging-serviceregistry.sandbox.googleapis.com
+# REGISTRY_API_HOST=staging-serviceregistry.sandbox.googleapis.com
+REGISTRY_API_HOST=serviceregistry.googleapis.com
 if echo "$GCLOUD_ENABLED_APIS" | grep -q $REGISTRY_API_HOST; then
   echo "GCloud Project API already enabled: $REGISTRY_API_HOST"
 else
@@ -80,13 +84,17 @@ else
     --display-name "Service Catalog Account"
 
   # Add necessary editor role for this service account.
+  # TODO: SHOULD ONLY NEED roles/serviceBroker.operator
   echo "Adding Editor Role to Service Account"
   gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:${FULL_SVC_ACCT} \
     --role roles/editor
+    # --role roles/serviceBroker.operator
 fi
 
 # Generate key for service account and store in secret.
+# TODO: DOWN NEEDS TO CLEAN UP JSON KEY
+# TODO: SPECIFY KEY NAME + RANDOM -> more descriptive.
 echo "Generating Key for GCP Service Account"
 # Create a key for this service account.
 tmpFile=$(mktemp)
@@ -105,7 +113,6 @@ kubectl create -f ${SVC_DIR}/service-account-secret.yaml
 echo "Creating Google OAuth Secret Tranformer"
 kubectl create -f ${SVC_DIR}/google-oauth-deployment.yaml
 
-# NOTE: This is a temporary "test" namespace used in place of an app namespace.
 echo "Creating GCP Broker Namespace for Instances and Bindings"
 kubectl create -f ${SVC_DIR}/gcp-instance-namespace.yaml
 

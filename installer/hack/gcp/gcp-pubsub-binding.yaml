@@ -33,13 +33,19 @@ apiVersion: servicecatalog.k8s.io/v1alpha1
 kind: ServiceInstanceCredential
 metadata:
   name: gcp-pubsub-binding
-  namespace: gcp-instances
+  namespace: gcp-apps
 spec:
   instanceRef:
     name: gcp-pubsub-instance
+  # Secret to store returned data from bind call
+  # Currently:
+  #   project: GCP project id
+  #   serviceAccount: same as passed as parameter
+  #   subscription: generated subscription name
+  #   topic: generated topic name
   secretName: gcp-pubsub-credentials
   parameters:
-    parameters:
-      serviceAccount: "test-583@seans-dev.iam.gserviceaccount.com"
-      roles: ["roles/pubsub.subscriber"]
-
+    # GCP *app* service account
+    serviceAccount: "test-583@seans-dev.iam.gserviceaccount.com"
+    # publisher or subscriber
+    roles: ["roles/pubsub.subscriber"]
