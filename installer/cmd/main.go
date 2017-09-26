@@ -18,10 +18,13 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 
+	"github.com/golang/glog"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +37,40 @@ const (
 )
 
 func main() {
-	var cmdCheck = &cobra.Command{
+	defer glog.Flush()
+
+	c := NewCommand()
+	if err := c.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func NewCommand() *cobra.Command {
+	c := &cobra.Command{
+		Use:   "sc",
+		Short: "CLI to manage Service Catalog in a Kubernetes Cluster",
+		Long: `sc is a CLI for managing lifecycle of Service Catalog and 
+Service brokers in a Kubernetes Cluster. It implements commands to
+install, uninstall Service Catalog and add/remove GCP service broker
+in a Kubernets Cluster.`,
+	}
+	c.AddCommand(
+		cmdCheck,
+		cmdInstallServiceCatalog,
+		cmdUninstallServiceCatalog,
+		cmdConfigureGCPBroker,
+		cmdRemoveGCPBroker,
+	)
+
+	// add the glog flags
+	c.PersistentFlags().AddGoFlagSet(flag.CommandLine)
+
+	return c
+}
+
+var (
+	cmdCheck = &cobra.Command{
 		Use:   "check",
 		Short: "performs a dependency check",
 		Long: `This utility requires cfssl, gcloud, kubectl binaries to be 
@@ -49,7 +85,7 @@ present in PATH. This command performs the dependency check.`,
 		},
 	}
 
-	var cmdInstallServiceCatalog = &cobra.Command{
+	cmdInstallServiceCatalog = &cobra.Command{
 		Use:   "install",
 		Short: "installs Service Catalog in Kubernetes cluster",
 		Long: `installs Service Catalog in Kubernetes cluster.
@@ -71,7 +107,7 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		},
 	}
 
-	var cmdUninstallServiceCatalog = &cobra.Command{
+	cmdUninstallServiceCatalog = &cobra.Command{
 		Use:   "uninstall",
 		Short: "uninstalls Service Catalog in Kubernetes cluster",
 		Long: `uninstalls Service Catalog in Kubernetes cluster.
@@ -87,7 +123,7 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		},
 	}
 
-	var cmdConfigureGCPBroker = &cobra.Command{
+	cmdConfigureGCPBroker = &cobra.Command{
 		Use:   "add-gcp-broker",
 		Short: "Adds GCP broker",
 		Long:  `Adds a GCP broker to Service Catalog`,
@@ -101,7 +137,7 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		},
 	}
 
-	var cmdRemoveGCPBroker = &cobra.Command{
+	cmdRemoveGCPBroker = &cobra.Command{
 		Use:   "remove-gcp-broker",
 		Short: "Remove GCP broker",
 		Long:  `Removes a GCP broker from service catalog`,
@@ -114,17 +150,7 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 			fmt.Println("GCP broker removed successfully.")
 		},
 	}
-
-	var rootCmd = &cobra.Command{Use: "sc"}
-	rootCmd.AddCommand(
-		cmdCheck,
-		cmdInstallServiceCatalog,
-		cmdUninstallServiceCatalog,
-		cmdConfigureGCPBroker,
-		cmdRemoveGCPBroker,
-	)
-	rootCmd.Execute()
-}
+)
 
 // checkDependencies performs a lookup for binary executables that are
 // required for installing service catalog and configuring GCP broker.
