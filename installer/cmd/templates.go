@@ -177,7 +177,7 @@ func templatesScControllerManagerDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 3067, mode: os.FileMode(416), modTime: time.Unix(1506369607, 0)}
+	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 3067, mode: os.FileMode(416), modTime: time.Unix(1506447357, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -277,7 +277,7 @@ func templatesScRbacYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 6801, mode: os.FileMode(416), modTime: time.Unix(1506371853, 0)}
+	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 6801, mode: os.FileMode(416), modTime: time.Unix(1506447357, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -357,7 +357,7 @@ func templatesGcpGcpBrokerYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/gcp-broker.yaml.tmpl", size: 1779, mode: os.FileMode(416), modTime: time.Unix(1506374522, 0)}
+	info := bindataFileInfo{name: "templates/gcp/gcp-broker.yaml.tmpl", size: 1779, mode: os.FileMode(416), modTime: time.Unix(1506447357, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -377,7 +377,7 @@ func templatesGcpServiceAccountSecretYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/service-account-secret.yaml.tmpl", size: 1651, mode: os.FileMode(416), modTime: time.Unix(1506375330, 0)}
+	info := bindataFileInfo{name: "templates/gcp/service-account-secret.yaml.tmpl", size: 1651, mode: os.FileMode(416), modTime: time.Unix(1506447357, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
