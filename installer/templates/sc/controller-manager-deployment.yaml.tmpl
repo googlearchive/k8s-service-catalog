@@ -35,6 +35,24 @@ spec:
     spec:
       serviceAccountName: "controller-manager"
       containers:
+      - name: catalog-oauth
+        image: gcr.io/seans-sandbox/catalog-oauth:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 100m
+            memory: 20Mi
+          limits:
+            cpu: 100m
+            memory: 30Mi
+        args:
+        - -n
+        - "service-catalog"
+        - -v
+        - "6"
+        - -alsologtostderr
+        ports:
+        - containerPort: 8443
       - name: controller-manager
         image: gcr.io/seans-sandbox/controller-manager:canary
         imagePullPolicy: Always
