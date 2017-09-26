@@ -87,11 +87,41 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		},
 	}
 
+	var cmdConfigureGCPBroker = &cobra.Command{
+		Use:   "add-gcp-broker",
+		Short: "Adds GCP broker",
+		Long:  `Adds a GCP broker to Service Catalog`,
+		Run: func(cmd *cobra.Command, args []string) {
+			if err := addGCPBroker(); err != nil {
+				fmt.Println("failed to configure GCP broker")
+				fmt.Println(err)
+				return
+			}
+			fmt.Println("GCP broker added successfully.")
+		},
+	}
+
+	var cmdRemoveGCPBroker = &cobra.Command{
+		Use:   "remove-gcp-broker",
+		Short: "Remove GCP broker",
+		Long:  `Removes a GCP broker from service catalog`,
+		Run: func(cmd *cobra.Command, args []string) {
+			if err := removeGCPBroker(); err != nil {
+				fmt.Println("failed to remove GCP broker")
+				fmt.Println(err)
+				return
+			}
+			fmt.Println("GCP broker removed successfully.")
+		},
+	}
+
 	var rootCmd = &cobra.Command{Use: "sc"}
 	rootCmd.AddCommand(
 		cmdCheck,
 		cmdInstallServiceCatalog,
 		cmdUninstallServiceCatalog,
+		cmdConfigureGCPBroker,
+		cmdRemoveGCPBroker,
 	)
 	rootCmd.Execute()
 }

@@ -25,7 +25,7 @@ SC_INSTALLER_NAME :="sc"
 all: generated_files build
 
 generated_files:
-	@go-bindata -pkg "main" -o cmd/templates.go templates/sc
+	@go-bindata -pkg "main" -o cmd/templates.go templates/sc templates/gcp
 
 build:
 	@mkdir -p $(BIN_DIR) && go build -o $(BIN_DIR)/sc cmd/*.go
