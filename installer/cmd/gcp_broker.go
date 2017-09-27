@@ -17,11 +17,17 @@ limitations under the License.
 package main
 
 import (
+	"broker-cli/auth"
+	"broker-cli/client/adapter"
+	"context"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/gcp"
 )
@@ -50,17 +56,13 @@ func addGCPBroker() error {
 	brokerSAName := "service-catalog-gcp"
 	brokerSAEmail := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", brokerSAName, projectID)
 
-	_, err = gcp.GetServiceAccount(brokerSAEmail)
+	err = getOrCreateGCPServiceAccount(brokerSAName, brokerSAEmail)
 	if err != nil {
-		fmt.Printf("error fetching service account :%v", err)
-		// TODO(droot): distinguish between real error and NOT_FOUND error
-		err = gcp.CreateServiceAccount(brokerSAName, "Service Catalog GCP Broker Service Account")
-		if err != nil {
-			return err
-		}
+		return err
 	}
-
-	err = gcp.UpdateServiceAccountPerms(projectID, brokerSAEmail, "roles/servicebroker.operator")
+	// brokerSARole := "roles/editor"
+	brokerSARole := "roles/servicebroker.operator"
+	err = gcp.UpdateServiceAccountPerms(projectID, brokerSAEmail, brokerSARole)
 	if err != nil {
 		return err
 	}
@@ -83,10 +85,14 @@ func addGCPBroker() error {
 		return fmt.Errorf("error reading content of the key file : %v", err)
 	}
 
+	vb, err := getOrCreateVirtualBroker(projectID, "default", "Default Broker")
+	if err != nil {
+		return fmt.Errorf("error retrieving or creating default broker : %v", err)
+	}
+
 	data := map[string]string{
 		"SvcAccountKey": key,
-		// TODO(droot): replace the URL below with virtual broker URL for this project
-		"GCPBrokerURL": "https://staging-servicebroker.sandbox.googleapis.com/v1alpha1/projects/seans-walkthrough/brokers/gcp-broker",
+		"GCPBrokerURL":  vb.URL,
 	}
 
 	err = generateGCPBrokerConfigs(dir, data)
@@ -100,6 +106,65 @@ func addGCPBroker() error {
 	}
 
 	return err
+}
+
+func getOrCreateGCPServiceAccount(name, email string) error {
+	_, err := gcp.GetServiceAccount(email)
+	if err != nil {
+		fmt.Printf("error fetching service account :%v", err)
+		// TODO(droot): distinguish between real error and NOT_FOUND error
+		err = gcp.CreateServiceAccount(name, "Service Catalog GCP Broker Service Account")
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func getOrCreateVirtualBroker(projectID, brokerName, brokerTitle string) (*virtualBroker, error) {
+	// use the application default credentials
+	brokerClient, err := httpAdapterFromAuthKey("")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create broker client. You might want to run 'gcloud auth application-default login'")
+	}
+
+	registryURL := "https://serviceregistry.googleapis.com"
+
+	res, err := brokerClient.GetBroker(&adapter.GetBrokerParams{
+		RegistryURL: registryURL,
+		Project:     projectID,
+		Name:        brokerName,
+	})
+	if err != nil {
+		// TODO(droot): Get rid of this hacky logic once broker client relays
+		// structured Error types and we don't have to reply on string match
+		if strings.Contains(err.Error(), "NOT_FOUND") {
+			res, err = brokerClient.CreateBroker(&adapter.CreateBrokerParams{
+				RegistryURL: registryURL,
+				Project:     projectID,
+				Name:        brokerName,
+				Title:       brokerTitle,
+				Catalogs:    []string{"projects/gcp-services/catalogs/gcp-catalog"},
+			})
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			return nil, err
+		}
+	}
+
+	var vb virtualBroker
+	err = json.Unmarshal(res, &vb)
+	return &vb, err
+}
+
+// virtualBroker represents a GCP virtual broker.
+type virtualBroker struct {
+	Name     string   `json:"name"`
+	Title    string   `json:"title"`
+	Catalogs []string `json:"catalogs"`
+	URL      string   `json:"url"`
 }
 
 func generateGCPBrokerConfigs(dir string, data map[string]string) error {
@@ -154,4 +219,29 @@ func removeGCPBrokerConfigs(dir string) error {
 		}
 	}
 	return nil
+}
+
+// getContext returns a context using information from flags.
+func getContext() context.Context {
+	// TODO(richardfung): add flags so users can control this?
+	return context.Background()
+}
+
+// httpAdapterFromAuthKey returns an http adapter with credentials to gcloud if
+// keyFile is not set and to a service account if it is set.
+func httpAdapterFromAuthKey(keyFile string) (*adapter.HttpAdapter, error) {
+	var client *http.Client
+	var err error
+	if keyFile != "" {
+		client, err = auth.HttpClientFromFile(getContext(), keyFile)
+		if err != nil {
+			return nil, fmt.Errorf("error creating http client from service account file %s: %v", keyFile, err)
+		}
+	} else {
+		client, err = auth.HttpClientWithDefaultCredentials(getContext())
+		if err != nil {
+			return nil, fmt.Errorf("Error creating http client using default gcloud credentials: %v", err)
+		}
+	}
+	return adapter.NewHttpAdapter(client), nil
 }
