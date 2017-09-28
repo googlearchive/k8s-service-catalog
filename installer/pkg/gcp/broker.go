@@ -130,8 +130,11 @@ type ServiceAccount struct {
 
 func CreateServiceAccountKey(email, keyFilepath string) error {
 	cmd := exec.Command("gcloud", "beta", "iam", "service-accounts", "keys", "create", "--iam-account", email, keyFilepath)
-	_, err := cmd.CombinedOutput()
-	return err
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("failed to create service account key: %s : %v", string(out), err)
+	}
+	return nil
 }
 
 // GetConfigValue returns a property value from given section of gcloud's
