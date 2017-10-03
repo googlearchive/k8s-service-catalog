@@ -25,7 +25,7 @@ import (
 	"reflect"
 	"testing"
 
-	"broker-cli/client/osb"
+	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/broker-cli/client/osb"
 )
 
 var (

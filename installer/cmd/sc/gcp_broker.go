@@ -17,8 +17,6 @@ limitations under the License.
 package main
 
 import (
-	"broker-cli/auth"
-	"broker-cli/client/adapter"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -29,6 +27,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/broker-cli/auth"
+	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/broker-cli/client/adapter"
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/gcp"
 )
 
