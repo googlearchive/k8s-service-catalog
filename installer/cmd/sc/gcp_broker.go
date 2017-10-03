@@ -33,7 +33,7 @@ import (
 )
 
 var (
-	gcpBrokerFileNames = []string{"gcp-broker", "service-account-secret"}
+	gcpBrokerFileNames = []string{"gcp-broker", "google-oauth-deployment", "service-account-secret"}
 )
 
 func addGCPBroker() error {
