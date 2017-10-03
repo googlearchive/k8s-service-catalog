@@ -141,7 +141,7 @@ func CreateServiceAccountKey(email, keyFilepath string) error {
 // default config.
 func GetConfigValue(section, property string) (string, error) {
 	cmd := exec.Command("gcloud", "config", "get-value", section+"/"+property)
-	value, err := cmd.CombinedOutput()
+	value, err := cmd.Output()
 	if err != nil {
 		return "", fmt.Errorf("failed to retrieve config-value : %v", err)
 	}
