@@ -74,6 +74,7 @@ Before installing Service Catalog atop Kubernetes cluster, you need to ensure fo
   ```
 - [gcloud] should be installed and configured with following commands in order to be used by the `sc` to configure GCP broker.
   ```bash
+  gcloud components install beta
   gcloud auth login
   gcloud auth application-default login
   ```
