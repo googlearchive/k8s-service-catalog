@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package cmd
 
 import (
 	"context"
@@ -30,11 +30,28 @@ import (
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/broker-cli/auth"
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/broker-cli/client/adapter"
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/gcp"
+	"github.com/spf13/cobra"
 )
 
 var (
 	gcpBrokerFileNames = []string{"gcp-broker", "google-oauth-deployment", "service-account-secret"}
 )
+
+func NewAddGCPBrokerCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "add-gcp-broker",
+		Short: "Adds GCP broker",
+		Long:  `Adds a GCP broker to Service Catalog`,
+		Run: func(cmd *cobra.Command, args []string) {
+			if err := addGCPBroker(); err != nil {
+				fmt.Println("failed to configure GCP broker")
+				fmt.Println(err)
+				return
+			}
+			fmt.Println("GCP broker added successfully.")
+		},
+	}
+}
 
 func addGCPBroker() error {
 	projectID, err := gcp.GetConfigValue("core", "project")
@@ -90,7 +107,7 @@ func addGCPBroker() error {
 		return fmt.Errorf("error retrieving or creating default broker : %v", err)
 	}
 
-	data := map[string]string{
+	data := map[string]interface{}{
 		"SvcAccountKey": key,
 		"GCPBrokerURL":  vb.URL,
 	}
@@ -167,7 +184,7 @@ type virtualBroker struct {
 	URL      string   `json:"url"`
 }
 
-func generateGCPBrokerConfigs(dir string, data map[string]string) error {
+func generateGCPBrokerConfigs(dir string, data map[string]interface{}) error {
 	for _, f := range gcpBrokerFileNames {
 		err := generateFileFromTmpl(filepath.Join(dir, f+".yaml"), "templates/gcp/"+f+".yaml.tmpl", data)
 		if err != nil {
@@ -186,6 +203,47 @@ func deployGCPBrokerConfigs(dir string) error {
 		}
 	}
 	return nil
+}
+
+// getContext returns a context using information from flags.
+func getContext() context.Context {
+	// TODO(richardfung): add flags so users can control this?
+	return context.Background()
+}
+
+// httpAdapterFromAuthKey returns an http adapter with credentials to gcloud if
+// keyFile is not set and to a service account if it is set.
+func httpAdapterFromAuthKey(keyFile string) (*adapter.HttpAdapter, error) {
+	var client *http.Client
+	var err error
+	if keyFile != "" {
+		client, err = auth.HttpClientFromFile(getContext(), keyFile)
+		if err != nil {
+			return nil, fmt.Errorf("error creating http client from service account file %s: %v", keyFile, err)
+		}
+	} else {
+		client, err = auth.HttpClientWithDefaultCredentials(getContext())
+		if err != nil {
+			return nil, fmt.Errorf("Error creating http client using default gcloud credentials: %v", err)
+		}
+	}
+	return adapter.NewHttpAdapter(client), nil
+}
+
+func NewRemoveGCPBrokerCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "remove-gcp-broker",
+		Short: "Remove GCP broker",
+		Long:  `Removes a GCP broker from service catalog`,
+		Run: func(cmd *cobra.Command, args []string) {
+			if err := removeGCPBroker(); err != nil {
+				fmt.Println("failed to remove GCP broker")
+				fmt.Println(err)
+				return
+			}
+			fmt.Println("GCP broker removed successfully.")
+		},
+	}
 }
 
 func removeGCPBroker() error {
@@ -219,29 +277,4 @@ func removeGCPBrokerConfigs(dir string) error {
 		}
 	}
 	return nil
-}
-
-// getContext returns a context using information from flags.
-func getContext() context.Context {
-	// TODO(richardfung): add flags so users can control this?
-	return context.Background()
-}
-
-// httpAdapterFromAuthKey returns an http adapter with credentials to gcloud if
-// keyFile is not set and to a service account if it is set.
-func httpAdapterFromAuthKey(keyFile string) (*adapter.HttpAdapter, error) {
-	var client *http.Client
-	var err error
-	if keyFile != "" {
-		client, err = auth.HttpClientFromFile(getContext(), keyFile)
-		if err != nil {
-			return nil, fmt.Errorf("error creating http client from service account file %s: %v", keyFile, err)
-		}
-	} else {
-		client, err = auth.HttpClientWithDefaultCredentials(getContext())
-		if err != nil {
-			return nil, fmt.Errorf("Error creating http client using default gcloud credentials: %v", err)
-		}
-	}
-	return adapter.NewHttpAdapter(client), nil
 }
