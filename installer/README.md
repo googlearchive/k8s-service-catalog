@@ -36,11 +36,32 @@ After running the above command, `sc` should get installed in your GOPATH/bin di
 - To check if all the dependencies are installed, run
   ```bash
   sc check
+  Dependency check passed. You are good to go.
   ```
-- To install Service Catalog in Kubernetes cluster, run
+- To install Service Catalog in Kubernetes cluster, run install help. If you are running on a non-GCP environment, specify the storageclass that you want to use for the backup.
   ```bash
-  sc install
+  sc install --help
+  installs Service Catalog in Kubernetes cluster.
+  assumes kubectl is configured to connect to the Kubernetes cluster.
+
+  Usage:
+    sc install [flags]
+
+  Flags:
+        --etcd-backup-storageclass string   Etcd Backup StorageClass (default "standard")
+        --etcd-cluster-size int32           Etcd cluster size (default 3)
+    -h, --help                              help for install
+
+  Global Flags:
+        --alsologtostderr                  log to standard error as well as files
+        --log_backtrace_at traceLocation   when logging hits line file:N, emit a stack trace (default :0)
+        --log_dir string                   If non-empty, write log files in this directory
+        --logtostderr                      log to standard error instead of files
+        --stderrthreshold severity         logs at or above this threshold go to stderr (default 2)
+    -v, --v Level                          log level for V logs
+        --vmodule moduleSpec               comma-separated list of pattern=N settings for file-filtered logging
   ```
+
 - To uninstall Service Catalog in Kubernetes cluster, run
   ```bash
   sc uninstall
