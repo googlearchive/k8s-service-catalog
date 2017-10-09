@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 # Prerequisites:
-#   Assumes k8s cluster running (GCE or GKE).
+#   Assumes k8s cluster running.
 #   Assumes gcloud config pointing to project running k8s.
 #   Assumes service catalog is already running in k8s cluster.
 # Description:
@@ -31,7 +31,7 @@
 #   *) Grant permission to controller manager in the
 #      namespace mentioned above.
 # At the end of this script, you should be able to run:
-#   kubectl get brokers <broker-name> -n <namespace> -o yaml
+#   kubectl get servicebrokers <broker-name> -n <namespace> -o yaml
 # ..and have a status=Ready
 #
 ##################################################################
@@ -52,10 +52,17 @@ echo "Service Dir: $SVC_DIR"
 
 echo "GCloud Project: $PROJECT_ID"
 
-# Enable the GCP API's we're going to use for the broker.
-# TODO: ENABLE DM API
 # TODO: GRANT ROLES/OWNER on DM Service Account
+#
+# Enable the GCP API's we're going to use for the broker.
 GCLOUD_ENABLED_APIS=$(gcloud service-management list --enabled)
+DM_API_HOST=deploymentmanager.googleapis.com
+if echo "$GCLOUD_ENABLED_APIS" | grep -q $DM_API_HOST; then
+  echo "GCloud Project API already enabled: $DM_API_HOST"
+else
+  echo "Enabling: $DM_API_HOST"
+  gcloud service-management enable $DM_API_HOST
+fi
 # BROKER_API_HOST=staging-servicebroker.sandbox.googleapis.com
 BROKER_API_HOST=servicebroker.googleapis.com
 if echo "$GCLOUD_ENABLED_APIS" | grep -q $BROKER_API_HOST; then
@@ -84,23 +91,20 @@ else
     --display-name "Service Catalog Account"
 
   # Add necessary editor role for this service account.
-  # TODO: SHOULD ONLY NEED roles/serviceBroker.operator
   echo "Adding Editor Role to Service Account"
   gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member serviceAccount:${FULL_SVC_ACCT} \
-    --role roles/editor
-    # --role roles/serviceBroker.operator
+    --role roles/servicebroker.operator
 fi
 
 # Generate key for service account and store in secret.
-# TODO: DOWN NEEDS TO CLEAN UP JSON KEY
-# TODO: SPECIFY KEY NAME + RANDOM -> more descriptive.
 echo "Generating Key for GCP Service Account"
-# Create a key for this service account.
-tmpFile=$(mktemp)
+TEMP_DIR=$(mktemp -d)
+KEY_FILENAME=${TEMP_DIR}/${SVC_ACCT}-key.json
 gcloud beta iam service-accounts keys create \
-      --iam-account $FULL_SVC_ACCT $tmpFile
-SVC_ACCOUNT_KEY=$(base64 --wrap 0 $tmpFile)
+      --iam-account $FULL_SVC_ACCT $KEY_FILENAME
+SVC_ACCOUNT_KEY=$(base64 --wrap 0 $KEY_FILENAME)
+rm -f $KEY_FILENAME
 
 echo "Creating Namespace for GCP Service Account Key"
 kubectl create -f ${SVC_DIR}/google-oauth-namespace.yaml

@@ -34,7 +34,8 @@ spec:
   # Project: gcp-services, which is used by all. Needs to be user project.
   # url:  https://servicebroker.googleapis.com/v1alpha1/projects/gcp-services/brokers/gcp-broker
   #
-  url:  https://staging-servicebroker.sandbox.googleapis.com/v1alpha1/projects/seans-walkthrough/brokers/gcp-broker
+  url: https://servicebroker.googleapis.com/v1alpha1/projects/seans-walkthrough/brokers/gcp-broker
+  # url: https://staging-servicebroker.sandbox.googleapis.com/v1alpha1/projects/seans-walkthrough/brokers/gcp-broker
   # Describes the secret which contains the short-lived bearer token
   authInfo:
     bearer:
