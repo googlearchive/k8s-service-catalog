@@ -2,25 +2,26 @@
 
 ==========================
 
-Assuming that you have already installed Service Catalog in your Kubernetes cluster and added a GCP Service Broker in it.
+In this tutorial, we will walkthrough the steps required to connect [a sample PubSub application](https://github.com/apelisse/sc-pubsub) to GCP pubsub service using Service Catalog. This tutorial assumes that you have installed Service Catalog in your Kubernetes cluster and added a GCP Service Broker in it.
 
-In this tutorial, we will focus on using the Service Catalog and do the following tasks :
+In this tutorial, we will accomplish the following tasks:
 
-- Discover all the Service Brokers and their status
+- Discover all the Service Brokers and their statuses
 
 - Discover available services and their plans through Service Catalog
 
-- Provision a GCP PubSub Topic using Service Catalog
+- Provision a GCP PubSub Topic using ServiceInstance resource in Service Catalog
 
-- Create a Binding with `role/publisher` role to the Provisioned ServiceInstance in previous step
+- Create a Binding with `role/publisher` role for the Provisioned ServiceInstance in previous step
 
-- Consume results of Binding in an App which uses PubSub topic.
+- Consume results of the Binding in an App which publishes to the PubSub topic.
 
 ## Discover ServiceBrokers
 
---------------------------;
+==========================
 
-Before consuming GCP services using service catalog, ensure we have GCP broker added and ready.
+Before consuming GCP services using service catalog, lets ensure we have a GCP broker added and ready.
+>>>>>>> Stashed changes
 
 ```bash
  # list all the service brokers with their status
@@ -35,9 +36,9 @@ Before consuming GCP services using service catalog, ensure we have GCP broker a
 
 ## Discover services
 
---------------------;
+====================
 
-Once you add a GCP Service Broker, Service Catalog will fetch the service catalog from GCP broker and now you can query Service Catalog using `kubectl` to discover available services and their plans as shown below.
+Once you add a GCP Service Broker, Service Catalog will fetch the details of GCP services from GCP broker. We can query Service Catalog to discover available services and their plans as shown below.
 
 ```bash
  # list all serviceclasses with their plans
@@ -52,10 +53,10 @@ Once you add a GCP Service Broker, Service Catalog will fetch the service catalo
 
 ## Provisioning a service instance
 
-----------------------------------;
+==================================
 
 Our sample app publishes messages on a PubSub topic, so we need to provision a topic first. Given below is an example config for provisioning
-PubSub topic.
+PubSub topic. Source code for the sample app can be found [at](https://github.com/apelisse/sc-pubsub).
 
 ```YAML
 apiVersion: servicecatalog.k8s.io/v1alpha1
@@ -92,6 +93,17 @@ kubectl get serviceinstances -n gcp-pubsub-app -o yaml
 ```
 
 ## Creating Service Binding
+
+===========================
+
+We need GCP service account credentials to consume GCP services. Assuming you have downloaded the JSON key for the GCP service account for the sample app, you can store the service account credentials in a secret in Kubernetes using following steps.
+
+```bash
+# creating secret for storing GCP Service Account key
+kubectl create secret generic sa-key --from-file=key.json=<path/to/service-account-key.json> -n gcp-pubsub-app
+secret "sa-key" created
+
+```
 
 In order to publish messages on the topic provisioned above, we need to create service binding. An example config for creating Service Binding is given below:
 
@@ -164,10 +176,9 @@ z02212a73-b45f-4567-8d55-e93c7aaa5989-topic
 
 ## Using Service Binding in PubSub app
 
---------------------------------------;
+======================================
 
-Here is an example PubSub app which implements a web service to publish messages on given PubSub topic. Here is an example YAML config
-which consumes the Service Binding created in the previous step by using the Secret created as result of Service Binding.
+Here is a deployment config for the PubSub app that consumes the Service Binding created in the previous step by using the Secret `gcp-pubsub-credentials` created as result of Service Binding.
 
 ```YAML
 apiVersion: extensions/v1beta1
@@ -200,18 +211,18 @@ spec:
           - name: "PROJECT_ID"
             valueFrom:
                 secretKeyRef:
-                   name: gcp-pubsub-credentials-102
+                   name: gcp-pubsub-credentials
                    key: project
           - name: "TOPIC"
             valueFrom:
                 secretKeyRef:
-                   name: gcp-pubsub-credentials-102
+                   name: gcp-pubsub-credentials
                    key: topic
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: "/var/secrets/google/key.json"
 ```
 
-Follow the steps below to create the sample app:
+Follow the steps below to deploy the sample app:
 
 ```bash
 # creating secret for storing GCP Service Account key
@@ -237,7 +248,11 @@ echo      ClusterIP   10.51.251.89   <none>        80/TCP    52s
 
 ## Testing the app
 
-------------------;
+==================
+
+For testing the app, first we will create a subscription on the topic using `gcloud` commands so that we can read messages on that topic.
+Then we will perform a simple test by publishing a message using the sample app and reading the message using `gcloud` command.
+Here are the steps:
 
 ```bash
 # creating subscription to the provisioned topic (following instructions in Service-Binding step to get the topic name)
