@@ -7,6 +7,7 @@ Service Catalog Installer is a CLI tool to manage Service Catalog and GCP Servic
 - [Usage](#usage)
 - [Requirements](#requirements)
 - [Build](#build)
+- [Basic Tutorial](#tutorial)
 
 ## Intro
 
@@ -115,3 +116,7 @@ go get -u github.com/jteeuwen/go-bindata/...
 make
 # You should `sc` binary created in output/bin directory.
 ```
+
+## Tutorial
+
+Once you have Service Catalog installed and GCP broker added to the cluster.  Follow this [basic tutorial](installer/service-catalog-pubsub-tutorial.md) to get started with Service Catalog.
