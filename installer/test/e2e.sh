@@ -119,6 +119,8 @@ ${GOPATH}/bin/sc install
 # Wait for the service catalog deployments to be ready
 wait_for_ready ${SC_NAMESPACE}
 
+# TODO TEST: kubectl api-versions -> servicecatalog.k8s.io
+
 # Connect to the GCP broker; list the services
 ${GOPATH}/bin/sc add-gcp-broker
 
@@ -138,20 +140,31 @@ ${GOPATH}/bin/sc add-gcp-broker
 # TODO(seans): Replace kubectl calls with go tests.
 # TODO(seans): Replace "sleep" calls with proper wait functions.
 #
+
+# TODO TEST: gcp-broker -> check status == fetched catalog
 sleep 10
 kubectl get servicebrokers gcp-broker -n service-catalog -o yaml
+# TODO TEST: serviceclasses -> check services exposed == pubsub, storage
 kubectl get serviceclasses
 
 sleep 10
 kubectl create -f ${REPO_DIR}/installer/hack/gcp/gcp-instance-namespace.yaml
 kubectl create -f ${REPO_DIR}/installer/hack/gcp/gcp-pubsub-instance.yaml
 kubectl get serviceinstances gcp-pubsub-instance -n gcp-apps -o yaml
+# TODO TEST: check instance status == provisioned successfully
 
 sleep 60
 kubectl create -f ${REPO_DIR}/installer/hack/gcp/gcp-pubsub-binding.yaml
 kubectl get serviceinstancecredentials gcp-pubsub-binding -n gcp-apps -o yaml
+# TODO TEST: check binding == success
 sleep 90
 kubectl get secrets gcp-pubsub-credentials -n gcp-apps -o yaml
+# TODO TEST: check secret for pubsub binding has four data keys:
+#   project
+#   serviceAccount
+#   topic
+#   subscription
+# Base64 decode these four fields and validate returned data
 
 # Remove instances, bindings, application namespace
 #
@@ -161,9 +174,10 @@ kubectl delete -f ${REPO_DIR}/installer/hack/gcp/gcp-pubsub-binding.yaml
 sleep 10
 kubectl delete -f ${REPO_DIR}/installer/hack/gcp/gcp-pubsub-instance.yaml
 kubectl delete -f ${REPO_DIR}/installer/hack/gcp/gcp-instance-namespace.yaml
+# TODO TEST: Check the pubsub instance no longer exists in GCP
 
 # Remove the connection to the GCP broker
-sleep 10
+sleep 60
 ${GOPATH}/bin/sc remove-gcp-broker
 
 # Uninstall the service catalog deployments
