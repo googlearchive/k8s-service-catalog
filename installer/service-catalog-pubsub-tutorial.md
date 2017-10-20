@@ -1,7 +1,7 @@
 # Service Catalog Tutorial
 
 
-In this tutorial, we will walkthrough the steps required to connect [a sample PubSub application](https://github.com/apelisse/sc-pubsub) to GCP pubsub service using Service Catalog. This tutorial assumes that you have installed Service Catalog in your Kubernetes cluster and added a GCP Service Broker in it.
+In this tutorial, we will walkthrough the steps required to connect [a sample PubSub application](https://github.com/apelisse/sc-pubsub) to GCP pubsub service using Service Catalog. This tutorial assumes that you have installed Service Catalog in your Kubernetes cluster and added a GCP Service Broker in it. If you are looking for instructions to install Service Catalog in your Kubernetes cluster, follow the instructions [here](https://github.com/GoogleCloudPlatform/k8s-service-catalog#installation).
 
 In this tutorial, we will accomplish the following tasks:
 
