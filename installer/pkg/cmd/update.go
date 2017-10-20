@@ -76,8 +76,8 @@ func updateServiceCatalog(args *scUpdateArgs) error {
 	var apiServerImage, controllerManagerImage string
 
 	if args.Version != "" {
-		apiServerImage = "quay.io/kubernetes-service-catalog/apiserver:v" + args.Version
-		controllerManagerImage = "quay.io/kubernetes-service-catalog/controller-manager:v" + args.Version
+		apiServerImage = "quay.io/kubernetes-service-catalog/service-catalog:v" + args.Version
+		controllerManagerImage = "quay.io/kubernetes-service-catalog/service-catalog:v" + args.Version
 	} else {
 		// user has specified image versions of API Server and ControllerManager individually
 		apiServerImage = args.APIserverImage
