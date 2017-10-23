@@ -68,9 +68,6 @@ type InstallConfig struct {
 	// namespace for service catalog
 	Namespace string
 
-	// Version of Service Catalog
-	Version string
-
 	// APIServerServiceName refers to the API Server's service name
 	APIServerServiceName string
 
@@ -112,8 +109,6 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 	// add install command flags
 	c.Flags().Int32Var(&ic.EtcdClusterSize, "etcd-cluster-size", 3, "Etcd cluster size")
 	c.Flags().StringVar(&ic.EtcdBackupStorageClass, "etcd-backup-storageclass", "standard", "Etcd Backup StorageClass")
-	c.Flags().StringVar(&ic.Version, "version", "", "Service Catalog version")
-	c.Flags().BoolVar(&ic.DryRun, "dryrun", false, "Dryrun")
 
 	return c
 }
@@ -176,23 +171,12 @@ func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
 		return dir, err
 	}
 
-	apiServerImage := "gcr.io/seans-sandbox/apiserver:canary"
-	controllerManagerImage := "gcr.io/seans-sandbox/controller-manager:canary"
-
-	if ic.Version != "" {
-		// TODO(droot): validate version
-		apiServerImage = "quay.io/kubernetes-service-catalog/apiserver:v" + ic.Version
-		controllerManagerImage = "quay.io/kubernetes-service-catalog/controller-manager:v" + ic.Version
-	}
-
 	data := map[string]interface{}{
 		"CAPublicKey":            ca,
 		"APIServicePublicKey":    apiServerCert,
 		"APIServicePrivateKey":   apiServerPK,
 		"EtcdClusterSize":        ic.EtcdClusterSize,
 		"EtcdBackupStorageClass": ic.EtcdBackupStorageClass,
-		"APIServerImage":         apiServerImage,
-		"ControllerManagerImage": controllerManagerImage,
 	}
 
 	for _, f := range svcCatalogFileNames {
