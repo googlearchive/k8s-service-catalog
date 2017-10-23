@@ -119,4 +119,4 @@ make
 
 ## Tutorial
 
-Once you have Service Catalog installed and GCP broker added to the cluster.  Follow this [basic tutorial](installer/service-catalog-pubsub-tutorial.md) to get started with Service Catalog.
+Once you have Service Catalog installed and GCP broker added to the cluster.  Follow this [basic tutorial](/installer/service-catalog-pubsub-tutorial.md) to get started with Service Catalog.
