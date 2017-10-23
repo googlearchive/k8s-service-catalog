@@ -38,7 +38,7 @@ spec:
       serviceAccountName: "apiserver"
       containers:
       - name: apiserver
-        image: {{ .APIServerImage }}
+        image: gcr.io/seans-sandbox/apiserver:canary
         imagePullPolicy: Always
         resources:
           requests:
