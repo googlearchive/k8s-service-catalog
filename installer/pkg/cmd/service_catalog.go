@@ -352,6 +352,18 @@ func deleteConfig(dir string) error {
 	return nil
 }
 
+func isServiceCatalogInstalled() (bool, error) {
+	scAPI := "servicecatalog.k8s.io"
+
+	found := false
+	var err error
+	if found, err = isAPIAvailable(scAPI); err != nil {
+		return false, fmt.Errorf("failed to check if service catalog is installed :%v", err)
+	}
+
+	return found, err
+}
+
 // isAPIAvailable is a helper function to determine if an API is available in
 // given Kubernetes cluster.
 func isAPIAvailable(api string) (bool, error) {

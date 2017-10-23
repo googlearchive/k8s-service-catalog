@@ -52,6 +52,7 @@ in a Kubernets Cluster.`,
 		cmd.NewServiceCommandUnInstallCmd(),
 		cmd.NewAddGCPBrokerCmd(),
 		cmd.NewRemoveGCPBrokerCmd(),
+		cmd.NewUpdateCmd(),
 	)
 
 	// Add any globals flags here
