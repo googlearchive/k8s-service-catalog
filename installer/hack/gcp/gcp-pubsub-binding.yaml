@@ -29,8 +29,8 @@
 #   topic (pubsub-specific)
 #
 ##################################################################
-apiVersion: servicecatalog.k8s.io/v1alpha1
-kind: ServiceInstanceCredential
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceBinding
 metadata:
   name: gcp-pubsub-binding
   namespace: gcp-apps

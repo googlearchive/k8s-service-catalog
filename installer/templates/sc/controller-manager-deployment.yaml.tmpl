@@ -36,7 +36,7 @@ spec:
       serviceAccountName: "controller-manager"
       containers:
       - name: controller-manager
-        image: gcr.io/seans-sandbox/controller-manager:canary
+        image: gcr.io/seans-sandbox/service-catalog:canary
         imagePullPolicy: Always
         resources:
           requests:
@@ -51,6 +51,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         args:
+        - controller-manager
         - --port
         - "8080"        
         - "--leader-elect=false"

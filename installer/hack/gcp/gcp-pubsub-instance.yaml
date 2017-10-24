@@ -19,14 +19,16 @@
 # namespace. No parameters needed.
 #
 ##################################################################
-apiVersion: servicecatalog.k8s.io/v1alpha1
+apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
   name: gcp-pubsub-instance
   namespace: gcp-apps
 spec:
-  serviceClassName: pubsub
+  # clusterServiceClassName: 0a827bae-824b-462d-b0a0-fa56d7ffb3a2
+  clusterServiceClassExternalName: pubsub
   # GCP broker will offer multiple plans. The different plans will
   # signify different versions of the default plan (9/22/2017).
-  planName: pubsub-plan
+  clusterServicePlanExternalName: pubsub-plan
+
 
