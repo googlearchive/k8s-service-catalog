@@ -143,9 +143,9 @@ ${GOPATH}/bin/sc add-gcp-broker
 
 # TODO TEST: gcp-broker -> check status == fetched catalog
 sleep 10
-kubectl get servicebrokers gcp-broker -n service-catalog -o yaml
+kubectl get clusterservicebrokers gcp-broker -n service-catalog -o yaml
 # TODO TEST: serviceclasses -> check services exposed == pubsub, storage
-kubectl get serviceclasses
+kubectl get clusterserviceclasses
 
 sleep 10
 kubectl create -f ${REPO_DIR}/installer/hack/gcp/gcp-instance-namespace.yaml
@@ -155,7 +155,7 @@ kubectl get serviceinstances gcp-pubsub-instance -n gcp-apps -o yaml
 
 sleep 60
 kubectl create -f ${REPO_DIR}/installer/hack/gcp/gcp-pubsub-binding.yaml
-kubectl get serviceinstancecredentials gcp-pubsub-binding -n gcp-apps -o yaml
+kubectl get servicebindings gcp-pubsub-binding -n gcp-apps -o yaml
 # TODO TEST: check binding == success
 sleep 90
 kubectl get secrets gcp-pubsub-credentials -n gcp-apps -o yaml
