@@ -48,4 +48,4 @@ spec:
     # GCP *app* service account
     serviceAccount: "bind-test@sunilarora-sandbox.iam.gserviceaccount.com"
     # publisher or subscriber
-    roles: ["roles/pubsub.publisher"]
+    bindingType: subscriber

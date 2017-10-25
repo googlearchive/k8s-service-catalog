@@ -28,5 +28,5 @@ spec:
   serviceClassName: pubsub
   # GCP broker will offer multiple plans. The different plans will
   # signify different versions of the default plan (9/22/2017).
-  planName: pubsub-plan
+  planName: 20171020-00
 
