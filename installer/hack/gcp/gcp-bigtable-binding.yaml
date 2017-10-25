@@ -27,4 +27,3 @@ spec:
   parameters:
     serviceAccount: "bigtable-testuser1@quanlin-gke-e2e5.iam.gserviceaccount.com"
     bindingType: user
-
