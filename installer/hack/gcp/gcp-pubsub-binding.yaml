@@ -48,4 +48,4 @@ spec:
     # GCP *app* service account
     serviceAccount: "test-583@seans-dev.iam.gserviceaccount.com"
     # publisher or subscriber
-    roles: ["roles/pubsub.subscriber"]
+    bindingType: subscriber
