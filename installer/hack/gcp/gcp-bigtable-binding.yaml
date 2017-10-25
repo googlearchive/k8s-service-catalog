@@ -16,7 +16,7 @@
 # Example for provisioning an instance of a BigTable service.
 ##################################################################
 apiVersion: servicecatalog.k8s.io/v1beta1
-kind: ServiceInstanceCredential
+kind: ServiceBinding
 metadata:
   name: gcp-bigtable-binding
   namespace: gcp-apps
