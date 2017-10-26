@@ -21,13 +21,13 @@ In this tutorial, we will accomplish the following tasks:
 Before consuming GCP services using service catalog, lets ensure we have a GCP broker added and ready.
 
 ```bash
- # list all the service brokers with their status
- kubectl get servicebrokers -o custom-columns=BROKER:.metadata.name,STATUS:.status.conditions[0].type
- BROKER       STATUS
- gcp-broker   Ready
+# list all the service brokers with their status
+kubectl get clusterservicebrokers -o 'custom-columns=BROKER:.metadata.name,STATUS:.status.conditions[0].type'
+BROKER       STATUS
+gcp-broker   Ready
 
- # To print service brokers with details, run following command
- kubectl get servicebrokers -o yaml
+# To print service brokers with details, run following command
+kubectl get clusterservicebrokers -o yaml
 
 ```
 
@@ -37,13 +37,26 @@ Before consuming GCP services using service catalog, lets ensure we have a GCP b
 Once you add a GCP Service Broker, Service Catalog will fetch the details of GCP services from GCP broker. We can query Service Catalog to discover available services and their plans as shown below.
 
 ```bash
- # list all serviceclasses with their plans
- kubectl get serviceclass -o custom-columns=BROKER:.brokerName,SERVICE:.metadata.name,PLANS:.plans[].name
- BROKER       SERVICE   PLANS
- gcp-broker   pubsub    pubsub-plan
+# list all serviceclasses
+kubectl get clusterserviceclass -o 'custom-columns=BROKER:.spec.clusterServiceBrokerName,EXTERNAL NAME:.spec.externalName'
+BROKER       EXTERNAL NAME
+gcp-broker   pubsub
 
- # To print serviceclasses with details, run following command
- kubectl get serviceclasses -o yaml
+# To print serviceclasses with details, run following command
+kubectl get clusterserviceclass -o yaml
+
+```
+
+# list all serviceplans
+```bash
+# list all clusterserviceplan
+
+kubectl get clusterserviceplan -o 'custom-columns=BROKER:.spec.clusterServiceBrokerName,EXTERNAL NAME:.spec.externalName'
+BROKER       EXTERNAL NAME
+gcp-broker   pubsub-plan
+
+# To print clusterserviceplan with details, run following command
+kubectl get clusterserviceplan -o yaml
 
 ```
 
@@ -54,16 +67,16 @@ Our sample app publishes messages on a PubSub topic, so we need to provision a t
 PubSub topic. Source code for the sample app can be found [at](https://github.com/apelisse/sc-pubsub).
 
 ```YAML
-apiVersion: servicecatalog.k8s.io/v1alpha1
+apiVersion: servicecatalog.k8s.io/v1beta1
 kind: ServiceInstance
 metadata:
   name: gcp-pubsub-instance
   namespace: gcp-pubsub-app
 spec:
   # this should match with one of the service classes listed in the `discover services` step above.
-  serviceClassName: pubsub
+  clusterServiceClassExternalName: pubsub
   # this should match with one of the plans listed in the `discover services` step above.
-  planName: pubsub-plan
+  clusterServicePlanExternalName: pubsub-plan
 ```
 
 Follow the steps below to create namespace and create serviceinstance.
@@ -78,7 +91,7 @@ kubectl create -f examples/gcp-pubsub-app/service-instance.yaml
 serviceinstance "gcp-pubsub-instance" created
 
 # list service instance and its status
-kubectl get serviceinstances -n gcp-pubsub-app -o custom-columns=NAME:.metadata.name,SERVICE:.spec.serviceClassName,PLAN:.spec.planName,STATUS:.status.conditions[0].type
+kubectl get serviceinstances -n gcp-pubsub-app -o 'custom-columns=NAME:.metadata.name,SERVICE:.spec.clusterServiceClassExternalName,PLAN:.spec.clusterServicePlanExternalName,STATUS:.status.conditions[0].type'
 NAME                  SERVICE   PLAN          STATUS
 gcp-pubsub-instance   pubsub    pubsub-plan   Ready
 
@@ -102,8 +115,8 @@ secret "sa-key" created
 In order to publish messages on the topic provisioned above, we need to create service binding. An example config for creating Service Binding is given below:
 
 ```YAML
-apiVersion: servicecatalog.k8s.io/v1alpha1
-kind: ServiceInstanceCredential
+apiVersion: servicecatalog.k8s.io/v1beta1
+kind: ServiceBinding
 metadata:
   name: gcp-pubsub-binding
   namespace: gcp-pubsub-app
@@ -132,12 +145,12 @@ kubectl create -f examples/gcp-pubsub-app/service-binding.yaml
 serviceinstancecredential "gcp-pubsub-binding" created
 
 # list the service binding with its status
-kubectl get serviceinstancecredentials -n gcp-pubsub-app -o custom-columns=NAME:.metadata.name,SERVICE-INSTANCE:.spec.instanceRef.name,STATUS:.status.conditions[0].type,OUTPUT-SECRET:.spec.secretName
+kubectl get servicebinding -n gcp-pubsub-app -o 'custom-columns=NAME:.metadata.name,SERVICE-INSTANCE:.spec.instanceRef.name,STATUS:.status.conditions[0].type,OUTPUT-SECRET:.spec.secretName'
 NAME                 SERVICE-INSTANCE      STATUS    OUTPUT-SECRET
 gcp-pubsub-binding   gcp-pubsub-instance   Ready     gcp-pubsub-credentials
 
 # list service bindings with full details, run following command.
-kubectl get serviceinstancecredentials -n gcp-pubsub-app -o yaml
+kubectl get servicebinding -o yaml
 
 # examine result of the binding result that is stored in the secret we specific in the config (in this case gcp-pubsub-credentials)
 kubectl get secret gcp-pubsub-credentials -n gcp-pubsub-app -o yaml
@@ -152,7 +165,7 @@ metadata:
   name: gcp-pubsub-credentials
   namespace: gcp-pubsub-app
   ownerReferences:
-  - apiVersion: servicecatalog.k8s.io/v1alpha1
+  - apiVersion: servicecatalog.k8s.io/v1beta1
     blockOwnerDeletion: true
     controller: true
     kind: ServiceInstanceCredential
