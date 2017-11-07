@@ -145,7 +145,7 @@ ${GOPATH}/bin/sc add-gcp-broker
 sleep 10
 kubectl get clusterservicebrokers gcp-broker -n service-catalog -o yaml
 # TODO TEST: serviceclasses -> check services exposed == pubsub, storage
-kubectl get clusterserviceclasses
+kubectl get clusterserviceclasses -o=custom-columns=NAME:.metadata.name,EXTERNAL\NAME:.spec.externalName
 
 sleep 10
 kubectl create -f ${REPO_DIR}/installer/hack/gcp/gcp-instance-namespace.yaml
