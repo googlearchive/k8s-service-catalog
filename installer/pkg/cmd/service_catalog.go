@@ -27,6 +27,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/version"
 	"github.com/spf13/cobra"
 )
 
@@ -191,6 +192,7 @@ func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
 		"EtcdBackupStorageClass": ic.EtcdBackupStorageClass,
 		"APIServerImage":         svcCatalogImage,
 		"ControllerManagerImage": svcCatalogImage,
+		"Version":                version.GetVersion(),
 	}
 
 	for _, f := range svcCatalogFileNames {
