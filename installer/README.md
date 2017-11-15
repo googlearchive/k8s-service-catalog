@@ -80,7 +80,7 @@ After running the above command, `sc` should get installed in your GOPATH/bin di
 
 Before installing Service Catalog atop Kubernetes cluster, you need to ensure following requirements are met.
 
-- [cfssl] tools are needed for generating SSL artifacts. Install `cfssl` using following command
+- [cfssl](https://github.com/cloudflare/cfssl) tools are needed for generating SSL artifacts. Install `cfssl` using following command
   ```bash
   go get -u github.com/cloudflare/cfssl/cmd/...
   which cfssl
@@ -94,7 +94,7 @@ Before installing Service Catalog atop Kubernetes cluster, you need to ensure fo
   ```bash
   kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=<user-name>
   ```
-- [gcloud] should be installed and configured with following commands in order to be used by the `sc` to configure GCP broker.
+- [gcloud](https://cloud.google.com/sdk/) should be installed and configured with following commands in order to be used by the `sc` to configure GCP broker.
   ```bash
   gcloud components install beta
   gcloud auth login
