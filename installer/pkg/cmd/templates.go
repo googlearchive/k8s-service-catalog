@@ -103,7 +103,7 @@ func templatesScApiRegistrationYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/api-registration.yaml.tmpl", size: 1300, mode: os.FileMode(420), modTime: time.Unix(1508916105, 0)}
+	info := bindataFileInfo{name: "templates/sc/api-registration.yaml.tmpl", size: 1300, mode: os.FileMode(416), modTime: time.Unix(1510167165, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -123,7 +123,7 @@ func templatesScApiserverDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/apiserver-deployment.yaml.tmpl", size: 2728, mode: os.FileMode(420), modTime: time.Unix(1508916418, 0)}
+	info := bindataFileInfo{name: "templates/sc/apiserver-deployment.yaml.tmpl", size: 2728, mode: os.FileMode(416), modTime: time.Unix(1510167165, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -143,7 +143,7 @@ func templatesScCa_configJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/ca_config.json", size: 133, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/ca_config.json", size: 133, mode: os.FileMode(416), modTime: time.Unix(1506103563, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -163,7 +163,7 @@ func templatesScCa_csrJsonTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/ca_csr.json.tmpl", size: 206, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/ca_csr.json.tmpl", size: 206, mode: os.FileMode(416), modTime: time.Unix(1506103563, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -183,7 +183,7 @@ func templatesScControllerManagerDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 2657, mode: os.FileMode(420), modTime: time.Unix(1508916388, 0)}
+	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 2657, mode: os.FileMode(416), modTime: time.Unix(1510167165, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -203,7 +203,7 @@ func templatesScEtcdClusterWithBackupYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-cluster-with-backup.yaml.tmpl", size: 443, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-cluster-with-backup.yaml.tmpl", size: 443, mode: os.FileMode(416), modTime: time.Unix(1507321833, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -223,7 +223,7 @@ func templatesScEtcdOperatorDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-operator-deployment.yaml.tmpl", size: 587, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-operator-deployment.yaml.tmpl", size: 587, mode: os.FileMode(416), modTime: time.Unix(1507321833, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -243,7 +243,7 @@ func templatesScEtcdOperatorRbacBindingYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-operator-rbac-binding.yaml.tmpl", size: 276, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-operator-rbac-binding.yaml.tmpl", size: 276, mode: os.FileMode(416), modTime: time.Unix(1507321833, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -263,7 +263,7 @@ func templatesScEtcdOperatorRbacYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-operator-rbac.yaml.tmpl", size: 564, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-operator-rbac.yaml.tmpl", size: 564, mode: os.FileMode(416), modTime: time.Unix(1507321833, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -283,7 +283,7 @@ func templatesScEtcdOperatorServiceAccountYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-operator-service-account.yaml.tmpl", size: 97, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-operator-service-account.yaml.tmpl", size: 97, mode: os.FileMode(416), modTime: time.Unix(1507321833, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -303,7 +303,7 @@ func templatesScEtcdSvcYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-svc.yaml.tmpl", size: 913, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-svc.yaml.tmpl", size: 913, mode: os.FileMode(416), modTime: time.Unix(1506103563, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -323,7 +323,7 @@ func templatesScEtcdYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd.yaml.tmpl", size: 2340, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd.yaml.tmpl", size: 2340, mode: os.FileMode(416), modTime: time.Unix(1506103563, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -343,12 +343,12 @@ func templatesScGencert_configJsonTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/gencert_config.json.tmpl", size: 122, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/gencert_config.json.tmpl", size: 122, mode: os.FileMode(416), modTime: time.Unix(1506103563, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
 
-var _templatesScNamespaceYamlTmpl = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xa4\x52\xc1\x6e\xdb\x3a\x10\xbc\xeb\x2b\x06\xd6\xe5\x3d\xc0\x91\x93\x5c\x0a\xb8\x27\x35\x49\x5b\xa1\x81\x0c\x44\x4e\x83\x1c\xd7\xd4\x5a\x5a\x94\x22\x59\x92\x8a\xe2\xbf\x2f\x28\x3b\x68\x8d\x1c\xb3\x47\xcd\x68\x67\x76\x38\xf9\x87\x27\xcb\x71\x63\xdd\xc1\x4b\xd7\x47\x5c\x5f\x5e\x7d\xc2\x37\x6b\x3b\xcd\xa8\x8c\x2a\xb2\x04\xdf\x8b\x62\x13\xb8\xc5\x68\x5a\xf6\x88\x3d\xa3\x74\xa4\x7a\x7e\x43\x96\xf8\xc9\x3e\x88\x35\xb8\x2e\x2e\xf1\x5f\x22\x2c\x4e\xd0\xe2\xff\xcf\x59\x8e\x83\x1d\x31\xd0\x01\xc6\x46\x8c\x81\x11\x7b\x09\xd8\x8b\x66\xf0\xab\x62\x17\x21\x06\xca\x0e\x4e\x0b\x19\xc5\x98\x24\xf6\xb3\xcc\x69\x49\x91\xe5\x78\x3e\xad\xb0\xbb\x48\x62\x40\x50\xd6\x1d\x60\xf7\xff\xf2\x40\x71\x36\x9c\xa6\x8f\xd1\x85\xf5\x6a\x35\x4d\x53\x41\xb3\xdb\xc2\xfa\x6e\xa5\x8f\xcc\xb0\xba\xaf\x6e\xee\xea\xe6\xee\xe2\xba\xb8\x9c\xff\x79\x34\x9a\x43\x80\xe7\xdf\xa3\x78\x6e\xb1\x3b\x80\x9c\xd3\xa2\x68\xa7\x19\x9a\x26\x58\x0f\xea\x3c\x73\x8b\x68\x93\xe1\xc9\x4b\x14\xd3\x2d\x11\xec\x3e\x4e\xe4\x39\xcb\xd1\x4a\x88\x5e\x76\x63\x3c\x4b\xeb\xcd\x9e\x84\x33\x82\x35\x20\x83\x45\xd9\xa0\x6a\x16\xf8\x52\x36\x55\xb3\xcc\x72\x3c\x55\xdb\xef\x9b\xc7\x2d\x9e\xca\x87\x87\xb2\xde\x56\x77\x0d\x36\x0f\xb8\xd9\xd4\xb7\xd5\xb6\xda\xd4\x0d\x36\x5f\x51\xd6\xcf\xf8\x51\xd5\xb7\x4b\xb0\xc4\x9e\x3d\xf8\xd5\xf9\xe4\xdf\x7a\x48\xca\x91\xdb\x14\x5a\xc3\x7c\x66\x60\x6f\x8f\x86\x82\x63\x25\x7b\x51\xd0\x64\xba\x91\x3a\x46\x67\x5f\xd8\x1b\x31\x1d\x1c\xfb\x41\x42\x7a\xcd\x00\x32\x6d\x96\x43\xcb\x20\x91\xe2\xfc\xe5\xdd\x51\xc7\x8a\x34\xec\x5f\x44\x31\x14\x45\xd2\xb6\x83\xa1\x81\x83\x23\xc5\xc5\x3b\xc8\x73\xb0\xa3\x57\x1c\x10\x7a\x3b\xea\x16\xbb\x14\x9c\xf2\x4c\x29\x13\x32\x2d\x06\x32\xd4\x71\x9b\x32\x9e\x8b\xf2\x77\x59\xd2\xfa\x78\xe1\xc9\xc9\xa9\xaf\x6b\xbc\x5c\x65\xbf\xc4\xb4\x6b\xd4\x6f\x22\xd9\xc0\x91\x5a\x8a\xb4\xce\x30\x4b\xaf\x11\x8e\x27\x5c\x9c\x4e\xc8\xfe\x04\x00\x00\xff\xff\x63\xeb\x8d\xcc\x75\x03\x00\x00")
+var _templatesScNamespaceYamlTmpl = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xa4\x93\xc1\x6e\xdb\x3c\x10\x84\xef\x7a\x8a\x81\x75\xf9\x7f\xc0\x91\x93\x5c\x5a\xb8\x27\x37\x49\x5b\xa1\x81\x0c\x44\x4e\x83\x1c\xd7\xd4\x5a\x5a\x44\x22\x59\x92\xb2\x62\x04\x79\xf7\x82\xb2\x8c\x36\xc8\x31\x3c\x6a\x47\xb3\xdf\x0e\x97\xe9\x87\x4f\x92\xe2\xca\xd8\x83\x93\xba\x09\xb8\x3c\xbf\xf8\x84\xef\xc6\xd4\x2d\x23\xd7\x2a\x4b\x62\xf9\x56\x14\x6b\xcf\x15\x7a\x5d\xb1\x43\x68\x18\x2b\x4b\xaa\xe1\x53\x65\x8e\x5f\xec\xbc\x18\x8d\xcb\xec\x1c\xff\x45\xc1\x6c\x2a\xcd\xfe\xff\x92\xa4\x38\x98\x1e\x1d\x1d\xa0\x4d\x40\xef\x19\xa1\x11\x8f\x9d\xb4\x0c\x7e\x56\x6c\x03\x44\x43\x99\xce\xb6\x42\x5a\x31\x06\x09\xcd\xd8\x66\x32\xc9\x92\x14\x8f\x93\x85\xd9\x06\x12\x0d\x82\x32\xf6\x00\xb3\xfb\x57\x07\x0a\x23\x70\x3c\x4d\x08\xd6\x2f\x17\x8b\x61\x18\x32\x1a\x69\x33\xe3\xea\x45\x7b\x54\xfa\xc5\x6d\x7e\x75\x53\x94\x37\x67\x97\xd9\xf9\xf8\xcf\xbd\x6e\xd9\x7b\x38\xfe\xdd\x8b\xe3\x0a\xdb\x03\xc8\xda\x56\x14\x6d\x5b\x46\x4b\x03\x8c\x03\xd5\x8e\xb9\x42\x30\x11\x78\x70\x12\x44\xd7\x73\x78\xb3\x0b\x03\x39\x4e\x52\x54\xe2\x83\x93\x6d\x1f\xde\xa4\x75\xc2\x13\xff\x46\x60\x34\x48\x63\xb6\x2a\x91\x97\x33\x7c\x5d\x95\x79\x39\x4f\x52\x3c\xe4\x9b\x1f\xeb\xfb\x0d\x1e\x56\x77\x77\xab\x62\x93\xdf\x94\x58\xdf\xe1\x6a\x5d\x5c\xe7\x9b\x7c\x5d\x94\x58\x7f\xc3\xaa\x78\xc4\xcf\xbc\xb8\x9e\x83\x25\x34\xec\xc0\xcf\xd6\x45\x7e\xe3\x20\x31\x47\xae\x62\x68\x25\xf3\x1b\x80\x9d\x39\x02\x79\xcb\x4a\x76\xa2\xd0\x92\xae\x7b\xaa\x19\xb5\xd9\xb3\xd3\xa2\x6b\x58\x76\x9d\xf8\x78\x9b\x1e\xa4\xab\x24\x45\x2b\x9d\x04\x0a\xe3\x97\x77\x43\x1d\x57\xa4\x64\xb7\x17\xc5\x50\x14\xa8\x35\x35\x34\x75\xec\x2d\x29\xce\xde\x95\x1c\x7b\xd3\x3b\xc5\x1e\xbe\x31\x7d\x5b\x61\x1b\x83\x53\x8e\x29\x66\x42\xba\x42\x47\x9a\x6a\xae\x62\xc6\xe3\xa2\xfc\x35\x8b\xbd\x3e\xbe\xf0\x64\x65\xda\xd7\x25\xf6\x17\xc9\x93\xe8\x6a\x89\xe2\xd4\x24\xe9\x38\x50\x45\x81\x96\x09\xc6\xd6\x4b\xf8\xe3\x08\x67\xd3\x08\x09\x40\x5a\x9b\x29\x92\x28\x03\x52\x38\x56\xc6\x55\xf0\x0a\xfb\xe9\x31\x88\xde\x19\xd7\x8d\xaa\x51\x33\xd9\x4c\x2e\xd9\xd3\x67\x9f\x89\x59\x78\x75\xb6\x3f\xd1\xcc\x5e\x5e\x90\x9d\xde\xd2\xeb\xeb\x2c\xf9\x13\x00\x00\xff\xff\xd0\xb4\xbe\xf6\xdf\x03\x00\x00")
 
 func templatesScNamespaceYamlTmplBytes() ([]byte, error) {
 	return bindataRead(
@@ -363,7 +363,7 @@ func templatesScNamespaceYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/namespace.yaml.tmpl", size: 885, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/namespace.yaml.tmpl", size: 991, mode: os.FileMode(416), modTime: time.Unix(1510340174, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -383,7 +383,7 @@ func templatesScRbacYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 6801, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 6801, mode: os.FileMode(416), modTime: time.Unix(1506447357, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -403,7 +403,7 @@ func templatesScServiceAccountsYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/service-accounts.yaml.tmpl", size: 1129, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/service-accounts.yaml.tmpl", size: 1129, mode: os.FileMode(416), modTime: time.Unix(1506103563, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -423,7 +423,7 @@ func templatesScServiceYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/service.yaml.tmpl", size: 1034, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/service.yaml.tmpl", size: 1034, mode: os.FileMode(416), modTime: time.Unix(1506103563, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -443,7 +443,7 @@ func templatesScTlsCertSecretYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/tls-cert-secret.yaml.tmpl", size: 1209, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/sc/tls-cert-secret.yaml.tmpl", size: 1209, mode: os.FileMode(416), modTime: time.Unix(1506103563, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -463,7 +463,7 @@ func templatesGcpGcpBrokerYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/gcp-broker.yaml.tmpl", size: 1785, mode: os.FileMode(420), modTime: time.Unix(1508916105, 0)}
+	info := bindataFileInfo{name: "templates/gcp/gcp-broker.yaml.tmpl", size: 1785, mode: os.FileMode(416), modTime: time.Unix(1510167165, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -483,7 +483,7 @@ func templatesGcpGoogleOauthDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/google-oauth-deployment.yaml.tmpl", size: 1914, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/gcp/google-oauth-deployment.yaml.tmpl", size: 1914, mode: os.FileMode(416), modTime: time.Unix(1507067919, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -503,7 +503,7 @@ func templatesGcpServiceAccountSecretYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/service-account-secret.yaml.tmpl", size: 1651, mode: os.FileMode(420), modTime: time.Unix(1507322107, 0)}
+	info := bindataFileInfo{name: "templates/gcp/service-account-secret.yaml.tmpl", size: 1651, mode: os.FileMode(416), modTime: time.Unix(1506447357, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
