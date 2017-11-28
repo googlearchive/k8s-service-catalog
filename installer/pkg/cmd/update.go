@@ -40,9 +40,7 @@ func NewUpdateCmd() *cobra.Command {
 
 // scUpdateArgs contains Service Catalog update Arguments.
 type scUpdateArgs struct {
-	Version                string
-	APIserverImage         string
-	ControllermanagerImage string
+	Version string
 }
 
 func newServiceCatalogUpdateCmd() *cobra.Command {
@@ -58,13 +56,15 @@ func newServiceCatalogUpdateCmd() *cobra.Command {
 		},
 	}
 	c.Flags().StringVar(&uargs.Version, "version", "", "Service Catalog Version")
-	c.Flags().StringVar(&uargs.APIserverImage, "apiserver.image", "", "APIServer Image")
-	c.Flags().StringVar(&uargs.ControllermanagerImage, "controllermanager.image", "", "Controllermanager Image")
 	return c
 }
 
 func updateServiceCatalog(args *scUpdateArgs) error {
+	if args.Version == "" {
+		return fmt.Errorf("version paramter is empty")
+	}
 
+	// TODO(droot): validate version
 	found, err := isServiceCatalogInstalled()
 	if err != nil {
 		return err
@@ -73,27 +73,14 @@ func updateServiceCatalog(args *scUpdateArgs) error {
 		return fmt.Errorf("service catalog is not installed")
 	}
 
-	var apiServerImage, controllerManagerImage string
-
-	if args.Version != "" {
-		apiServerImage = "quay.io/kubernetes-service-catalog/service-catalog:v" + args.Version
-		controllerManagerImage = "quay.io/kubernetes-service-catalog/service-catalog:v" + args.Version
-	} else {
-		// user has specified image versions of API Server and ControllerManager individually
-		apiServerImage = args.APIserverImage
-		controllerManagerImage = args.ControllermanagerImage
-	}
-
-	if apiServerImage == "" || controllerManagerImage == "" {
-		return fmt.Errorf("empty Image arguments for service-catalog components")
-	}
-
+	scImage := "quay.io/kubernetes-service-catalog/service-catalog:v" + args.Version
 	ns := "service-catalog"
+
 	cmds := []*exec.Cmd{
 		exec.Command("kubectl", "set", "image", "deployments/apiserver",
-			"apiserver="+apiServerImage, "-n", ns),
+			"apiserver="+scImage, "-n", ns),
 		exec.Command("kubectl", "set", "image", "deployments/controller-manager",
-			"controller-manager="+controllerManagerImage, "-n", ns),
+			"controller-manager="+scImage, "-n", ns),
 	}
 
 	// TODO(droot): Current implementation is not atomic. Figure out a way to do

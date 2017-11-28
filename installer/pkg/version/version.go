@@ -22,7 +22,7 @@ import (
 )
 
 // version of 'sc'
-const scVersion = "0.1.0"
+const scVersion = "0.1.1"
 
 func GetVersion() string {
 	return fmt.Sprintf("sc version %s %s/%s", scVersion, runtime.GOOS, runtime.GOARCH)
