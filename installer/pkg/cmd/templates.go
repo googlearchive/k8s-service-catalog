@@ -123,7 +123,7 @@ func templatesScApiserverDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/apiserver-deployment.yaml.tmpl", size: 2733, mode: os.FileMode(416), modTime: time.Unix(1511830543, 0)}
+	info := bindataFileInfo{name: "templates/sc/apiserver-deployment.yaml.tmpl", size: 2733, mode: os.FileMode(416), modTime: time.Unix(1513034865, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -183,7 +183,7 @@ func templatesScControllerManagerDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 2779, mode: os.FileMode(416), modTime: time.Unix(1511830562, 0)}
+	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 2779, mode: os.FileMode(416), modTime: time.Unix(1513034865, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -223,7 +223,7 @@ func templatesScEtcdOperatorDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-operator-deployment.yaml.tmpl", size: 587, mode: os.FileMode(416), modTime: time.Unix(1507321833, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-operator-deployment.yaml.tmpl", size: 587, mode: os.FileMode(416), modTime: time.Unix(1512510610, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -383,7 +383,7 @@ func templatesScRbacYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 6801, mode: os.FileMode(416), modTime: time.Unix(1511822281, 0)}
+	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 6801, mode: os.FileMode(416), modTime: time.Unix(1512776459, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

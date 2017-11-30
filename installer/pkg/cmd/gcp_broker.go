@@ -42,13 +42,13 @@ func NewAddGCPBrokerCmd() *cobra.Command {
 		Use:   "add-gcp-broker",
 		Short: "Adds GCP broker",
 		Long:  `Adds a GCP broker to Service Catalog`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := addGCPBroker(); err != nil {
 				fmt.Println("failed to configure GCP broker")
-				fmt.Println(err)
-				return
+				return err
 			}
 			fmt.Println("GCP broker added successfully.")
+			return nil
 		},
 	}
 }
@@ -235,13 +235,13 @@ func NewRemoveGCPBrokerCmd() *cobra.Command {
 		Use:   "remove-gcp-broker",
 		Short: "Remove GCP broker",
 		Long:  `Removes a GCP broker from service catalog`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := removeGCPBroker(); err != nil {
 				fmt.Println("failed to remove GCP broker")
-				fmt.Println(err)
-				return
+				return err
 			}
 			fmt.Println("GCP broker removed successfully.")
+			return nil
 		},
 	}
 }

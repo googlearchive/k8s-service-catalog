@@ -47,12 +47,13 @@ func newServiceCatalogUpdateCmd() *cobra.Command {
 	uargs := &scUpdateArgs{}
 	c := &cobra.Command{
 		Use: "service-catalog",
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := updateServiceCatalog(uargs); err != nil {
-				fmt.Printf("failed to update service catalog components: %v", err)
-				return
+				fmt.Println("failed to update service catalog components")
+				return err
 			}
 			fmt.Println("Service Catalog updated successfully.")
+			return nil
 		},
 	}
 	c.Flags().StringVar(&uargs.Version, "version", "", "Service Catalog Version")

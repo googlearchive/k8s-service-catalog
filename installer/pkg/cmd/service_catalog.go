@@ -104,12 +104,13 @@ func NewServiceCommandInstallCmd() *cobra.Command {
 		Long: `installs Service Catalog in Kubernetes cluster.
 assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		// Args: cobra.MinimumNArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := installServiceCatalog(ic); err != nil {
 				fmt.Println("Service Catalog could not be installed")
-				fmt.Println(err)
-				return
+				return err
 			}
+			fmt.Println("Service Catalog installed successfully")
+			return nil
 		},
 	}
 	// add install command flags
@@ -161,7 +162,6 @@ func installServiceCatalog(ic *InstallConfig) error {
 		return fmt.Errorf("error deploying YAML files: %v", err)
 	}
 
-	fmt.Println("Service Catalog installed successfully")
 	return nil
 }
 
@@ -418,13 +418,13 @@ func NewServiceCommandUnInstallCmd() *cobra.Command {
 		Long: `uninstalls Service Catalog in Kubernetes cluster.
 assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		// Args: cobra.MinimumNArgs(1),
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			ns := "service-catalog"
 			if err := uninstallServiceCatalog(ns); err != nil {
 				fmt.Println("Service Catalog could not be installed")
-				fmt.Println(err)
-				return
+				return err
 			}
+			return nil
 		},
 	}
 	return c
@@ -465,13 +465,13 @@ func NewCheckDependenciesCmd() *cobra.Command {
 		Short: "performs a dependency check",
 		Long: `This utility requires cfssl, gcloud, kubectl binaries to be 
 present in PATH. This command performs the dependency check.`,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := checkDependencies(); err != nil {
 				fmt.Println("Dependency check failed")
-				fmt.Println(err)
-				return
+				return err
 			}
 			fmt.Println("Dependency check passed. You are good to go.")
+			return nil
 		},
 	}
 }

@@ -18,7 +18,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 
 	"github.com/golang/glog"
@@ -32,7 +31,6 @@ func main() {
 
 	c := NewCommand()
 	if err := c.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 }
@@ -45,6 +43,9 @@ func NewCommand() *cobra.Command {
 Service brokers in a Kubernetes Cluster. It implements commands to
 install, uninstall Service Catalog and add/remove GCP service broker
 in a Kubernets Cluster.`,
+
+		// turn off the usage by default on any error
+		SilenceUsage: true,
 	}
 	c.AddCommand(
 		cmd.NewCheckDependenciesCmd(),
