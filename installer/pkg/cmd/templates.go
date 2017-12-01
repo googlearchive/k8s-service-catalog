@@ -123,7 +123,7 @@ func templatesScApiserverDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/apiserver-deployment.yaml.tmpl", size: 2733, mode: os.FileMode(416), modTime: time.Unix(1513034865, 0)}
+	info := bindataFileInfo{name: "templates/sc/apiserver-deployment.yaml.tmpl", size: 2733, mode: os.FileMode(416), modTime: time.Unix(1513035522, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -183,7 +183,7 @@ func templatesScControllerManagerDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 2779, mode: os.FileMode(416), modTime: time.Unix(1513034865, 0)}
+	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 2779, mode: os.FileMode(416), modTime: time.Unix(1513035522, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

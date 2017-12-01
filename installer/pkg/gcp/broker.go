@@ -76,7 +76,7 @@ type gcpAPI struct {
 // enableAPI enables a GCP API.
 func enableAPI(api string) error {
 	cmd := exec.Command("gcloud", "service-management", "enable", api)
-	_, err := cmd.Output()
+	_, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("failed to enable API %s : %v", api, err)
 	}
@@ -89,7 +89,7 @@ func CreateServiceAccount(name, displayName string) error {
 		name,
 		"--display-name", displayName,
 		"--format", "json")
-	output, err := cmd.Output()
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("failed to create service account : %v %s", err, string(output))
 	}
@@ -115,7 +115,7 @@ func GetServiceAccount(email string) (*ServiceAccount, error) {
 
 func UpdateServiceAccountPerms(projectID, email, roles string) error {
 	cmd := exec.Command("gcloud", "projects", "add-iam-policy-binding", projectID, "--member", "serviceAccount:"+email, "--role", roles, "--format", "json")
-	output, err := cmd.Output()
+	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("failed to update service account permissions: %v %s", string(output), err)
 	}
@@ -130,7 +130,7 @@ type ServiceAccount struct {
 
 func CreateServiceAccountKey(email, keyFilepath string) error {
 	cmd := exec.Command("gcloud", "beta", "iam", "service-accounts", "keys", "create", "--iam-account", email, keyFilepath)
-	out, err := cmd.Output()
+	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("failed to create service account key: %s : %v", string(out), err)
 	}
