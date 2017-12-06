@@ -18,6 +18,7 @@ package cmd
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -28,6 +29,7 @@ import (
 	"time"
 
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/version"
+	"github.com/Masterminds/semver"
 	"github.com/spf13/cobra"
 )
 
@@ -147,6 +149,11 @@ func installServiceCatalog(ic *InstallConfig) error {
 
 	if ic.DryRun {
 		return nil
+	}
+
+	err = isAPIServerCompatible()
+	if err != nil {
+		return err
 	}
 
 	err = deployConfig(dir)
@@ -500,4 +507,45 @@ func storageClassExists(name string) (bool, error) {
 		return false, fmt.Errorf("error getting serviceclasses: %v %v", outputStr, err)
 	}
 	return true, nil
+}
+
+// isServerCompatible performs following checks:
+// Kubernetes 1.7+
+// TODO(droot): configured for Mutual TLS
+func isAPIServerCompatible() error {
+	v, err := getServerVersion()
+	if err != nil {
+		return err
+	}
+
+	ver17 := semver.MustParse("1.7.0")
+	if v.LessThan(ver17) {
+		return fmt.Errorf("Service Catalog requires Kubernetes v1.7+.")
+	}
+	return nil
+}
+
+func getServerVersion() (*semver.Version, error) {
+	output, err := exec.Command(KubectlBinaryName, "version", "-o", "json").CombinedOutput()
+	if err != nil {
+		return nil, fmt.Errorf("error fetching Kubernetes version :%v", string(output))
+	}
+
+	var versions map[string]k8sVersion
+
+	err = json.Unmarshal(output, &versions)
+	if err != nil {
+		return nil, fmt.Errorf("error Unmarshal version info: %v", err)
+	}
+
+	serverVersion, found := versions["serverVersion"]
+	if !found {
+		return nil, fmt.Errorf("error getting server version")
+	}
+
+	return semver.NewVersion(serverVersion.GitVersion)
+}
+
+type k8sVersion struct {
+	GitVersion string `json:"gitVersion"`
 }
