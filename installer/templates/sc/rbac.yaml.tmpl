@@ -19,38 +19,29 @@
 apiVersion: v1
 kind: List
 items:
+### API Server ###
 
-# Cluster-wide permissions to read namespaces
+# TODO: if this is just for namespace lifecycle admission, move to a generic role
+# the role for the apiserver 
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRole
   metadata:
-    name: "namespace-reader"
+    name: "servicecatalog.k8s.io:apiserver"
+  # this rule defined on the role for specifically the
+  # namespace-lifecycle admission-controller
   rules:
   - apiGroups: [""]
     resources: ["namespaces"]
     verbs:     ["get", "list", "watch"]
-
-# Cluster-wide permissions to read/write secrets in namespaces
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: ClusterRole
-  metadata:
-    name: "secret-reader-writer"
-  rules:
-  - apiGroups: [""]
-    resources: ["secrets"]
-    verbs:     ["get", "create", "delete", "list", "watch"]
-  
-### API Server ###
-  
-# Give APIServer the namespace reader permissions
+# API-server service-account gets its own role
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRoleBinding
   metadata:
-    name: "servicecatalog.k8s.io:apiserver-namespace-reader"
+    name: "servicecatalog.k8s.io:apiserver"
   roleRef:
     apiGroup: rbac.authorization.k8s.io
     kind: ClusterRole
-    name: "namespace-reader"
+    name: "servicecatalog.k8s.io:apiserver"
   subjects:
   - apiGroup: ""
     kind: ServiceAccount
@@ -91,95 +82,46 @@ items:
 
 ### Controller-Manager ###
 
-# Give Controller-Manager the namespace reader permissions
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: ClusterRoleBinding
-  metadata:
-    name: "servicecatalog.k8s.io:controller-manager-namespace-reader"
-  roleRef:
-    apiGroup: rbac.authorization.k8s.io
-    kind: ClusterRole
-    name: "namespace-reader"
-  subjects:
-  - apiGroup: ""
-    kind: ServiceAccount
-    name: "controller-manager"
-    namespace: "service-catalog"
-
-# Give Controller-Manager the reader writer permissions
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: ClusterRoleBinding
-  metadata:
-    name: "servicecatalog.k8s.io:controller-manager-secret-reader-writer"
-  roleRef:
-    apiGroup: rbac.authorization.k8s.io
-    kind: ClusterRole
-    name: "secret-reader-writer"
-  subjects:
-  - apiGroup: ""
-    kind: ServiceAccount
-    name: "controller-manager"
-    namespace: "service-catalog"
-
 # controller-manager role defines what access the service-catalog
 # controller-manager needs to manage the resources of the
 # service-catalog
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRole
   metadata:
-    name: "servicecatalog.k8s.io:controller-manager-clusterrole"
+    name: "servicecatalog.k8s.io:controller-manager"
   rules:
-    # brokers and serviceclasses are non-namespaced resources.
-    # They should stay in cluster role
-  - apiGroups: ["servicecatalog.k8s.io"]
-    resources: ["brokers"]
-    verbs:     ["get","list","watch"]
-  - apiGroups: ["servicecatalog.k8s.io"]
-    resources: ["serviceclasses"]
-    verbs:     ["*"]
-  - apiGroups: ["servicecatalog.k8s.io"]
-    resources: ["brokers/status"]
-    verbs:     ["update"]
-    # At this time, list|watch bindings|instances are cluster-wide operation.
-  - apiGroups: ["servicecatalog.k8s.io"]
-    resources: ["bindings","instances"]
-    verbs:     ["list","watch"]
-    # It should be OK to cluster-wide permission for events.
   - apiGroups: [""]
     resources: ["events"]
     verbs:     ["create","patch","update"]
+  # TODO: do not grant global access, limit to particular secrets referenced from servicebindings
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs:     ["get","create","delete"]
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs:     ["get","list","watch"]
+  # access to our service-catalog types
+  - apiGroups: ["servicecatalog.k8s.io"]
+    resources: ["clusterserviceclasses"]
+    verbs:     ["get","list","watch","create","patch","update","delete"]
+  - apiGroups: ["servicecatalog.k8s.io"]
+    resources: ["clusterserviceplans"]
+    verbs:     ["get","list","watch","create","patch","update","delete"]
+  - apiGroups: ["servicecatalog.k8s.io"]
+    resources: ["clusterservicebrokers","serviceinstances","servicebindings"]
+    verbs:     ["get","list","watch"]
+  - apiGroups: ["servicecatalog.k8s.io"]
+    resources: ["clusterservicebrokers/status","clusterserviceclasses/status","clusterserviceplans/status","serviceinstances/status","serviceinstances/reference","servicebindings/status"]
+    verbs:     ["update"]
+# give the controller-manager service account access to whats defined in its role.
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: ClusterRoleBinding
   metadata:
-    name: "servicecatalog.k8s.io:controller-manager-clusterrolebinding"
+    name: "servicecatalog.k8s.io:controller-manager"
   roleRef:
     apiGroup: rbac.authorization.k8s.io
     kind: ClusterRole
-    name: "servicecatalog.k8s.io:controller-manager-clusterrole"
-  subjects:
-  - apiGroup: ""
-    kind: ServiceAccount
-    name: "controller-manager"
-    namespace: "service-catalog"
-
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: Role
-  metadata:
-    name: "servicecatalog.k8s.io:controller-manager-role"
-    namespace: default
-  rules:
-  - apiGroups: [""]
-    resources: ["secrets"]
-    verbs:     ["get"]
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: RoleBinding
-  metadata:
-    name: "servicecatalog.k8s.io:controller-manager-rolebinding"
-    namespace: default
-  roleRef:
-    apiGroup: rbac.authorization.k8s.io
-    kind: Role
-    name: "servicecatalog.k8s.io:controller-manager-role"
+    name: "servicecatalog.k8s.io:controller-manager"
   subjects:
   - apiGroup: ""
     kind: ServiceAccount
@@ -191,7 +133,7 @@ items:
 - apiVersion: rbac.authorization.k8s.io/v1beta1
   kind: Role
   metadata:
-    name: "servicecatalog.k8s.io::leader-locking-controller-manager"
+    name: "servicecatalog.k8s.io:leader-locking-controller-manager"
     namespace: kube-system
   rules:
   - apiGroups: [""]
@@ -209,7 +151,7 @@ items:
   roleRef:
     apiGroup: rbac.authorization.k8s.io
     kind: Role
-    name: "servicecatalog.k8s.io::leader-locking-controller-manager"
+    name: "servicecatalog.k8s.io:leader-locking-controller-manager"
   subjects:
   - apiGroup: ""
     kind: ServiceAccount
