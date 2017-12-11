@@ -124,6 +124,16 @@ func installServiceCatalog(ic *InstallConfig) error {
 		return err
 	}
 
+	backupStorageClassExists, err := storageClassExists(ic.EtcdBackupStorageClass)
+	if err != nil {
+		return err
+	}
+
+	if !backupStorageClassExists {
+		return fmt.Errorf("storageclass for etcd backup does not exist. " +
+			"Use --etcd-backup-storageclass option to specify an existing storageclass")
+	}
+
 	dir, err := generateDeploymentConfigs(ic)
 	if err != nil {
 		return fmt.Errorf("error generating YAML files: %v", err)
@@ -478,4 +488,16 @@ func checkDependencies() error {
 		return fmt.Errorf("%s commands not found in the PATH", strings.Join(missingCmds, ","))
 	}
 	return nil
+}
+
+func storageClassExists(name string) (bool, error) {
+	output, err := exec.Command(KubectlBinaryName, "get", "storageclass", name).CombinedOutput()
+	if err != nil {
+		outputStr := string(output)
+		if strings.Contains(outputStr, "NotFound") {
+			return false, nil
+		}
+		return false, fmt.Errorf("error getting serviceclasses: %v %v", outputStr, err)
+	}
+	return true, nil
 }
