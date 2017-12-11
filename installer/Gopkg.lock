@@ -8,6 +8,12 @@
   version = "v0.13.0"
 
 [[projects]]
+  name = "github.com/Masterminds/semver"
+  packages = ["."]
+  revision = "15d8430ab86497c5c0da827b748823945e1cf1e1"
+  version = "v1.4.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/golang/glog"
   packages = ["."]
@@ -58,6 +64,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c908223e115cddc4144a24eb347fc82a481367a6cec5d17d90377d547155db6e"
+  inputs-digest = "6b096bd057a632812b631c1303de95cdf63ae37528474739728114f774c4fc91"
   solver-name = "gps-cdcl"
   solver-version = 1
