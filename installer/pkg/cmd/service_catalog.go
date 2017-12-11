@@ -179,10 +179,14 @@ func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
 
 	svcCatalogImage := "gcr.io/seans-sandbox/service-catalog:canary"
 
+	// by default, we pick latest image tag which points to the latest stable
+	// released version of service catalog.
+	imageTag := "latest"
 	if ic.Version != "" {
 		// TODO(droot): validate version
-		svcCatalogImage = "quay.io/kubernetes-service-catalog/service-catalog:v" + ic.Version
+		imageTag = "v" + ic.Version
 	}
+	svcCatalogImage = "quay.io/kubernetes-service-catalog/service-catalog:" + imageTag
 
 	data := map[string]interface{}{
 		"CAPublicKey":            ca,
@@ -190,8 +194,7 @@ func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
 		"APIServicePrivateKey":   apiServerPK,
 		"EtcdClusterSize":        ic.EtcdClusterSize,
 		"EtcdBackupStorageClass": ic.EtcdBackupStorageClass,
-		"APIServerImage":         svcCatalogImage,
-		"ControllerManagerImage": svcCatalogImage,
+		"ServiceCatalogImage":    svcCatalogImage,
 		"Version":                version.GetVersion(),
 	}
 
