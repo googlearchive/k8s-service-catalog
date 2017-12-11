@@ -28,12 +28,12 @@ func NewVersionCmd() *cobra.Command {
 		Use:   "version",
 		Short: "prints version of 'sc' CLI",
 		Long:  "prints version of commandline tool 'sc'",
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := printVersion(); err != nil {
 				fmt.Println("failed to print 'sc' version")
-				fmt.Println(err)
-				return
+				return err
 			}
+			return nil
 		},
 	}
 	return c
