@@ -48,7 +48,7 @@ Before installing Service Catalog atop Kubernetes cluster, you need to ensure fo
 `sc` is written in Go and can be installed using `go get`.
 
 ```Go
-go get github.com/GoogleCloudPlatform/k8s-service-catalog/installer/cmd/sc
+go get -u github.com/GoogleCloudPlatform/k8s-service-catalog/installer/cmd/sc
 ```
 
 After running the above command, `sc` should get installed in your GOPATH/bin dir.
