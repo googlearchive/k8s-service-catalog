@@ -28,6 +28,31 @@ go get github.com/GoogleCloudPlatform/k8s-service-catalog/installer/cmd/sc
 
 After running the above command, `sc` should get installed in your GOPATH/bin dir.
 
+## Requirements
+
+Before installing Service Catalog atop Kubernetes cluster, you need to ensure following requirements are met.
+
+- [cfssl](https://github.com/cloudflare/cfssl) tools are needed for generating SSL artifacts. Install `cfssl` using following command
+  ```bash
+  go get -u github.com/cloudflare/cfssl/cmd/...
+  which cfssl
+  /home/sunil/go/bin/cfssl
+  which cfssljson
+  /home/sunil/go/bin/cfssljson
+  ```
+- Service Catalog requires Kubernetes version 1.7 onwards.
+- Kubectl installed and configured to connect to a Kubernetes v1.7+ cluster.
+- Kubectl user should have cluster-admin role to be able to install Service Catalog. Run following command to ensure that:
+  ```bash
+  kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=<user-name>
+  ```
+- [gcloud](https://cloud.google.com/sdk/) should be installed and configured with following commands in order to be used by the `sc` to configure GCP broker.
+  ```bash
+  gcloud components install beta
+  gcloud auth login
+  gcloud auth application-default login
+  ```
+
 ## Usage
 
 - To print usage instructions, run
@@ -74,31 +99,6 @@ After running the above command, `sc` should get installed in your GOPATH/bin di
 - To remove GCP Service Broker from the Service Catalog, run
   ```bash
   sc remove-gcp-broker
-  ```
-
-## Requirements
-
-Before installing Service Catalog atop Kubernetes cluster, you need to ensure following requirements are met.
-
-- [cfssl](https://github.com/cloudflare/cfssl) tools are needed for generating SSL artifacts. Install `cfssl` using following command
-  ```bash
-  go get -u github.com/cloudflare/cfssl/cmd/...
-  which cfssl
-  /home/sunil/go/bin/cfssl
-  which cfssljson
-  /home/sunil/go/bin/cfssljson
-  ```
-- Service Catalog requires Kubernetes version 1.7 onwards.
-- Kubectl installed and configured to connect to a Kubernetes v1.7+ cluster.
-- Kubectl user should have cluster-admin role to be able to install Service Catalog. Run following command to ensure that:
-  ```bash
-  kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=<user-name>
-  ```
-- [gcloud](https://cloud.google.com/sdk/) should be installed and configured with following commands in order to be used by the `sc` to configure GCP broker.
-  ```bash
-  gcloud components install beta
-  gcloud auth login
-  gcloud auth application-default login
   ```
 
 ## Build
