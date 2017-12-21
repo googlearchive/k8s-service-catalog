@@ -3,9 +3,9 @@
 Service Catalog Installer is a CLI tool to manage Service Catalog and GCP Service Broker atop Kubernetes Cluster.
 
 - [Intro](#intro)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Requirements](#requirements)
 - [Build](#build)
 - [Basic Tutorial](#tutorial)
 
@@ -17,16 +17,6 @@ Service Catalog Installer `sc` lets you do the following:
 - Uninstall Service Catalog
 - Install GCP Service Broker
 - Uninstall GCP Service Broker
-
-## Installation
-
-`sc` is written in Go and can be installed using `go get`.
-
-```Go
-go get github.com/GoogleCloudPlatform/k8s-service-catalog/installer/cmd/sc
-```
-
-After running the above command, `sc` should get installed in your GOPATH/bin dir.
 
 ## Requirements
 
@@ -52,6 +42,16 @@ Before installing Service Catalog atop Kubernetes cluster, you need to ensure fo
   gcloud auth login
   gcloud auth application-default login
   ```
+
+## Installation
+
+`sc` is written in Go and can be installed using `go get`.
+
+```Go
+go get github.com/GoogleCloudPlatform/k8s-service-catalog/installer/cmd/sc
+```
+
+After running the above command, `sc` should get installed in your GOPATH/bin dir.
 
 ## Usage
 
