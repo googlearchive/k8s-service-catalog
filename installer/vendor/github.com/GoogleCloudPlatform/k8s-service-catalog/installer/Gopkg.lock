@@ -8,12 +8,6 @@
   version = "v0.13.0"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/GoogleCloudPlatform/k8s-service-catalog"
-  packages = ["broker-cli/pkg/auth","broker-cli/pkg/client/adapter","broker-cli/pkg/client/osb"]
-  revision = "d966d20020f77b778537f0247f1af91f8abc9f25"
-
-[[projects]]
   name = "github.com/Masterminds/semver"
   packages = ["."]
   revision = "15d8430ab86497c5c0da827b748823945e1cf1e1"
@@ -70,6 +64,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "af9673241ae029ee5d933c4a9fa5036186cb69bcc590c90640dc28d50ba105db"
+  inputs-digest = "6b096bd057a632812b631c1303de95cdf63ae37528474739728114f774c4fc91"
   solver-name = "gps-cdcl"
   solver-version = 1
