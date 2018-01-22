@@ -8,6 +8,7 @@ Service Catalog Installer is a CLI tool to manage Service Catalog and GCP Servic
 - [Usage](#usage)
 - [Build](#build)
 - [Basic Tutorial](#tutorial)
+- [Contribution](#contribution)
 
 ## Intro
 
@@ -120,3 +121,7 @@ make
 ## Tutorial
 
 Once you have Service Catalog installed and GCP broker added to the cluster.  Follow this [basic tutorial](/installer/service-catalog-pubsub-tutorial.md) to get started with Service Catalog.
+
+## Contribution
+
+We are always looking for contributors, so if you want to contribute to the installer codebase, please follow the [workflow instructions](/installer/github-workflow.md).
