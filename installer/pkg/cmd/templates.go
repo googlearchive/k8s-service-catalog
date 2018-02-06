@@ -383,7 +383,7 @@ func templatesScRbacYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 5607, mode: os.FileMode(416), modTime: time.Unix(1513723373, 0)}
+	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 5607, mode: os.FileMode(416), modTime: time.Unix(1516125640, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
