@@ -43,7 +43,7 @@ func NewAddGCPBrokerCmd() *cobra.Command {
 		Long:  `Adds a GCP broker to Service Catalog`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := addGCPBroker(); err != nil {
-				fmt.Println("failed to configure GCP broker")
+				fmt.Println("failed to configure GCP broker: %v", err)
 				return err
 			}
 			fmt.Println("GCP broker added successfully.")
@@ -55,7 +55,7 @@ func NewAddGCPBrokerCmd() *cobra.Command {
 func addGCPBroker() error {
 	projectID, err := gcp.GetConfigValue("core", "project")
 	if err != nil {
-		fmt.Errorf("error getting configured project value : %v", err)
+		return fmt.Errorf("error getting configured project value : %v", err)
 	}
 
 	fmt.Println("using project: ", projectID)
@@ -65,6 +65,9 @@ func addGCPBroker() error {
 		gcp.ServiceBrokerAPI,
 	}
 	err = gcp.EnableAPIs(requiredAPIs)
+	if err != nil {
+		return fmt.Errorf("error enabling APIs: %v", err)
+	}
 
 	fmt.Println("enabled required APIs ", requiredAPIs)
 
@@ -126,7 +129,6 @@ func addGCPBroker() error {
 func getOrCreateGCPServiceAccount(name, email string) error {
 	_, err := gcp.GetServiceAccount(email)
 	if err != nil {
-		fmt.Printf("error fetching service account :%v", err)
 		// TODO(droot): distinguish between real error and NOT_FOUND error
 		err = gcp.CreateServiceAccount(name, "Service Catalog GCP Broker Service Account")
 		if err != nil {

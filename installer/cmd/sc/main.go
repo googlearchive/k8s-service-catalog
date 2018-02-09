@@ -49,8 +49,8 @@ in a Kubernets Cluster.`,
 	}
 	c.AddCommand(
 		cmd.NewCheckDependenciesCmd(),
-		cmd.NewServiceCommandInstallCmd(),
-		cmd.NewServiceCommandUnInstallCmd(),
+		cmd.NewServiceCatalogInstallCmd(),
+		cmd.NewServiceCatalogUnInstallCmd(),
 		cmd.NewAddGCPBrokerCmd(),
 		cmd.NewRemoveGCPBrokerCmd(),
 		cmd.NewUpdateCmd(),

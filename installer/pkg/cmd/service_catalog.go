@@ -90,7 +90,7 @@ type InstallConfig struct {
 	EtcdBackupStorageClass string
 }
 
-func NewServiceCommandInstallCmd() *cobra.Command {
+func NewServiceCatalogInstallCmd() *cobra.Command {
 	ic := &InstallConfig{
 		Namespace:               "service-catalog",
 		APIServerServiceName:    "service-catalog-api",
@@ -411,7 +411,7 @@ func isAPIAvailable(api string) (bool, error) {
 	return strings.Contains(string(out), api), nil
 }
 
-func NewServiceCommandUnInstallCmd() *cobra.Command {
+func NewServiceCatalogUnInstallCmd() *cobra.Command {
 	c := &cobra.Command{
 		Use:   "uninstall",
 		Short: "uninstalls Service Catalog in Kubernetes cluster",
