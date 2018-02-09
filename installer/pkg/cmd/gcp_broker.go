@@ -43,7 +43,7 @@ func NewAddGCPBrokerCmd() *cobra.Command {
 		Long:  `Adds a GCP broker to Service Catalog`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := addGCPBroker(); err != nil {
-				fmt.Println("failed to configure GCP broker: %v", err)
+				fmt.Println("failed to configure GCP broker")
 				return err
 			}
 			fmt.Println("GCP broker added successfully.")
