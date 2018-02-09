@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -437,8 +438,8 @@ func uninstallServiceCatalog(ns string) error {
 
 	ic := &InstallConfig{
 		Namespace: ns,
-		// following fields are not used during installation, they are needed
-		// for generating the DeploymentConfigs
+		// Following fields are not used during installation, they are needed
+		// for generating the DeploymentConfigs.
 		EtcdClusterSize:        3,
 		EtcdBackupStorageClass: "standard",
 	}
@@ -450,13 +451,42 @@ func uninstallServiceCatalog(ns string) error {
 
 	defer os.RemoveAll(dir)
 
+	// It might take a while to delete the configs, so we want
+	fmt.Println("deleting service catalog configs...")
 	err = deleteConfig(dir)
 	if err != nil {
 		return fmt.Errorf("error deploying YAML files: %v", err)
 	}
 
+	// Namespaces are deleted asynchronuously and we need to make sure the
+	// deletion is actually done before printing the success message.
+	waitOnNSDeletion()
+
 	fmt.Println("uninstalled service catalog successfully")
 	return nil
+}
+
+// waitOnNSDeletion keeps checking whether namespace "service-catalog" is deleted.
+func waitOnNSDeletion() {
+	baseDelay := 100 * time.Millisecond
+	maxDelay := 6 * time.Second
+	retries := 0
+
+	for {
+		delay := time.Duration(math.Pow(2, float64(retries)) * float64(baseDelay))
+		if delay > maxDelay {
+			delay = maxDelay
+		}
+		time.Sleep(delay)
+
+		if _, err := exec.Command("kubectl", "get", "namespace", "service-catalog" /* Namespace for GCP broker*/).CombinedOutput(); err != nil {
+			// TODO(maqiuyujoyce): Check whether the error is a not found error.
+			return
+		}
+
+		retries++
+	}
+	return
 }
 
 func NewCheckDependenciesCmd() *cobra.Command {

@@ -242,7 +242,7 @@ func NewRemoveGCPBrokerCmd() *cobra.Command {
 }
 
 func removeGCPBroker() error {
-	// create temporary directory for k8s artifacts and other temporary files
+	// Create temporary directory for k8s artifacts and other temporary files.
 	dir, err := ioutil.TempDir("/tmp", "service-catalog-gcp")
 	if err != nil {
 		return fmt.Errorf("error creating temporary dir: %v", err)
