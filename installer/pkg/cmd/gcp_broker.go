@@ -18,6 +18,8 @@ package cmd
 
 import (
 	"context"
+	"crypto/md5"
+	"encoding/base32"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -25,11 +27,18 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/broker-cli/auth"
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/broker-cli/client/adapter"
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/gcp"
 	"github.com/spf13/cobra"
+)
+
+const (
+	oldBrokerSAName    = "service-catalog-gcp"
+	brokerSANamePrefix = "scg-"
+	brokerSARole       = "roles/servicebroker.operator"
 )
 
 var (
@@ -71,16 +80,18 @@ func addGCPBroker() error {
 
 	fmt.Println("enabled required APIs ", requiredAPIs)
 
-	brokerSAName := "service-catalog-gcp"
-	brokerSAEmail := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", brokerSAName, projectID)
+	brokerSAName, err := constructSAName()
+	if err != nil {
+		return fmt.Errorf("error constructing service account name: %v", err)
+	}
 
+	brokerSAEmail := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", brokerSAName, projectID)
 	err = getOrCreateGCPServiceAccount(brokerSAName, brokerSAEmail)
 	if err != nil {
 		return err
 	}
-	// brokerSARole := "roles/editor"
-	brokerSARole := "roles/servicebroker.operator"
-	err = gcp.UpdateServiceAccountPerms(projectID, brokerSAEmail, brokerSARole)
+
+	err = gcp.AddServiceAccountPerms(projectID, brokerSAEmail, brokerSARole)
 	if err != nil {
 		return err
 	}
@@ -124,6 +135,50 @@ func addGCPBroker() error {
 	}
 
 	return err
+}
+
+func constructSAName() (string, error) {
+	bout, err := exec.Command("kubectl", "config", "view", "--output", "json").CombinedOutput()
+	if err != nil {
+		return "", fmt.Errorf("error retriving kubernetes config: %s : %v", string(bout), err)
+	}
+
+	jout := make(map[string]interface{})
+	err = json.Unmarshal(bout, &jout)
+	if err != nil {
+		return "", fmt.Errorf("error unmarshalling kubernetes config: %s : %v", string(bout), err)
+	}
+
+	// Get the name of the current cluster.
+	fcn := jout["current-context"].(string)
+
+	// Since there are limitations on the GCP service account name, we need to process the cluster name
+	// before constructing the SA name with it.
+	//
+	// Hash the cluster name using MD5 algorithm.
+	// This is because SA name only allows a maximum of 30 characters, so we need to reduce the length
+	// of the cluster name.
+	md5res := md5.Sum([]byte(fcn))
+	var md5bytes []byte = md5res[:]
+
+	// Use base32 to encode the MD5 hash result.
+	// The result of MD5 hash will be a 32 digit hexadecimal number, so we need to further reduce the
+	// length.
+	res := base32.StdEncoding.EncodeToString(md5bytes)
+
+	// Remove the last six "="s.
+	// The raw result of MD5 hash is 16 bytes, so base32 encoding result will alway have a padding
+	// "======".
+	// This step can be replaced by base32.StdEncoding.WithPadding(base32.NoPadding) in Golang 1.9.
+	res = strings.Trim(res, "=")
+
+	// Add the prefix.
+	res = fmt.Sprintf("%s%s", brokerSANamePrefix, res)
+
+	// Convert the result to lowercase.
+	// The result of base32 encoding contains uppercase letters but service account only allows
+	// lowercase letters in the name.
+	return strings.ToLower(res), nil
 }
 
 func getOrCreateGCPServiceAccount(name, email string) error {
@@ -258,6 +313,44 @@ func removeGCPBroker() error {
 	err = removeGCPBrokerConfigs(dir)
 	if err != nil {
 		return fmt.Errorf("error deleting broker resources : %v", err)
+	}
+
+	projectID, err := gcp.GetConfigValue("core", "project")
+	if err != nil {
+		return fmt.Errorf("error getting configured project value : %v", err)
+	}
+
+	brokerSAName, err := constructSAName()
+	if err != nil {
+		return fmt.Errorf("error constructing service account name: %v", err)
+	}
+
+	brokerSAEmail := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", brokerSAName, projectID)
+	_, err = gcp.GetServiceAccount(brokerSAEmail)
+	if err != nil {
+		// TODO(maqiuyujoyce): distinguish between real error and NOT_FOUND error
+		oldBrokerSAEmail := fmt.Sprintf("%s@%s.iam.gserviceaccount.com", oldBrokerSAName, projectID)
+		_, err := gcp.GetServiceAccount(oldBrokerSAEmail)
+		if err == nil {
+			fmt.Printf("WARNING: Service account %s is deprecated now. Please clean it up from your GCP project.\n", oldBrokerSAEmail)
+		}
+
+		// If we can't retrieve any of the service accounts, then it means either there is
+		// something wrong with IAM server, or both accounts are invalid/nonexistent. And
+		// we should safely assume the remove process is done.
+		return nil
+	}
+
+	// Remove the Service Broker Operator role.
+	err = gcp.RemoveServiceAccountPerms(projectID, brokerSAEmail, brokerSARole)
+	if err != nil {
+		return err
+	}
+
+	// Clean up all the associated keys.
+	err = gcp.RemoveServiceAccountKeys(brokerSAEmail)
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -463,7 +463,7 @@ func templatesGcpGcpBrokerYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/gcp-broker.yaml.tmpl", size: 1785, mode: os.FileMode(420), modTime: time.Unix(1516227746, 0)}
+	info := bindataFileInfo{name: "templates/gcp/gcp-broker.yaml.tmpl", size: 1785, mode: os.FileMode(420), modTime: time.Unix(1518149493, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -560,27 +560,27 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"templates/sc/api-registration.yaml.tmpl":              templatesScApiRegistrationYamlTmpl,
-	"templates/sc/apiserver-deployment.yaml.tmpl":          templatesScApiserverDeploymentYamlTmpl,
-	"templates/sc/ca_config.json":                          templatesScCa_configJson,
-	"templates/sc/ca_csr.json.tmpl":                        templatesScCa_csrJsonTmpl,
+	"templates/sc/api-registration.yaml.tmpl": templatesScApiRegistrationYamlTmpl,
+	"templates/sc/apiserver-deployment.yaml.tmpl": templatesScApiserverDeploymentYamlTmpl,
+	"templates/sc/ca_config.json": templatesScCa_configJson,
+	"templates/sc/ca_csr.json.tmpl": templatesScCa_csrJsonTmpl,
 	"templates/sc/controller-manager-deployment.yaml.tmpl": templatesScControllerManagerDeploymentYamlTmpl,
-	"templates/sc/etcd-cluster-with-backup.yaml.tmpl":      templatesScEtcdClusterWithBackupYamlTmpl,
-	"templates/sc/etcd-operator-deployment.yaml.tmpl":      templatesScEtcdOperatorDeploymentYamlTmpl,
-	"templates/sc/etcd-operator-rbac-binding.yaml.tmpl":    templatesScEtcdOperatorRbacBindingYamlTmpl,
-	"templates/sc/etcd-operator-rbac.yaml.tmpl":            templatesScEtcdOperatorRbacYamlTmpl,
+	"templates/sc/etcd-cluster-with-backup.yaml.tmpl": templatesScEtcdClusterWithBackupYamlTmpl,
+	"templates/sc/etcd-operator-deployment.yaml.tmpl": templatesScEtcdOperatorDeploymentYamlTmpl,
+	"templates/sc/etcd-operator-rbac-binding.yaml.tmpl": templatesScEtcdOperatorRbacBindingYamlTmpl,
+	"templates/sc/etcd-operator-rbac.yaml.tmpl": templatesScEtcdOperatorRbacYamlTmpl,
 	"templates/sc/etcd-operator-service-account.yaml.tmpl": templatesScEtcdOperatorServiceAccountYamlTmpl,
-	"templates/sc/etcd-svc.yaml.tmpl":                      templatesScEtcdSvcYamlTmpl,
-	"templates/sc/etcd.yaml.tmpl":                          templatesScEtcdYamlTmpl,
-	"templates/sc/gencert_config.json.tmpl":                templatesScGencert_configJsonTmpl,
-	"templates/sc/namespace.yaml.tmpl":                     templatesScNamespaceYamlTmpl,
-	"templates/sc/rbac.yaml.tmpl":                          templatesScRbacYamlTmpl,
-	"templates/sc/service-accounts.yaml.tmpl":              templatesScServiceAccountsYamlTmpl,
-	"templates/sc/service.yaml.tmpl":                       templatesScServiceYamlTmpl,
-	"templates/sc/tls-cert-secret.yaml.tmpl":               templatesScTlsCertSecretYamlTmpl,
-	"templates/gcp/gcp-broker.yaml.tmpl":                   templatesGcpGcpBrokerYamlTmpl,
-	"templates/gcp/google-oauth-deployment.yaml.tmpl":      templatesGcpGoogleOauthDeploymentYamlTmpl,
-	"templates/gcp/service-account-secret.yaml.tmpl":       templatesGcpServiceAccountSecretYamlTmpl,
+	"templates/sc/etcd-svc.yaml.tmpl": templatesScEtcdSvcYamlTmpl,
+	"templates/sc/etcd.yaml.tmpl": templatesScEtcdYamlTmpl,
+	"templates/sc/gencert_config.json.tmpl": templatesScGencert_configJsonTmpl,
+	"templates/sc/namespace.yaml.tmpl": templatesScNamespaceYamlTmpl,
+	"templates/sc/rbac.yaml.tmpl": templatesScRbacYamlTmpl,
+	"templates/sc/service-accounts.yaml.tmpl": templatesScServiceAccountsYamlTmpl,
+	"templates/sc/service.yaml.tmpl": templatesScServiceYamlTmpl,
+	"templates/sc/tls-cert-secret.yaml.tmpl": templatesScTlsCertSecretYamlTmpl,
+	"templates/gcp/gcp-broker.yaml.tmpl": templatesGcpGcpBrokerYamlTmpl,
+	"templates/gcp/google-oauth-deployment.yaml.tmpl": templatesGcpGoogleOauthDeploymentYamlTmpl,
+	"templates/gcp/service-account-secret.yaml.tmpl": templatesGcpServiceAccountSecretYamlTmpl,
 }
 
 // AssetDir returns the file names below a certain
@@ -622,33 +622,32 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
-
 var _bintree = &bintree{nil, map[string]*bintree{
-	"templates": {nil, map[string]*bintree{
-		"gcp": {nil, map[string]*bintree{
-			"gcp-broker.yaml.tmpl":              {templatesGcpGcpBrokerYamlTmpl, map[string]*bintree{}},
-			"google-oauth-deployment.yaml.tmpl": {templatesGcpGoogleOauthDeploymentYamlTmpl, map[string]*bintree{}},
-			"service-account-secret.yaml.tmpl":  {templatesGcpServiceAccountSecretYamlTmpl, map[string]*bintree{}},
+	"templates": &bintree{nil, map[string]*bintree{
+		"gcp": &bintree{nil, map[string]*bintree{
+			"gcp-broker.yaml.tmpl": &bintree{templatesGcpGcpBrokerYamlTmpl, map[string]*bintree{}},
+			"google-oauth-deployment.yaml.tmpl": &bintree{templatesGcpGoogleOauthDeploymentYamlTmpl, map[string]*bintree{}},
+			"service-account-secret.yaml.tmpl": &bintree{templatesGcpServiceAccountSecretYamlTmpl, map[string]*bintree{}},
 		}},
-		"sc": {nil, map[string]*bintree{
-			"api-registration.yaml.tmpl":              {templatesScApiRegistrationYamlTmpl, map[string]*bintree{}},
-			"apiserver-deployment.yaml.tmpl":          {templatesScApiserverDeploymentYamlTmpl, map[string]*bintree{}},
-			"ca_config.json":                          {templatesScCa_configJson, map[string]*bintree{}},
-			"ca_csr.json.tmpl":                        {templatesScCa_csrJsonTmpl, map[string]*bintree{}},
-			"controller-manager-deployment.yaml.tmpl": {templatesScControllerManagerDeploymentYamlTmpl, map[string]*bintree{}},
-			"etcd-cluster-with-backup.yaml.tmpl":      {templatesScEtcdClusterWithBackupYamlTmpl, map[string]*bintree{}},
-			"etcd-operator-deployment.yaml.tmpl":      {templatesScEtcdOperatorDeploymentYamlTmpl, map[string]*bintree{}},
-			"etcd-operator-rbac-binding.yaml.tmpl":    {templatesScEtcdOperatorRbacBindingYamlTmpl, map[string]*bintree{}},
-			"etcd-operator-rbac.yaml.tmpl":            {templatesScEtcdOperatorRbacYamlTmpl, map[string]*bintree{}},
-			"etcd-operator-service-account.yaml.tmpl": {templatesScEtcdOperatorServiceAccountYamlTmpl, map[string]*bintree{}},
-			"etcd-svc.yaml.tmpl":                      {templatesScEtcdSvcYamlTmpl, map[string]*bintree{}},
-			"etcd.yaml.tmpl":                          {templatesScEtcdYamlTmpl, map[string]*bintree{}},
-			"gencert_config.json.tmpl":                {templatesScGencert_configJsonTmpl, map[string]*bintree{}},
-			"namespace.yaml.tmpl":                     {templatesScNamespaceYamlTmpl, map[string]*bintree{}},
-			"rbac.yaml.tmpl":                          {templatesScRbacYamlTmpl, map[string]*bintree{}},
-			"service-accounts.yaml.tmpl":              {templatesScServiceAccountsYamlTmpl, map[string]*bintree{}},
-			"service.yaml.tmpl":                       {templatesScServiceYamlTmpl, map[string]*bintree{}},
-			"tls-cert-secret.yaml.tmpl":               {templatesScTlsCertSecretYamlTmpl, map[string]*bintree{}},
+		"sc": &bintree{nil, map[string]*bintree{
+			"api-registration.yaml.tmpl": &bintree{templatesScApiRegistrationYamlTmpl, map[string]*bintree{}},
+			"apiserver-deployment.yaml.tmpl": &bintree{templatesScApiserverDeploymentYamlTmpl, map[string]*bintree{}},
+			"ca_config.json": &bintree{templatesScCa_configJson, map[string]*bintree{}},
+			"ca_csr.json.tmpl": &bintree{templatesScCa_csrJsonTmpl, map[string]*bintree{}},
+			"controller-manager-deployment.yaml.tmpl": &bintree{templatesScControllerManagerDeploymentYamlTmpl, map[string]*bintree{}},
+			"etcd-cluster-with-backup.yaml.tmpl": &bintree{templatesScEtcdClusterWithBackupYamlTmpl, map[string]*bintree{}},
+			"etcd-operator-deployment.yaml.tmpl": &bintree{templatesScEtcdOperatorDeploymentYamlTmpl, map[string]*bintree{}},
+			"etcd-operator-rbac-binding.yaml.tmpl": &bintree{templatesScEtcdOperatorRbacBindingYamlTmpl, map[string]*bintree{}},
+			"etcd-operator-rbac.yaml.tmpl": &bintree{templatesScEtcdOperatorRbacYamlTmpl, map[string]*bintree{}},
+			"etcd-operator-service-account.yaml.tmpl": &bintree{templatesScEtcdOperatorServiceAccountYamlTmpl, map[string]*bintree{}},
+			"etcd-svc.yaml.tmpl": &bintree{templatesScEtcdSvcYamlTmpl, map[string]*bintree{}},
+			"etcd.yaml.tmpl": &bintree{templatesScEtcdYamlTmpl, map[string]*bintree{}},
+			"gencert_config.json.tmpl": &bintree{templatesScGencert_configJsonTmpl, map[string]*bintree{}},
+			"namespace.yaml.tmpl": &bintree{templatesScNamespaceYamlTmpl, map[string]*bintree{}},
+			"rbac.yaml.tmpl": &bintree{templatesScRbacYamlTmpl, map[string]*bintree{}},
+			"service-accounts.yaml.tmpl": &bintree{templatesScServiceAccountsYamlTmpl, map[string]*bintree{}},
+			"service.yaml.tmpl": &bintree{templatesScServiceYamlTmpl, map[string]*bintree{}},
+			"tls-cert-secret.yaml.tmpl": &bintree{templatesScTlsCertSecretYamlTmpl, map[string]*bintree{}},
 		}},
 	}},
 }}
@@ -699,3 +698,4 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
+
