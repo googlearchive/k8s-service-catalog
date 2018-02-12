@@ -20,6 +20,7 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/base32"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -116,6 +117,8 @@ func addGCPBroker() error {
 
 	vb, err := getOrCreateVirtualBroker(projectID, "default", "Default Broker")
 	if err != nil {
+		// Clean up the newly generated key if the command failed.
+		cleanupNewKey(brokerSAEmail, key)
 		return fmt.Errorf("error retrieving or creating default broker : %v", err)
 	}
 
@@ -126,11 +129,15 @@ func addGCPBroker() error {
 
 	err = generateGCPBrokerConfigs(dir, data)
 	if err != nil {
+		// Clean up the newly generated key if the command failed.
+		cleanupNewKey(brokerSAEmail, key)
 		return fmt.Errorf("error generating configs for GCP :: %v", err)
 	}
 
 	err = deployGCPBrokerConfigs(dir)
 	if err != nil {
+		// Clean up the newly generated key if the command failed.
+		cleanupNewKey(brokerSAEmail, key)
 		return fmt.Errorf("error deploying GCP broker configs :%v", err)
 	}
 
@@ -280,6 +287,25 @@ func httpAdapterFromAuthKey(keyFile string) (*adapter.HttpAdapter, error) {
 	return adapter.NewHttpAdapter(client), nil
 }
 
+// cleanupNewKey removes the newly generated service account key.
+func cleanupNewKey(email, key string) {
+	keyBytes, err := base64.StdEncoding.DecodeString(key)
+	if err != nil {
+		// Silently return if there is an error decoding the newly generated key.
+		return
+	}
+
+	keyJson := make(map[string]interface{})
+	err = json.Unmarshal(keyBytes, &keyJson)
+	if err != nil {
+		// Silently return if there is an error unmarshalling the key.
+		return
+	}
+
+	keyID := keyJson["private_key_id"].(string)
+	gcp.RemoveServiceAccountKey(email, keyID)
+}
+
 func NewRemoveGCPBrokerCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "remove-gcp-broker",
@@ -348,7 +374,7 @@ func removeGCPBroker() error {
 	}
 
 	// Clean up all the associated keys.
-	err = gcp.RemoveServiceAccountKeys(brokerSAEmail)
+	err = gcp.RemoveAllServiceAccountKeys(brokerSAEmail)
 	if err != nil {
 		return err
 	}
