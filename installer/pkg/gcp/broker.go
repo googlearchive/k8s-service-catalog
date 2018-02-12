@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -26,6 +27,12 @@ import (
 const (
 	DeploymentManagerAPI = "deploymentmanager.googleapis.com"
 	ServiceBrokerAPI     = "servicebroker.googleapis.com"
+
+	// The old and new command group name, and the version that made this change.
+	// See https://cloud.google.com/sdk/docs/release-notes#18800_2018-02-07 for more details.
+	oldSMCommandGroup = "service-management"
+	newSMCommandGroup = "services"
+	smChangeVersion   = "188.0.0"
 )
 
 // EnableAPIs enables given APIs in user's GCP project.
@@ -49,7 +56,12 @@ func EnableAPIs(apis []string) error {
 
 // enabledAPIs returned set of enabled GCP APIs.
 func enabledAPIs() (map[string]bool, error) {
-	cmd := exec.Command("gcloud", "service-management", "list", "--format", "json")
+	cg, err := getCommandGroupByVersion(smChangeVersion, oldSMCommandGroup, newSMCommandGroup)
+	if err != nil {
+		return nil, fmt.Errorf("error retrieving command group for Service Management: %v", err)
+	}
+
+	cmd := exec.Command("gcloud", cg, "list", "--format", "json")
 	output, err := cmd.Output()
 	if err != nil {
 		return nil, fmt.Errorf("failed to retrieve enabled GCP APIs : %v", err)
@@ -75,13 +87,60 @@ type gcpAPI struct {
 
 // enableAPI enables a GCP API.
 func enableAPI(api string) error {
-	cmd := exec.Command("gcloud", "service-management", "enable", api)
-	_, err := cmd.CombinedOutput()
+	cg, err := getCommandGroupByVersion(smChangeVersion, oldSMCommandGroup, newSMCommandGroup)
+	if err != nil {
+		return fmt.Errorf("error retrieving command group for Service Management: %v", err)
+	}
+
+	cmd := exec.Command("gcloud", cg, "enable", api)
+	_, err = cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("failed to enable API %s : %v", api, err)
 	}
 
 	return nil
+}
+
+// getCommandGroupByVersion picks the command group (CG) name based on the comparison between the
+// given version and the current version.
+func getCommandGroupByVersion(version, oldCG, newCG string) (string, error) {
+	cmd := exec.Command("gcloud", "version", "--format=json")
+	output, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("failed to retrieve Google Cloud SDK version: %s : %v", string(output), err)
+	}
+
+	versionMap := make(map[string]interface{})
+	err = json.Unmarshal(output, &versionMap)
+	if err != nil {
+		return "", fmt.Errorf("error unmarshalling version result: %s : %v", string(output), err)
+	}
+
+	// Get the version of Google Cloud SDK.
+	currentVersion := versionMap["Google Cloud SDK"].(string)
+
+	// Parse the given version and the target version to integers.
+	cv, err := parseVersionToInt(currentVersion)
+	if err != nil {
+		return "", fmt.Errorf("error parsing version string to integer: %v", err)
+	}
+	v, err := parseVersionToInt(version)
+	if err != nil {
+		return "", fmt.Errorf("error parsing version string to integer: %v", err)
+	}
+
+	// Compare the versions. If the current version is older than the given version, return the oldCG,
+	// otherwise, return the newCG.
+	if cv < v {
+		return oldCG, nil
+	}
+
+	return newCG, nil
+}
+
+func parseVersionToInt(version string) (int, error) {
+	version = strings.Replace(version, ".", "", -1)
+	return strconv.Atoi(version)
 }
 
 func CreateServiceAccount(name, displayName string) error {
