@@ -29,6 +29,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/gcp"
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/installer/pkg/version"
 	"github.com/Masterminds/semver"
 	"github.com/spf13/cobra"
@@ -524,7 +525,22 @@ func checkDependencies() error {
 	if len(missingCmds) > 0 {
 		return fmt.Errorf("%s commands not found in the PATH", strings.Join(missingCmds, ","))
 	}
+
+	// Also print out current account, project and zone information.
+	configs, err := gcp.GetConfigMap()
+	if err != nil {
+		return fmt.Errorf("error retrieving gcloud config: %v", err)
+	}
+
+	fmt.Printf("account: %s\n", getValueFromConfigMap("core", "account", configs))
+	fmt.Printf("project: %s\n", getValueFromConfigMap("core", "project", configs))
+	fmt.Printf("zone: %s\n", getValueFromConfigMap("compute", "zone", configs))
+
 	return nil
+}
+
+func getValueFromConfigMap(section, property string, configs map[string]interface{}) string {
+	return configs[section].(map[string]interface{})[property].(string)
 }
 
 func storageClassExists(name string) (bool, error) {

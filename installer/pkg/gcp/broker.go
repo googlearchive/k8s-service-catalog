@@ -204,3 +204,20 @@ func GetConfigValue(section, property string) (string, error) {
 	}
 	return strings.Trim(string(value), "\n"), nil
 }
+
+// GetConfigMap returns all the gcloud config in a JSON struct.
+func GetConfigMap() (map[string]interface{}, error) {
+	cmd := exec.Command("gcloud", "config", "list", "--format=json")
+	output, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("failed to list gcloud config : %v", err)
+	}
+
+	var result map[string]interface{}
+	err = json.Unmarshal(output, &result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to unmarshal gcloud config: %s : %v", string(output), err)
+	}
+
+	return result, nil
+}
