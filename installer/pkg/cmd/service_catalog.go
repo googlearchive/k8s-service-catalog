@@ -161,6 +161,10 @@ func installServiceCatalog(ic *InstallConfig) error {
 
 	err = deployConfig(dir)
 	if err != nil {
+		if strings.Contains(err.Error(), "\"etcd-operator\" is forbidden: attempt to grant extra privileges") {
+			fmt.Println("WARNING: Please run `kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)` before `sc install`.")
+		}
+
 		return fmt.Errorf("error deploying YAML files: %v", err)
 	}
 
