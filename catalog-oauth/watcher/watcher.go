@@ -24,6 +24,8 @@ package watcher
 import (
 	"time"
 
+	"github.com/golang/glog"
+	apiV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/informers/core/v1"
 	"k8s.io/client-go/kubernetes"
@@ -36,12 +38,17 @@ type Watcher struct {
 	stop chan struct{}
 }
 
+func tweakListOptions(o *apiV1.ListOptions) {
+	glog.Infof("Tweaking list options %+v", o)
+}
+
 // Watch calls addFunc, updateFunc, and deleteFunc, when a Secret is created,
 // updated, or deleted respectively. updateFunc also will get called
 // periodically with defaultResync time between calls.
-func (watcher *Watcher) Watch(klient kubernetes.Interface, defaultResync time.Duration, addFunc func(interface{}), updateFunc func(interface{}, interface{}), deleteFunc func(interface{})) {
+func (watcher *Watcher) Watch(klient kubernetes.Interface, namespace string, defaultResync time.Duration,
+	addFunc func(interface{}), updateFunc func(interface{}, interface{}), deleteFunc func(interface{})) {
 	// should only have one informer factory. If we ever have more than one watcher then we need to reuse
-	informer := v1.New(informers.NewSharedInformerFactory(klient, defaultResync)).Secrets().Informer()
+	informer := v1.New(informers.NewSharedInformerFactory(klient, defaultResync), namespace, tweakListOptions).Secrets().Informer()
 	informer.AddEventHandler(
 		cache.ResourceEventHandlerFuncs{
 			AddFunc:    addFunc,

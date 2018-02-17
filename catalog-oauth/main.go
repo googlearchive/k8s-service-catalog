@@ -27,8 +27,8 @@ import (
 	"flag"
 	"time"
 
-	"plori/catalog-oauth/auth"
-	"plori/catalog-oauth/watcher"
+	"github.com/GoogleCloudPlatform/k8s-service-catalog/catalog-oauth/auth"
+	"github.com/GoogleCloudPlatform/k8s-service-catalog/catalog-oauth/watcher"
 
 	"github.com/golang/glog"
 	"k8s.io/api/core/v1"
@@ -66,13 +66,15 @@ func main() {
 		if secret.Namespace != namespace {
 			return
 		}
+		glog.Infof("Sniffing a secret: %s:%s", secret.Namespace, secret.Name)
+
 		if err := auth.WriteTokenSecret(ctx, klient.CoreV1(), secret); err != nil {
 			glog.Errorf("error writing token secret: %v", err)
 		}
 	}
 
 	watcher := watcher.Watcher{}
-	watcher.Watch(klient, resyncInterval, checkAndWriteToken,
+	watcher.Watch(klient, namespace, resyncInterval, checkAndWriteToken,
 		func(oldObj, newObj interface{}) {
 			checkAndWriteToken(newObj)
 		},

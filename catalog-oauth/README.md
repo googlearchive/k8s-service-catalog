@@ -39,7 +39,7 @@ Kubernetes secret values.
 You can build with
 
 ```
-IMAGE=<IMAGE_TAG> make
+docker build -t <tag> .
 ```
 
 push to gcr with
