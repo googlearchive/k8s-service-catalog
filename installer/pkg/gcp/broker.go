@@ -25,9 +25,6 @@ import (
 )
 
 const (
-	DeploymentManagerAPI = "deploymentmanager.googleapis.com"
-	ServiceBrokerAPI     = "servicebroker.googleapis.com"
-
 	// The old and new command group name, and the version that made this change.
 	// See https://cloud.google.com/sdk/docs/release-notes#18800_2018-02-07 for more details.
 	oldSMCommandGroup = "service-management"

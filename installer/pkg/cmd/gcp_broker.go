@@ -17,11 +17,13 @@ limitations under the License.
 package cmd
 
 import (
+	"bytes"
 	"context"
 	"crypto/md5"
 	"encoding/base32"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -44,6 +46,18 @@ const (
 
 var (
 	gcpBrokerFileNames = []string{"gcp-broker", "google-oauth-deployment", "service-account-secret"}
+
+	requiredAPIs = []string{
+		"deploymentmanager.googleapis.com",
+		"servicebroker.googleapis.com",
+		// In the future, the APIs below will be enabled on-demand.
+		"iam.googleapis.com",
+		"bigtableadmin.googleapis.com",
+		"cloudresourcemanager.googleapis.com",
+		"ml.googleapis.com",
+		"spanner.googleapis.com",
+		"sqladmin.googleapis.com",
+	}
 )
 
 func NewAddGCPBrokerCmd() *cobra.Command {
@@ -70,16 +84,20 @@ func addGCPBroker() error {
 
 	fmt.Println("using project: ", projectID)
 
-	requiredAPIs := []string{
-		gcp.DeploymentManagerAPI,
-		gcp.ServiceBrokerAPI,
-	}
 	err = gcp.EnableAPIs(requiredAPIs)
 	if err != nil {
-		return fmt.Errorf("error enabling APIs: %v", err)
+		var b bytes.Buffer
+		fmt.Fprintln(&b, "error enabling APIs. To make sure all APIs are correctly enabled, use links below:")
+		for _, a := range requiredAPIs {
+			fmt.Fprintf(&b, "   %s: https://console.cloud.google.com/apis/library/%s/?project=%s\n", a, a, projectID)
+		}
+		return errors.New(b.String())
 	}
 
-	fmt.Println("enabled required APIs ", requiredAPIs)
+	fmt.Println("enabled required APIs:")
+	for _, a := range requiredAPIs {
+		fmt.Printf("  %s\n", a)
+	}
 
 	brokerSAName, err := constructSAName()
 	if err != nil {
