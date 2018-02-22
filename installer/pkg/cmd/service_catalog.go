@@ -542,7 +542,18 @@ func checkDependencies() error {
 }
 
 func getValueFromConfigMap(section, property string, configs map[string]interface{}) string {
-	return configs[section].(map[string]interface{})[property].(string)
+	switch s := configs[section].(type) {
+	case map[string]interface{}:
+		switch p := s[property].(type) {
+		case string:
+			return p
+		default:
+			// No value or unexpected type
+		}
+	default:
+		// No value or unexpected type.
+	}
+	return ""
 }
 
 func storageClassExists(name string) (bool, error) {
