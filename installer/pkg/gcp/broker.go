@@ -41,6 +41,8 @@ func EnableAPIs(apis []string) error {
 
 	for _, api := range apis {
 		if _, found := existingAPIs[api]; !found {
+			// Each enableAPI() can take more than a minute, so we want to show the status per API.
+			fmt.Printf("enabling a GCP API: %s\n", api)
 			err = enableAPI(api)
 			if err != nil {
 				return err
