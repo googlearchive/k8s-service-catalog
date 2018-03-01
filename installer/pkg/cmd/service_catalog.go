@@ -243,7 +243,7 @@ func deployConfig(dir string) error {
 				time.Sleep(2 * time.Second)
 			}
 		}
-		output, err := exec.Command("kubectl", "create", "-f", filepath.Join(dir, f.name+".yaml")).CombinedOutput()
+		output, err := exec.Command("kubectl", "apply", "-f", filepath.Join(dir, f.name+".yaml")).CombinedOutput()
 		// TODO(droot): cleanup
 		if err != nil {
 			return fmt.Errorf("deploy failed with output: %s :%v", err, string(output))

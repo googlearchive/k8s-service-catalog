@@ -271,7 +271,7 @@ func generateGCPBrokerConfigs(dir string, data map[string]interface{}) error {
 
 func deployGCPBrokerConfigs(dir string) error {
 	for _, f := range gcpBrokerFileNames {
-		output, err := exec.Command("kubectl", "create", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
+		output, err := exec.Command("kubectl", "apply", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
 		// TODO(droot): cleanup
 		if err != nil {
 			return fmt.Errorf("deploy failed with output: %s :%v", err, string(output))
