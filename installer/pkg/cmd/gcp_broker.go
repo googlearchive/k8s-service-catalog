@@ -53,6 +53,7 @@ var (
 		// In the future, the APIs below will be enabled on-demand.
 		"iam.googleapis.com",
 		"bigtableadmin.googleapis.com",
+		"cloudkms.googleapis.com",
 		"cloudresourcemanager.googleapis.com",
 		"ml.googleapis.com",
 		"spanner.googleapis.com",
