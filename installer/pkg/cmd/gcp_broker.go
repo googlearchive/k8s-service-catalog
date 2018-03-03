@@ -39,13 +39,16 @@ import (
 )
 
 const (
-	oldBrokerSAName    = "service-catalog-gcp"
-	brokerSANamePrefix = "scg-"
-	brokerSARole       = "roles/servicebroker.operator"
+	oldBrokerSAName                = "service-catalog-gcp"
+	brokerSANamePrefix             = "scg-"
+	brokerSARole                   = "roles/servicebroker.operator"
+	gcpBrokerTemplateDir           = "templates/gcp/"
+	gcpBrokerDeprecatedTemplateDir = "templates/gcp-deprecated/"
 )
 
 var (
-	gcpBrokerFileNames = []string{"gcp-broker", "google-oauth-deployment", "service-account-secret"}
+	gcpBrokerDeprecatedFileNames = []string{"google-oauth-deployment", "service-account-secret"}
+	gcpBrokerFileNames = []string{"namespace", "gcp-broker", "google-oauth-deployment", "service-account-secret", "google-oauth-rbac", "google-oauth-service-account"}
 
 	requiredAPIs = []string{
 		"deploymentmanager.googleapis.com",
@@ -146,14 +149,15 @@ func addGCPBroker() error {
 		"GCPBrokerURL":  vb.URL,
 	}
 
-	err = generateGCPBrokerConfigs(dir, data)
+	// generate config files and deploy the GCP broker resources
+	err = generateConfigs(dir, gcpBrokerTemplateDir, gcpBrokerFileNames, data)
 	if err != nil {
 		// Clean up the newly generated key if the command failed.
 		cleanupNewKey(brokerSAEmail, key)
-		return fmt.Errorf("error generating configs for GCP :: %v", err)
+		return fmt.Errorf("error generating configs for GCP broker :: %v", err)
 	}
 
-	err = deployGCPBrokerConfigs(dir)
+	err = deployConfigs(dir, gcpBrokerFileNames)
 	if err != nil {
 		// Clean up the newly generated key if the command failed.
 		cleanupNewKey(brokerSAEmail, key)
@@ -260,27 +264,6 @@ type virtualBroker struct {
 	URL      string   `json:"url"`
 }
 
-func generateGCPBrokerConfigs(dir string, data map[string]interface{}) error {
-	for _, f := range gcpBrokerFileNames {
-		err := generateFileFromTmpl(filepath.Join(dir, f+".yaml"), "templates/gcp/"+f+".yaml.tmpl", data)
-		if err != nil {
-			return fmt.Errorf("error generating config file: %s :%v", f, err)
-		}
-	}
-	return nil
-}
-
-func deployGCPBrokerConfigs(dir string) error {
-	for _, f := range gcpBrokerFileNames {
-		output, err := exec.Command("kubectl", "apply", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
-		// TODO(droot): cleanup
-		if err != nil {
-			return fmt.Errorf("deploy failed with output: %s :%v", err, string(output))
-		}
-	}
-	return nil
-}
-
 // getContext returns a context using information from flags.
 func getContext() context.Context {
 	// TODO(richardfung): add flags so users can control this?
@@ -350,12 +333,21 @@ func removeGCPBroker() error {
 
 	defer os.RemoveAll(dir)
 
-	err = generateGCPBrokerConfigs(dir, nil)
+	// remove GCP Broker k8s resources
+	err = generateConfigs(dir, gcpBrokerTemplateDir, gcpBrokerFileNames, nil)
 	if err != nil {
 		return fmt.Errorf("error generating configs for GCP :: %v", err)
 	}
 
-	err = removeGCPBrokerConfigs(dir)
+	err = removeConfigs(dir, gcpBrokerFileNames)
+	if err != nil {
+		return fmt.Errorf("error deleting broker resources : %v", err)
+	}
+
+	// due to moving the google-oauth resources to a separate namespace, we
+	// must also remove deprecated GCP Broker k8s resources for backwards
+	// compatibility
+	err = removeDeprecatedGCPBrokerResources()
 	if err != nil {
 		return fmt.Errorf("error deleting broker resources : %v", err)
 	}
@@ -401,12 +393,56 @@ func removeGCPBroker() error {
 	return nil
 }
 
-func removeGCPBrokerConfigs(dir string) error {
-	for _, f := range gcpBrokerFileNames {
-		output, err := exec.Command("kubectl", "delete", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
-		// TODO(droot): cleanup
+// removeDeprecatedGCPBrokerResources removes GCP broker-related k8s resources
+// that were created by a previous version of this tool in a different namespace,
+// for backwards compatibility
+func removeDeprecatedGCPBrokerResources() error {
+	dir, err := ioutil.TempDir("/tmp", "service-catalog-gcp-deprecated")
+	if err != nil {
+		return fmt.Errorf("error creating temporary dir: %v", err)
+	}
+
+	defer os.RemoveAll(dir)
+
+	err = generateConfigs(dir, gcpBrokerDeprecatedTemplateDir, gcpBrokerDeprecatedFileNames, nil)
+	if err != nil {
+		return fmt.Errorf("error generating configs: %v", err)
+	}
+
+	err = removeConfigs(dir, gcpBrokerDeprecatedFileNames)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func generateConfigs(genDir, templateDir string, filenames []string, data map[string]interface{}) error {
+	for _, f := range filenames {
+		if err := generateFileFromTmpl(filepath.Join(genDir, f+".yaml"), templateDir+f+".yaml.tmpl", data); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func deployConfigs(dir string, filenames[]string) error {
+	for _, f := range filenames {
+		output, err := exec.Command("kubectl", "apply", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
+		// TODO: cleanup
 		if err != nil {
-			return fmt.Errorf("failed to delete broker resources output: %s :%v", err, string(output))
+			return fmt.Errorf("deploy failed with output: %s :%v", err, string(output))
+		}
+	}
+	return nil
+}
+
+func removeConfigs(dir string, filenames []string) error {
+	for _, f := range filenames {
+		output, err := exec.Command("kubectl", "delete", "-f", filepath.Join(dir, f+".yaml"), "--ignore-not-found").CombinedOutput()
+		// TODO: cleanup
+		if err != nil {
+			return fmt.Errorf("failed to delete resources output: %s :%v", err, string(output))
 		}
 	}
 	return nil

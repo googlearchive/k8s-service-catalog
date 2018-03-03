@@ -13,23 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# Google OAuth manager namespace. Google OAuth resources should be
+# created and managed in this namespace.
+#
 ##################################################################
-
-# It's necessary to set this because some environments don't link sh -> bash.
-SHELL := /bin/bash
-
-OUT_DIR ?=output
-BIN_DIR := $(OUT_DIR)/bin
-SC_INSTALLER_NAME :="sc"
-
-all: generated_files build
-
-generated_files:
-	@go-bindata -pkg "cmd" -o pkg/cmd/templates.go templates/sc templates/gcp templates/gcp-deprecated
-
-build:
-	@mkdir -p $(BIN_DIR) && go build -o $(BIN_DIR)/sc cmd/sc/*.go
-
-clean:
-	@rm -rf $(OUT_DIR)
-
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: google-oauth
+  annotations:
+    # record sc version information
+    servicecatalog.k8s.io/sc-install-version: "{{ .Version }}"
