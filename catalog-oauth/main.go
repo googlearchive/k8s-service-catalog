@@ -46,30 +46,32 @@ func main() {
 	flag.DurationVar(&timeout, "t", 3*time.Minute, "request timeout duration")
 	flag.Parse()
 
-	ctx, _ := context.WithTimeout(context.Background(), timeout)
-
 	kubeConfig, err := rest.InClusterConfig()
 	if err != nil {
-		glog.Fatalf("unable to get in cluster config: %v", err)
+		glog.Fatalf("Unable to get in cluster config: %v", err)
 	}
 
 	klient, err := kubernetes.NewForConfig(kubeConfig)
 	if err != nil {
-		glog.Fatalf("unable to generate clientset from config: %v", err)
+		glog.Fatalf("Unable to generate clientset from config: %v", err)
 	}
 
 	checkAndWriteToken := func(obj interface{}) {
 		secret, ok := obj.(*v1.Secret)
 		if !ok {
-			glog.Error("obj in add function is not a secret")
+			glog.Warningf("Resource %T is not a secret; skipping ...", obj)
+			return
 		}
 		if secret.Namespace != namespace {
 			return
 		}
-		glog.Infof("Sniffing a secret: %s:%s", secret.Namespace, secret.Name)
+		glog.Infof("Secret %s/%s: checking for Service Catalog authentication extension contract...", secret.Namespace, secret.Name)
+
+		ctx, cancel := context.WithTimeout(context.Background(), timeout)
+		defer cancel()
 
 		if err := auth.WriteTokenSecret(ctx, klient.CoreV1(), secret); err != nil {
-			glog.Errorf("error writing token secret: %v", err)
+			glog.Errorf("Error: %v", err) // The returned error carries sufficient detail
 		}
 	}
 

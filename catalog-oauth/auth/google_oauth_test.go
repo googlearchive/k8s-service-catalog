@@ -113,10 +113,10 @@ func TestReadSecret(t *testing.T) {
 			},
 		},
 	} {
-		secret, err := readSecret(testData.secret)
+		secret := readSecret(testData.secret)
 		if !testData.expectedErr {
-			if err != nil {
-				t.Errorf("unexpected err for test case %s: %v", testData.secret.Name, err)
+			if secret == nil {
+				t.Errorf("unexpectedly failed to read secret %+v", testData.secret.Name)
 			} else {
 				if !bytes.Equal(secret.privateKey, testData.secret.Data[keyKey]) {
 					t.Errorf("testcase %s %s did not match: expected %v but got %v", testData.secret.Name, keyKey, testData.secret.Data[keyKey], secret.privateKey)
@@ -128,8 +128,8 @@ func TestReadSecret(t *testing.T) {
 					t.Errorf("testcase %s %s did not match: expected %s but got %s", testData.secret.Name, secretNamespaceKey, secretNamespace, secret.secretNamespace)
 				}
 			}
-		} else if err == nil {
-			t.Errorf("Expected err but none was found for test case %s", testData.secret.Name)
+		} else if secret != nil {
+			t.Errorf("Expected error when reading secret but secret was read successfully: %+v", testData.secret)
 		}
 	}
 }
@@ -205,15 +205,15 @@ func secretFromFile(privateKeyFilename, secretName, opaqueSecretNamespace, opaqu
 func writeAndCheck(core corev1.CoreV1Interface, token, namespace, name string) error {
 	err := writeSecret(core, token, namespace, name)
 	if err != nil {
-		return fmt.Errorf("error writing secret: %v", err)
+		return fmt.Errorf("error writing auth token to a secret %s/%s: %v", namespace, name, err)
 	}
 
 	secret, err := core.Secrets(namespace).Get(name, metav1.GetOptions{})
 	if err != nil {
-		return fmt.Errorf("error getting secret: %v", err)
+		return fmt.Errorf("error verifying auth token written to a secret %s/%s: %v", namespace, name, err)
 	}
 	if string(secret.Data["token"]) != token {
-		return fmt.Errorf("token in secret is %q but expected %q", string(secret.Data["token"]), token)
+		return fmt.Errorf("error verifying auth token written to a secret %s/%s: token value mismatch", namespace, name)
 	}
 	return nil
 }
