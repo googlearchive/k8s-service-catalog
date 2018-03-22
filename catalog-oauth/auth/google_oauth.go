@@ -27,6 +27,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/golang/glog"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"k8s.io/api/core/v1"
@@ -60,7 +61,7 @@ type GoogleOAuthSecret struct {
 func Token(ctx context.Context, privateKey []byte, scopes ...string) (*oauth2.Token, error) {
 	jwt, err := google.JWTConfigFromJSON(privateKey, scopes...)
 	if err != nil {
-		return nil, fmt.Errorf("error creating JWT Config: %v: ", err)
+		return nil, fmt.Errorf("error creating JWT Config: %v", err)
 	}
 
 	token, err := jwt.TokenSource(ctx).Token()
@@ -80,45 +81,47 @@ func Token(ctx context.Context, privateKey []byte, scopes ...string) (*oauth2.To
 // - "secretNamespace: the desired namespace of the secret this function creates
 // - "scopes": the scopes of the access token
 func WriteTokenSecret(ctx context.Context, core corev1.CoreV1Interface, oauthSecret *v1.Secret) error {
-	secret, err := readSecret(oauthSecret)
-	if err != nil {
-		return fmt.Errorf("error reading secret %s: %v", oauthSecret.Name, err)
+	secret := readSecret(oauthSecret)
+	if secret == nil {
+		return nil // secret was not recognized as Service Catalog authentication extension
 	}
 	token, err := Token(ctx, secret.privateKey, secret.scopes...)
 	if err != nil {
-		return fmt.Errorf("error getting token for secret %s: %v", oauthSecret.Name, err)
+		return fmt.Errorf("error creating an OAuth access token for secret %s/%s: %v", oauthSecret.Namespace, oauthSecret.Name, err)
 	}
-	if err := writeSecret(core, token.AccessToken, secret.secretNamespace, secret.secretName); err != nil {
-		return fmt.Errorf("error writing secret %s in namespace %s: %v", secret.secretName, secret.secretNamespace, err)
-	}
-	return nil
+	return writeSecret(core, token.AccessToken, secret.secretNamespace, secret.secretName)
 }
 
 // readSecret parses the given secret and converts it to googleOAuthSecret.
-func readSecret(secret *v1.Secret) (*GoogleOAuthSecret, error) {
+func readSecret(secret *v1.Secret) *GoogleOAuthSecret {
 	if secret.Data == nil {
-		return nil, fmt.Errorf("secret %s has no secret.Data field", secret.Name)
+		glog.Infof("Secret '%s/%s' is not compatible with the Service Catalog authentication extension contract (missing 'data' field); skipping...", secret.Namespace, secret.Name)
+		return nil
 	}
 	privateKey, ok := secret.Data[keyKey]
 	if !ok {
-		return nil, fmt.Errorf("secret %s has no %s in Data", secret.Name, keyKey)
+		glog.Infof("Secret '%s/%s' is not compatible with the Service Catalog authentication extension contract (missing '%s' field); skipping...", secret.Namespace, secret.Name, keyKey)
+		return nil
 	}
+	secretName, ok := secret.Data[secretNameKey]
+	if !ok {
+		glog.Infof("Secret '%s/%s' is not compatible with the Service Catalog authentication extension contract (missing '%s' field); skipping...", secret.Namespace, secret.Name, secretNameKey)
+		return nil
+	}
+	secretNamespace, ok := secret.Data[secretNamespaceKey]
+	if !ok {
+		glog.Infof("Secret '%s/%s' is not compatible with the Service Catalog authentication extension contract (missing '%s' field); skipping...", secret.Namespace, secret.Name, secretNamespaceKey)
+		return nil
+	}
+
 	var scopes []string
 	scopesBytes, ok := secret.Data[scopesKey]
 	if ok {
 		if err := json.Unmarshal(scopesBytes, &scopes); err != nil {
-			return nil, fmt.Errorf("secret %s has %s in Data but it could not be unmarshalled", secret.Name, scopesKey)
+			glog.Errorf("Secret %s/%s appears compatible with Service Catalog authentication extension contract, but the value in '%s' field could not be unmarshalled:\n%s\n%v",
+				secret.Namespace, secret.Name, scopesKey, string(scopesBytes), err)
+			return nil
 		}
-	}
-
-	secretName, ok := secret.Data[secretNameKey]
-	if !ok {
-		return nil, fmt.Errorf("secret %s has no %s in Data", secret.Name, secretNameKey)
-	}
-
-	secretNamespace, ok := secret.Data[secretNamespaceKey]
-	if !ok {
-		return nil, fmt.Errorf("secret %s has no %s in Data", secret.Name, secretNamespaceKey)
 	}
 
 	return &GoogleOAuthSecret{
@@ -126,7 +129,7 @@ func readSecret(secret *v1.Secret) (*GoogleOAuthSecret, error) {
 		scopes:          scopes,
 		secretName:      string(secretName),
 		secretNamespace: string(secretNamespace),
-	}, nil
+	}
 }
 
 // writeSecret writes/updates a secret with given name and namespace to have the
@@ -146,10 +149,10 @@ func writeSecret(core corev1.CoreV1Interface, token, namespace, name string) err
 			Data: data,
 		}
 		if secret, err = secretSpace.Create(secret); err != nil {
-			return fmt.Errorf("error creating secret: %v", err)
+			return fmt.Errorf("failed to create a new OAuth credentials secret %s/%s: %v", namespace, name, err)
 		}
 	} else if err != nil {
-		return fmt.Errorf("error getting secret: %v", err)
+		return fmt.Errorf("failed to read a pre-existing OAuth credentials secret %s/%s: %v", namespace, name, err)
 	} else {
 		// Secret already exists so update it.
 		if secret.Data == nil {
@@ -157,8 +160,10 @@ func writeSecret(core corev1.CoreV1Interface, token, namespace, name string) err
 		}
 		secret.Data[tokenKey] = []byte(token)
 		if secret, err = secretSpace.Update(secret); err != nil {
-			return fmt.Errorf("error updating secret: %v", err)
+			return fmt.Errorf("failed to save an OAuth access token into a secret %s/%s: %v", namespace, name, err)
 		}
 	}
+
+	glog.Infof("Successfully wrote an OAuth access token into secret %s/%s", namespace, name)
 	return nil
 }
