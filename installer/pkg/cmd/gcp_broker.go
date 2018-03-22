@@ -48,7 +48,7 @@ const (
 
 var (
 	gcpBrokerDeprecatedFileNames = []string{"google-oauth-deployment", "service-account-secret"}
-	gcpBrokerFileNames = []string{"namespace", "gcp-broker", "google-oauth-deployment", "service-account-secret", "google-oauth-rbac", "google-oauth-service-account"}
+	gcpBrokerFileNames           = []string{"namespace", "gcp-broker", "google-oauth-deployment", "service-account-secret", "google-oauth-rbac", "google-oauth-service-account"}
 
 	requiredAPIs = []string{
 		"cloudresourcemanager.googleapis.com",
@@ -231,18 +231,16 @@ func getOrCreateVirtualBroker(projectID, brokerName, brokerTitle string) (*virtu
 
 	brokerURL := "https://servicebroker.googleapis.com"
 	errCode, respBody, err := brokerClient.CreateBroker(&adapter.CreateBrokerParams{
-		URL:      brokerURL,
-		Project:  projectID,
-		Name:     brokerName,
-		Title:    brokerTitle,
-		Catalogs: []string{"projects/gcp-services/catalogs/gcp-catalog"},
+		URL:     brokerURL,
+		Project: projectID,
+		Name:    brokerName,
+		Title:   brokerTitle,
 	})
 	if errCode == 409 {
 		return &virtualBroker{
-			Name:     brokerName,
-			URL:      fmt.Sprintf("%s/v1beta1/projects/%s/brokers/%s", brokerURL, projectID, brokerName),
-			Title:    brokerTitle,
-			Catalogs: []string{"projects/gcp-services/catalogs/gcp-catalog"},
+			Name:  brokerName,
+			URL:   fmt.Sprintf("%s/v1beta1/projects/%s/brokers/%s", brokerURL, projectID, brokerName),
+			Title: brokerTitle,
 		}, nil
 	}
 
@@ -257,10 +255,9 @@ func getOrCreateVirtualBroker(projectID, brokerName, brokerTitle string) (*virtu
 
 // virtualBroker represents a GCP virtual broker.
 type virtualBroker struct {
-	Name     string   `json:"name"`
-	Title    string   `json:"title"`
-	Catalogs []string `json:"catalogs"`
-	URL      string   `json:"url"`
+	Name  string `json:"name"`
+	Title string `json:"title"`
+	URL   string `json:"url"`
 }
 
 // getContext returns a context using information from flags.
@@ -425,7 +422,7 @@ func generateConfigs(genDir, templateDir string, filenames []string, data map[st
 	return nil
 }
 
-func deployConfigs(dir string, filenames[]string) error {
+func deployConfigs(dir string, filenames []string) error {
 	for _, f := range filenames {
 		output, err := exec.Command("kubectl", "apply", "-f", filepath.Join(dir, f+".yaml")).CombinedOutput()
 		// TODO: cleanup
