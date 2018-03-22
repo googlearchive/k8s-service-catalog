@@ -33,11 +33,10 @@ type Broker struct {
 
 // CreateBrokerParams is used as input to CreateBroker.
 type CreateBrokerParams struct {
-	URL      string
-	Project  string
-	Name     string
-	Title    string
-	Catalogs []string
+	URL     string
+	Project string
+	Name    string
+	Title   string
 }
 
 type DoClient interface {
@@ -61,9 +60,8 @@ func (adapter *HttpAdapter) CreateBroker(params *CreateBrokerParams) (int, []byt
 	url := fmt.Sprintf("%s/v1beta1/projects/%s/brokers", params.URL, params.Project)
 
 	broker := Broker{
-		Name:     fmt.Sprintf("projects/%s/brokers/%s", params.Project, params.Name),
-		Title:    params.Title,
-		Catalogs: params.Catalogs,
+		Name:  fmt.Sprintf("projects/%s/brokers/%s", params.Project, params.Name),
+		Title: params.Title,
 	}
 	postBody, err := json.Marshal(broker)
 	if err != nil {
