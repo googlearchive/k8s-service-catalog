@@ -118,7 +118,7 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 	// add install command flags
 	c.Flags().Int32Var(&ic.EtcdClusterSize, "etcd-cluster-size", 3, "Etcd cluster size")
 	c.Flags().StringVar(&ic.EtcdBackupStorageClass, "etcd-backup-storageclass", "standard", "Etcd Backup StorageClass")
-	c.Flags().StringVar(&ic.Version, "version", "", "Service Catalog version")
+	c.Flags().StringVar(&ic.Version, "version", "0.1.11", "Service Catalog version")
 	c.Flags().BoolVar(&ic.DryRun, "dryrun", false, "Dryrun")
 
 	return c
@@ -200,11 +200,13 @@ func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
 		return dir, err
 	}
 
-	// by default, we pick latest image tag which points to the latest stable
-	// released version of service catalog.
-	imageTag := "latest"
+	// TODO(mkibbe): Hard-code the default version of Service Catalog to a
+	// known good one for now. We cannot guarantee that the "latest"-tagged
+	// Service Catalog version is compatible with our templates. Later,
+	// flesh out the upgrade story to be able to dynamically install the
+	// latest version at an explicit versioned tag.
+	imageTag := "v0.1.11"
 	if ic.Version != "" {
-		// TODO(droot): validate version
 		imageTag = "v" + ic.Version
 	}
 	svcCatalogImage := "quay.io/kubernetes-service-catalog/service-catalog:" + imageTag
