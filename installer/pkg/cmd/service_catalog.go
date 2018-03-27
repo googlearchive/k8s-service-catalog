@@ -118,7 +118,7 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 	// add install command flags
 	c.Flags().Int32Var(&ic.EtcdClusterSize, "etcd-cluster-size", 3, "Etcd cluster size")
 	c.Flags().StringVar(&ic.EtcdBackupStorageClass, "etcd-backup-storageclass", "standard", "Etcd Backup StorageClass")
-	c.Flags().StringVar(&ic.Version, "version", "0.1.11", "Service Catalog version")
+	c.Flags().StringVar(&ic.Version, "version", "0.1.11-gke.0", "Service Catalog version")
 	c.Flags().BoolVar(&ic.DryRun, "dryrun", false, "Dryrun")
 
 	return c
@@ -205,11 +205,11 @@ func generateDeploymentConfigs(ic *InstallConfig) (string, error) {
 	// Service Catalog version is compatible with our templates. Later,
 	// flesh out the upgrade story to be able to dynamically install the
 	// latest version at an explicit versioned tag.
-	imageTag := "v0.1.11"
+	imageTag := "v0.1.11-gke.0"
 	if ic.Version != "" {
 		imageTag = "v" + ic.Version
 	}
-	svcCatalogImage := "quay.io/kubernetes-service-catalog/service-catalog:" + imageTag
+	svcCatalogImage := "gcr.io/gcp-services/service-catalog:" + imageTag
 
 	data := map[string]interface{}{
 		"CAPublicKey":            ca,
