@@ -108,10 +108,10 @@ assumes kubectl is configured to connect to the Kubernetes cluster.`,
 		// Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if err := installServiceCatalog(ic); err != nil {
-				fmt.Println("Service Catalog could not be installed")
+				fmt.Println("Service Catalog could not be installed.")
 				return err
 			}
-			fmt.Println("Service Catalog installed successfully")
+			fmt.Println("Service Catalog installed successfully.")
 			return nil
 		},
 	}
@@ -467,7 +467,7 @@ func uninstallServiceCatalog(ns string) error {
 	// deletion is actually done before printing the success message.
 	waitOnNSDeletion()
 
-	fmt.Println("uninstalled service catalog successfully")
+	fmt.Println("Service Catalog uninstalled successfully.")
 	return nil
 }
 
