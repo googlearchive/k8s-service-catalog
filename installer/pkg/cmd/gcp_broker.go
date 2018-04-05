@@ -87,19 +87,8 @@ func addGCPBroker() error {
 
 	fmt.Println("using project: ", projectID)
 
-	err = gcp.EnableAPIs(requiredAPIs)
-	if err != nil {
-		var b bytes.Buffer
-		fmt.Fprintln(&b, "error enabling APIs. To make sure all APIs are correctly enabled, use links below:")
-		for _, a := range requiredAPIs {
-			fmt.Fprintf(&b, "   %s: https://console.cloud.google.com/apis/library/%s/?project=%s\n", a, a, projectID)
-		}
-		return errors.New(b.String())
-	}
-
-	fmt.Println("enabled required APIs:")
-	for _, a := range requiredAPIs {
-		fmt.Printf("  %s\n", a)
+	if err := enableRequiredAPIs(projectID); err != nil {
+		return err
 	}
 
 	brokerSAName, err := constructSAName()
@@ -164,6 +153,24 @@ func addGCPBroker() error {
 	}
 
 	return err
+}
+
+func enableRequiredAPIs(projectID string) error {
+	if err := gcp.EnableAPIs(requiredAPIs); err != nil {
+		var b bytes.Buffer
+		fmt.Fprintln(&b, "error enabling APIs. To make sure all APIs are correctly enabled, use links below:")
+		for _, a := range requiredAPIs {
+			fmt.Fprintf(&b, "   %s: https://console.cloud.google.com/apis/library/%s/?project=%s\n", a, a, projectID)
+		}
+		return errors.New(b.String())
+	}
+
+	fmt.Println("enabled required APIs:")
+	for _, a := range requiredAPIs {
+		fmt.Printf("  %s\n", a)
+	}
+
+	return nil
 }
 
 func constructSAName() (string, error) {
@@ -238,9 +245,10 @@ func getOrCreateVirtualBroker(projectID, brokerName, brokerTitle string) (*virtu
 	})
 	if errCode == 409 {
 		return &virtualBroker{
-			Name:  brokerName,
-			URL:   fmt.Sprintf("%s/v1beta1/projects/%s/brokers/%s", brokerURL, projectID, brokerName),
-			Title: brokerTitle,
+			Name:     brokerName,
+			URL:      fmt.Sprintf("%s/v1beta1/projects/%s/brokers/%s", brokerURL, projectID, brokerName),
+			Title:    brokerTitle,
+			Existing: true,
 		}, nil
 	}
 
@@ -255,9 +263,10 @@ func getOrCreateVirtualBroker(projectID, brokerName, brokerTitle string) (*virtu
 
 // virtualBroker represents a GCP virtual broker.
 type virtualBroker struct {
-	Name  string `json:"name"`
-	Title string `json:"title"`
-	URL   string `json:"url"`
+	Name     string `json:"name"`
+	Title    string `json:"title"`
+	URL      string `json:"url"`
+	Existing bool   `json:"-"`
 }
 
 // getContext returns a context using information from flags.
@@ -442,4 +451,57 @@ func removeConfigs(dir string, filenames []string) error {
 		}
 	}
 	return nil
+}
+
+type createBrokerConfig struct {
+	name  string // name of the broker
+	title string // title of the broker
+}
+
+// NewCreateGCPBrokerCmd returns a cobra command which creates a new GCP service
+// broker without adding it to the existing Kubernetes cluster.
+func NewCreateGCPBrokerCmd() *cobra.Command {
+	cfg := &createBrokerConfig{}
+	cmd := &cobra.Command{
+		Use:   "create-gcp-broker",
+		Short: "Create a GCP broker",
+		Long:  "Creates a GCP broker without adding it to an existing cluster",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return createGCPBroker(cfg)
+		},
+	}
+	cmd.Flags().StringVar(&cfg.name, "name", "default", "Broker name, lowercase, hyphens allowed")
+	cmd.Flags().StringVar(&cfg.title, "title", "Default Broker", "A title of the broker for display")
+	return cmd
+}
+
+func createGCPBroker(cfg *createBrokerConfig) error {
+	projectID, err := gcp.GetConfigValue("core", "project")
+	if err != nil {
+		return fmt.Errorf("error getting configured project value : %v", err)
+	}
+
+	fmt.Println("using project: ", projectID)
+
+	if err := enableRequiredAPIs(projectID); err != nil {
+		return err
+	}
+
+	vb, err := getOrCreateVirtualBroker(projectID, cfg.name, cfg.title)
+	if err != nil {
+		return fmt.Errorf("error retrieving or creating default broker : %v", err)
+	}
+
+	msg := "Created a new"
+	if vb.Existing {
+		msg = "Reused an existing"
+	}
+
+	fmt.Printf(`%s GCP Broker:
+    Name:  %s
+    Title: %s
+    URL:   %s
+`, msg, vb.Name, vb.Title, vb.URL)
+
+	return err
 }

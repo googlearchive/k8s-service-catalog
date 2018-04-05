@@ -47,6 +47,17 @@ in a Kubernets Cluster.`,
 		// turn off the usage by default on any error
 		SilenceUsage: true,
 	}
+
+	advanced := &cobra.Command{
+		Use:   "advanced",
+		Short: "Set of advanced commands",
+		Long:  "Set of advanced commands for expert users",
+	}
+
+	advanced.AddCommand(
+		cmd.NewCreateGCPBrokerCmd(),
+	)
+
 	c.AddCommand(
 		cmd.NewCheckDependenciesCmd(),
 		cmd.NewServiceCatalogInstallCmd(),
@@ -55,6 +66,7 @@ in a Kubernets Cluster.`,
 		cmd.NewRemoveGCPBrokerCmd(),
 		cmd.NewUpdateCmd(),
 		cmd.NewVersionCmd(),
+		advanced,
 	)
 
 	// Add any globals flags here
