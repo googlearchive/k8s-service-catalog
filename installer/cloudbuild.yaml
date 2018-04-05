@@ -1,0 +1,82 @@
+steps:
+- name: 'gcr.io/cloud-builders/go'
+  args: ['get', 'github.com/jteeuwen/go-bindata/...']
+  env: ['PROJECT_ROOT=${_PROJECT_ROOT}']
+  id: 'get-bindata'
+
+- name: 'alpine'
+  args: ['gopath/bin/go-bindata', '-pkg', 'cmd', '-o', 'pkg/cmd/templates.go', 'templates/sc', 'templates/gcp', 'templates/gcp-deprecated']
+  id: 'bindata'
+
+- name: 'gcr.io/cloud-builders/go'
+  args: ['install', '--ldflags', '${_LDFLAGS}', 'github.com/GoogleCloudPlatform/k8s-service-catalog/installer/cmd/sc']
+  env: ['PROJECT_ROOT=${_PROJECT_ROOT}']
+  id: 'sc-linux'
+
+- name: 'gcr.io/cloud-builders/go'
+  args: ['install', 'github.com/GoogleCloudPlatform/k8s-service-catalog/installer/cmd/sc']
+  env:
+  - PROJECT_ROOT=github.com/GoogleCloudPlatform/k8s-service-catalog/installer
+  - GOOS=darwin
+  - GOARCH=amd64
+  waitFor: ['bindata']
+  id: 'sc-darwin'
+
+- name: 'gcr.io/cloud-builders/go'
+  args: ['get', '-d', 'github.com/cloudflare/cfssl/cmd/cfssl', 'github.com/cloudflare/cfssl/cmd/cfssljson']
+  env: ['PROJECT_ROOT=${_PROJECT_ROOT}']
+  id: 'get-cfssl'
+  waitFor: ['-']
+
+- name: 'gcr.io/cloud-builders/go'
+  args: ['install', '--ldflags', '${_LDFLAGS}', 'github.com/cloudflare/cfssl/cmd/cfssl']
+  env: ['PROJECT_ROOT=${_PROJECT_ROOT}']
+  id: 'cfssl-linux'
+  waitFor: ['get-cfssl']
+
+- name: 'gcr.io/cloud-builders/go'
+  args: ['install', '--ldflags', '${_LDFLAGS}', 'github.com/cloudflare/cfssl/cmd/cfssljson']
+  env: ['PROJECT_ROOT=${_PROJECT_ROOT}']
+  id: 'cfssljson-linux'
+  waitFor: ['get-cfssl']
+
+# Disabled due to failing cross compilation: SQLite seems to need cgo.
+# - name: 'gcr.io/cloud-builders/go'
+#   args: ['install', 'github.com/cloudflare/cfssl/cmd/cfssl']
+#   env:
+#   - PROJECT_ROOT=github.com/GoogleCloudPlatform/k8s-service-catalog/installer
+#   - GOOS=darwin
+#   - GOARCH=amd64
+#   id: 'cfssl-darwin'
+#   waitFor: ['get-cfssl']
+
+- name: 'gcr.io/cloud-builders/go'
+  args: ['install', 'github.com/cloudflare/cfssl/cmd/cfssljson']
+  env:
+  - PROJECT_ROOT=github.com/GoogleCloudPlatform/k8s-service-catalog/installer
+  - GOOS=darwin
+  - GOARCH=amd64
+  id: 'cfssljson-darwin'
+  waitFor: ['get-cfssl']
+
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['-m', 'cp', 'gopath/bin/sc', 'gopath/bin/cfssl', 'gopath/bin/cfssljson', 'gs://${_GCS_BUCKET}/linux-amd64']
+  id: 'gsutil-linux'
+  waitFor: ['sc-linux', 'cfssl-linux', 'cfssljson-linux']
+
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['-m', 'cp',
+   'gopath/bin/darwin_amd64/sc',
+   # 'gopath/bin/darwin_amd64/cfssl'  # removed; see above
+   'gopath/bin/darwin_amd64/cfssljson',
+   'gs://${_GCS_BUCKET}/darwin-amd64',]
+  id: 'gsutil-darwin'
+  waitFor:
+    - 'sc-darwin'
+    # 'cfssl-darwin'  # removed; see above
+    - 'cfssljson-darwin'
+
+substitutions:
+  _LDFLAGS: '-linkmode external -extldflags "-static"'
+  _PROJECT_ROOT: 'github.com/GoogleCloudPlatform/k8s-service-catalog/installer'
+  _GCS_BUCKET: 'sc-release-test'
