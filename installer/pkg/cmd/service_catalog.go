@@ -168,6 +168,14 @@ func installServiceCatalog(ic *InstallConfig) error {
 		return fmt.Errorf("error deploying YAML files: %v", err)
 	}
 
+	// Delete the pods for the Service Catalog controller-manager and API
+	// server, to ensure that they have up-to-date certs (can get
+	// out-of-date during back-to-back `sc install`s)
+	err = restartServiceCatalogPods(ic)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -609,4 +617,13 @@ func getServerVersion() (*semver.Version, error) {
 
 type k8sVersion struct {
 	GitVersion string `json:"gitVersion"`
+}
+
+func restartServiceCatalogPods(ic *InstallConfig) error {
+	output, err := exec.Command(KubectlBinaryName, "delete", "pods", "-l", "app in (service-catalog-apiserver, service-catalog-controller-manager)", "--namespace", ic.Namespace).CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("error restarting Service Catalog pods: %v", string(output))
+	}
+
+	return nil
 }
