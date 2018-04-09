@@ -1,0 +1,24 @@
+language: go
+
+os:
+  - linux
+  - osx
+
+install:
+  - go get -t ./installer/cmd/sc
+  - go get -u github.com/jteeuwen/go-bindata/...
+
+script:
+  - ./scripts/build.sh
+
+go: '1.10'
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: VshJ9+Xdl/CJei8zPQNBX42Up3zdTIHsC+QoyD5FaAA3Xd9HtuHUbbP940kzR0P6tunp6bkNk0pCv3QLepRtOQiyQMpzQebHGxaBV5FAjtstZaZGS+yieK5Vr4m8GMrb4qbCRjuQ6hMZKdsRlxnJu+1FfIdDdbHpK/4Y8x+SMJxDCSRZx4J91YD2oxDhTXjF0AKpw60c0rNop69mxBBToXS52/adx1/TO6d2oYNJHm9M+H4Z/Pnrp6eM1PKAlgAqxIwtXN3zg4UW6QPmUSbXpSGOJjo7xAwaiW2QbiBP8rUmnRztYgti/lmYIehbvgCImWmhN9lnI/ggNQAWCF2urHohioWYIGsyrQr/wNjnt1nHai1yc82WGj8ExueHZBjtxMCL41IWJIdeuZFxPpBEWqEe5U8/Vw2vUARBSjSMgzwg8LzJ9eOm9P3E0lURsec5UYHf9i6efT3gwXfXBOe0fMn5xu38lgC7Gk6lALjZeZbbrDCURq65v7aqHlYtr7wPBguqJCcPLG4VILZd3VFf1m3qd6oKmboIeyt7HmQDdzB8NF6bv2Xbw6uKP60DpXngva6StWp0Ndql1OUHC8PKbzThFMXMeJpC8N9FRI1IGIidyy3p1rrCM/C4+MUlTCrHqJek/PS7XV93tj7s9X/lMBvq4eO1LCDpOy1j+b+5igU=
+  file: "./installer/output/service-catalog-installer-${TRAVIS_TAG}-${TRAVIS_OS_NAME}.tgz"
+  on:
+    tags: true
+    repo: GoogleCloudPlatform/k8s-service-catalog
