@@ -41,17 +41,15 @@ func TestCreateBrokerFailure(t *testing.T) {
 // and that the response is unmarshalled correctly.
 func TestCreateBrokerSuccess(t *testing.T) {
 	params := &CreateBrokerParams{
-		Name:     "broker",
-		Title:    "Success broker",
-		Project:  "success",
-		Catalogs: []string{"kit", "the", "kat"},
+		Name:    "broker",
+		Title:   "Success broker",
+		Project: "success",
 	}
 	url := "https://www.happifying.com"
 	resultBroker := Broker{
-		Catalogs: params.Catalogs,
-		Name:     fmt.Sprintf("projects/%s/brokers/%s", params.Project, params.Name),
-		Title:    params.Title,
-		URL:      &url,
+		Name:  fmt.Sprintf("projects/%s/brokers/%s", params.Project, params.Name),
+		Title: params.Title,
+		URL:   &url,
 	}
 
 	client := &MockDoClient{
