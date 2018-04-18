@@ -57,11 +57,11 @@ var (
 			fmt.Println("Services:")
 			for index, svc := range res.Services {
 				fmt.Printf("%d. %s (%s)\n", index+1, svc.Name, svc.ID)
-				fmt.Printf("   Desription: %s\n", svc.Description)
+				fmt.Printf("   Description: %s\n", svc.Description)
 				fmt.Printf("   Plans:\n")
 				for index, plan := range svc.Plans {
 					fmt.Printf("   %d. %s (%s)\n", index+1, plan.Name, plan.ID)
-					fmt.Printf("      Desription: %s", plan.Description)
+					fmt.Printf("      Description: %s", plan.Description)
 					fmt.Printf("      Bindable: %t\n\n", *plan.Bindable)
 				}
 				fmt.Println()
