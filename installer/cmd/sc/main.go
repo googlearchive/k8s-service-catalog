@@ -41,8 +41,8 @@ func NewCommand() *cobra.Command {
 		Short: "CLI to manage Service Catalog in a Kubernetes Cluster",
 		Long: `sc is a CLI for managing lifecycle of Service Catalog and 
 Service brokers in a Kubernetes Cluster. It implements commands to
-install, uninstall Service Catalog and add/remove GCP service broker
-in a Kubernets Cluster.`,
+install, uninstall Service Catalog and add/remove Google Cloud Platform
+Service Broker in a Kubernets Cluster.`,
 
 		// turn off the usage by default on any error
 		SilenceUsage: true,

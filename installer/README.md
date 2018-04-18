@@ -1,6 +1,7 @@
 # Service Catalog Installer
 
-Service Catalog Installer is a CLI tool to manage Service Catalog and GCP Service Broker atop Kubernetes Cluster.
+Service Catalog Installer is a CLI tool to manage Service Catalog and Google
+Cloud Platform Service Broker atop Kubernetes Cluster.
 
 - [Intro](#intro)
 - [Requirements](#requirements)
@@ -16,8 +17,8 @@ Service Catalog Installer `sc` lets you do the following:
 
 - Install Service Catalog
 - Uninstall Service Catalog
-- Install GCP Service Broker
-- Uninstall GCP Service Broker
+- Install the Service Broker
+- Uninstall the Service Broker
 
 ## Requirements
 
@@ -37,7 +38,8 @@ Before installing Service Catalog atop Kubernetes cluster, you need to ensure fo
   ```bash
   kubectl create clusterrolebinding cluster-admin-binding --clusterrole=cluster-admin --user=<user-name>
   ```
-- [gcloud](https://cloud.google.com/sdk/) should be installed and configured with following commands in order to be used by the `sc` to configure GCP broker.
+- [gcloud](https://cloud.google.com/sdk/) should be installed and configured with following
+   commands in order to be used by the `sc` to configure the Service Broker.
   ```bash
   gcloud components install beta
   gcloud auth login
@@ -93,11 +95,11 @@ After running the above command, `sc` should get installed in your GOPATH/bin di
   ```bash
   sc uninstall
   ```
-- To add GCP Service Broker to the Service Catalog, run
+- To add the Service Broker to the Service Catalog, run
   ```bash
   sc add-gcp-broker
   ```
-- To remove GCP Service Broker from the Service Catalog, run
+- To remove the Service Broker from the Service Catalog, run
   ```bash
   sc remove-gcp-broker
   ```
@@ -120,7 +122,8 @@ make
 
 ## Tutorial
 
-Once you have Service Catalog installed and GCP broker added to the cluster.  Follow this [basic tutorial](/installer/service-catalog-pubsub-tutorial.md) to get started with Service Catalog.
+Once you have Service Catalog installed and the Service Broker added to the cluster,
+follow this [basic tutorial](/installer/service-catalog-pubsub-tutorial.md) to get started with Service Catalog.
 
 ## Contribution
 
