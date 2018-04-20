@@ -46,7 +46,7 @@ func (flags *BrokerURLConstructor) validateServer() error {
 	parts := strings.Split(flags.Server, "/")
 	partsLen := len(parts)
 
-	if partsLen < 8 || parts[partsLen-2] != brokersKey || parts[partsLen-4] != projectsKey || parts[partsLen-5] != betaKey {
+	if partsLen != 8 || parts[partsLen-2] != brokersKey || parts[partsLen-4] != projectsKey || parts[partsLen-5] != betaKey {
 		return fmt.Errorf("broker server URL %q is invalid", flags.Server)
 	}
 	flags.Broker = parts[partsLen-1]
