@@ -19,23 +19,22 @@ import (
 	"log"
 
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/broker-cli/client/adapter"
-	"github.com/GoogleCloudPlatform/k8s-service-catalog/broker-cli/client/osb"
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/broker-cli/cmd/flags"
 	"github.com/spf13/cobra"
 )
 
-// Instance is a Service Instance.
-type Instance struct {
-	ID            string `json:"instance_id"`
-	ServiceID     string `json:"service_id"`
-	PlanID        string `json:"plan_id"`
-	CreateTime    string `json:"createTime"`
-	NumOfBindings int    `json:"numOfBindings"`
+// instance is a Service Instance.
+type instance struct {
+	ID         string
+	serviceID  string
+	planID     string
+	createTime string
+	bindings   []string
 }
 
 // listInstancesResult is the output from ListInstances.
 type listInstancesResult struct {
-	Instances []*Instance `json:"instances"`
+	instances []*instance
 }
 
 var (
@@ -123,22 +122,23 @@ var (
 		Short: "List service instances in a broker",
 		Long:  "List service instances in a broker",
 		Run: func(cmd *cobra.Command, args []string) {
+			client := httpAdapterFromFlag()
 			brokerURL, err := instancesFlags.BrokerURL()
 			if err != nil {
 				log.Fatalf("Error listing instances: %v", err)
 			}
-			res, err := listInstances(brokerURL)
+			res, err := listInstances(client, brokerURL)
 			if err != nil {
 				log.Fatalf("Error listing instances in broker %s: %v", brokerURL, err)
 			}
 
-			if len(res.Instances) == 0 {
+			if len(res.instances) == 0 {
 				fmt.Printf("Broker %q in project %q has no associated instances\n", instancesFlags.Broker, instancesFlags.Project)
 				return
 			}
 
 			fmt.Printf("Successfully listed service instances in broker %q within project %q!!\n\n", instancesFlags.Broker, instancesFlags.Project)
-			printListInstances(res)
+			printListInstances(client, res, brokerURL)
 
 		},
 	}
@@ -382,15 +382,14 @@ func pollInstanceOpFunc(client adapter.Adapter, apiVersion, brokerURL, instanceI
 	return cb
 }
 
-func listInstances(brokerURL string) (*listInstancesResult, error) {
-	client := httpAdapterFromFlag()
+func listInstances(client adapter.Adapter, brokerURL string) (*listInstancesResult, error) {
 	lir, err := client.ListInstances(&adapter.ListInstancesParams{Server: brokerURL})
 	if err != nil {
 		return nil, err
 	}
 
 	result := &listInstancesResult{}
-	var instances []*Instance
+	var instances []*instance
 	for _, i := range lir.Instances {
 		lbr, err := client.ListBindings(&adapter.ListBindingsParams{
 			Server:     brokerURL,
@@ -399,19 +398,25 @@ func listInstances(brokerURL string) (*listInstancesResult, error) {
 		if err != nil {
 			return nil, err
 		}
-		instances = append(instances, &Instance{
-			ID:            i.ID,
-			ServiceID:     i.ServiceID,
-			PlanID:        i.PlanID,
-			CreateTime:    i.CreateTime,
-			NumOfBindings: len(lbr.Bindings),
+
+		var bindings []string
+		for _, b := range lbr.Bindings {
+			bindings = append(bindings, b.ID)
+		}
+
+		instances = append(instances, &instance{
+			ID:         i.ID,
+			serviceID:  i.ServiceID,
+			planID:     i.PlanID,
+			createTime: i.CreateTime,
+			bindings:   bindings,
 		})
 	}
-	result.Instances = instances
+	result.instances = instances
 	return result, nil
 }
 
-func deleteInstance(client adapter.Adapter, apiVersion, brokerURL string, i *osb.Instance, showProgress bool) error {
+func deleteInstance(client adapter.Adapter, apiVersion, brokerURL string, i *instance, showProgress bool) error {
 	if showProgress {
 		fmt.Printf("Deleting instance %q in broker %q\n", i.ID, brokerURL)
 	}
@@ -419,8 +424,8 @@ func deleteInstance(client adapter.Adapter, apiVersion, brokerURL string, i *osb
 	res, err := client.DeleteInstance(&adapter.DeleteInstanceParams{
 		Server:            brokerURL,
 		InstanceID:        i.ID,
-		ServiceID:         i.ServiceID,
-		PlanID:            i.PlanID,
+		ServiceID:         i.serviceID,
+		PlanID:            i.planID,
 		AcceptsIncomplete: true,
 		APIVersion:        apiVersion,
 	})
@@ -428,7 +433,7 @@ func deleteInstance(client adapter.Adapter, apiVersion, brokerURL string, i *osb
 		return err
 	}
 
-	op, err := waitOnOperation(pollInstanceOpFunc(client, apiVersion, brokerURL, i.ID, i.ServiceID, i.PlanID, res.OperationID, adapter.OperationDelete), showProgress)
+	op, err := waitOnOperation(pollInstanceOpFunc(client, apiVersion, brokerURL, i.ID, i.serviceID, i.planID, res.OperationID, adapter.OperationDelete), showProgress)
 	if err != nil {
 		return fmt.Errorf("Error polling last operation %q for instance %q in broker %q: %v", res.OperationID, i.ID, brokerURL, err)
 	}
@@ -443,10 +448,31 @@ func deleteInstance(client adapter.Adapter, apiVersion, brokerURL string, i *osb
 	return fmt.Errorf("Failed to delete instance %q in broker %q: %+v", i.ID, brokerURL, *op)
 }
 
-func printListInstances(result *listInstancesResult) {
-	for index, i := range result.Instances {
+func printListInstances(client adapter.Adapter, result *listInstancesResult, brokerURL string) {
+	servicesMap := make(map[string]string)
+	plansMap := make(map[string]string)
+	res, err := client.GetCatalog(&adapter.GetCatalogParams{
+		APIVersion: catalogFlags.apiVersion,
+		Server:     brokerURL,
+	})
+	if err == nil {
+		for _, s := range res.Services {
+			for _, p := range s.Plans {
+				plansMap[p.ID] = p.Name
+			}
+			servicesMap[s.ID] = s.Name
+		}
+	}
+
+	for index, i := range result.instances {
 		fmt.Printf("%d. Instance ID: %s\n", index+1, i.ID)
-		fmt.Printf("   Service ID: %s, Plan ID: %s\n", i.ServiceID, i.PlanID)
-		fmt.Printf("   Number of bindings: %d\n\n", i.NumOfBindings)
+		if name, ok := servicesMap[i.serviceID]; ok {
+			i.serviceID = name + " (" + i.serviceID + ")"
+		}
+		if name, ok := plansMap[i.planID]; ok {
+			i.planID = name + " (" + i.planID + ")"
+		}
+		fmt.Printf("   Service: %s, Plan: %s\n", i.serviceID, i.planID)
+		fmt.Printf("   Number of bindings: %d\n\n", len(i.bindings))
 	}
 }

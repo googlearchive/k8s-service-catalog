@@ -19,7 +19,6 @@ import (
 	"log"
 
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/broker-cli/client/adapter"
-	"github.com/GoogleCloudPlatform/k8s-service-catalog/broker-cli/client/osb"
 	"github.com/GoogleCloudPlatform/k8s-service-catalog/broker-cli/cmd/flags"
 	"github.com/spf13/cobra"
 )
@@ -259,17 +258,17 @@ func pollBindingOpFunc(client adapter.Adapter, apiVersion, brokerURL, instanceID
 	return cb
 }
 
-func deleteBinding(client adapter.Adapter, apiVersion, brokerURL string, i *osb.Instance, b *osb.Binding, showProgress bool) error {
+func deleteBinding(client adapter.Adapter, apiVersion, brokerURL string, i *instance, bindingID string, showProgress bool) error {
 	if showProgress {
-		fmt.Printf("Deleting binding %q to instance %q in broker %q\n", b.ID, i.ID, brokerURL)
+		fmt.Printf("Deleting binding %q to instance %q in broker %q\n", bindingID, i.ID, brokerURL)
 	}
 
 	res, err := client.DeleteBinding(&adapter.DeleteBindingParams{
 		Server:            brokerURL,
 		InstanceID:        i.ID,
-		BindingID:         b.ID,
-		ServiceID:         i.ServiceID,
-		PlanID:            i.PlanID,
+		BindingID:         bindingID,
+		ServiceID:         i.serviceID,
+		PlanID:            i.planID,
 		AcceptsIncomplete: true,
 		APIVersion:        apiVersion,
 	})
@@ -277,9 +276,9 @@ func deleteBinding(client adapter.Adapter, apiVersion, brokerURL string, i *osb.
 		return err
 	}
 
-	op, err := waitOnOperation(pollBindingOpFunc(client, flags.ApiVersionDefault, brokerURL, i.ID, b.ID, i.ServiceID, i.PlanID, res.OperationID, adapter.OperationDelete), showProgress)
+	op, err := waitOnOperation(pollBindingOpFunc(client, flags.ApiVersionDefault, brokerURL, i.ID, bindingID, i.serviceID, i.planID, res.OperationID, adapter.OperationDelete), showProgress)
 	if err != nil {
-		return fmt.Errorf("Error polling last operation %q for binding %q to instance %q in broker %q: %v", res.OperationID, b.ID, i.ID, brokerURL, err)
+		return fmt.Errorf("Error polling last operation %q for binding %q to instance %q in broker %q: %v", res.OperationID, bindingID, i.ID, brokerURL, err)
 	}
 
 	if op.State == adapter.OperationSucceeded {
@@ -289,5 +288,5 @@ func deleteBinding(client adapter.Adapter, apiVersion, brokerURL string, i *osb.
 		return nil
 	}
 
-	return fmt.Errorf("Failed to delete binding %q to instance %q in broker %q: %+v", b.ID, i.ID, brokerURL, *op)
+	return fmt.Errorf("Failed to delete binding %q to instance %q in broker %q: %+v", bindingID, i.ID, brokerURL, *op)
 }
