@@ -61,6 +61,38 @@ var (
 		"sqladmin.googleapis.com",
 		"storage-api.googleapis.com",
 	}
+
+	eapServiceGUIDS = map[string]bool{
+		"e8c2ab3e-b96d-4140-8ff3-da682088737c": true,
+		"33b61a24-c3ec-4721-a9e6-35648d7c441a": true,
+		"31e5a956-cf67-4548-b266-20414d0ecfbb": true,
+		"d730b49e-f865-40c4-8d22-1c62f2d37a83": true,
+		"ab5b24a3-2962-42e8-9746-95242b3fe732": true,
+		"483e1331-919f-403f-8618-dcea51ca88f7": true,
+		"997146f4-bb5b-49c9-9ba6-f38931895825": true,
+		"cbf73cfc-473a-4d42-874f-9ec9bd349963": true,
+		"70eb86dc-7d68-4b72-8e3a-a42b40219b6d": true,
+		"7cdbd1ef-f691-411e-8a91-2d8968387a33": true,
+		"62153072-d076-4167-8014-596d1d2f7d28": true,
+		"6c5b9ef4-ec57-4a39-ae4b-0b91f432b9c2": true,
+		"42e243aa-b16a-4162-b8e5-3de2b461b119": true,
+		"3007c0d2-91a7-4678-80f5-89877a9e08ad": true,
+		"cac55a0b-9359-4ba0-accf-dac9b9c2c8bb": true,
+		"d1d8c675-94d4-470d-9a71-a63d9e3c3915": true,
+		"312e1044-ac87-4568-8155-9ad7765594fe": true,
+		"61f859d6-86d4-4d62-a323-1a94c4d15bf3": true,
+		"94e9d121-4936-4cb0-9928-b3540f92363c": true,
+		"e06f6df6-2889-441e-a493-6184bf80b82d": true,
+		"8ed5ce7b-849f-4c28-bc0a-383b336db407": true,
+		"d5e45fc8-345b-490d-9f1e-3765a22d9b77": true,
+		"6bd33df9-d45e-40be-86ce-cb2ff08875db": true,
+		"2df32c48-0e0d-4080-9848-406ab20df26d": true,
+		"3a25027c-0a83-48db-a31b-808632541b30": true,
+		"db341b05-ae8a-4d0e-bb50-246b9714b263": true,
+		"59d23ff0-f756-44e8-ba2b-24c6d846dc94": true,
+		"44d078ba-8789-4222-bb11-0b8944fc5309": true,
+		"ada963b1-7b7c-4f10-8bc5-82b163c5c25a": true,
+	}
 )
 
 func NewAddGCPBrokerCmd() *cobra.Command {
@@ -73,7 +105,7 @@ func NewAddGCPBrokerCmd() *cobra.Command {
 				fmt.Println("Failed to configure the Service Broker")
 				return err
 			}
-			fmt.Println("The Service Broker added successfully.")
+			fmt.Println("The Service Broker has been added successfully.")
 			return nil
 		},
 	}
@@ -236,20 +268,15 @@ func getOrCreateVirtualBroker(projectID, brokerName, brokerTitle string) (*virtu
 		return nil, fmt.Errorf("failed to create broker client. You might want to run 'gcloud auth application-default login'")
 	}
 
-	brokerURL := "https://servicebroker.googleapis.com"
+	host := "https://servicebroker.googleapis.com"
 	errCode, respBody, err := brokerClient.CreateBroker(&adapter.CreateBrokerParams{
-		URL:     brokerURL,
+		URL:     host,
 		Project: projectID,
 		Name:    brokerName,
 		Title:   brokerTitle,
 	})
-	if errCode == 409 {
-		return &virtualBroker{
-			Name:     brokerName,
-			URL:      fmt.Sprintf("%s/v1beta1/projects/%s/brokers/%s", brokerURL, projectID, brokerName),
-			Title:    brokerTitle,
-			Existing: true,
-		}, nil
+	if errCode == http.StatusConflict {
+		return handleExistingBroker(host, projectID, brokerName, brokerTitle, brokerClient)
 	}
 
 	if err != nil {
@@ -259,6 +286,38 @@ func getOrCreateVirtualBroker(projectID, brokerName, brokerTitle string) (*virtu
 	var vb virtualBroker
 	err = json.Unmarshal(respBody, &vb)
 	return &vb, err
+}
+
+func handleExistingBroker(host, projectID, brokerName, brokerTitle string, brokerClient *adapter.HttpAdapter) (*virtualBroker, error) {
+	fmt.Printf("Broker %q, already exists\n", brokerName)
+	brokerURL := fmt.Sprintf("%s/v1beta1/projects/%s/brokers/%s", host, projectID, brokerName)
+	res, err := brokerClient.GetCatalog(&adapter.GetCatalogParams{
+		URL:     host,
+		Project: projectID,
+		Name:    brokerName,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("Invalid broker %q, error getting catalog for broker: %v\n", brokerURL, err)
+	}
+
+	isEAPBroker := false
+	for _, svc := range res.Services {
+		if _, ok := eapServiceGUIDS[svc.ID]; ok {
+			isEAPBroker = true
+			break
+		}
+	}
+
+	if isEAPBroker {
+		return nil, fmt.Errorf("Your existing broker is an early version of the broker. Please delete your broker using broker-cli and re-run \"sc add-gcp-broker\".\n")
+	}
+
+	return &virtualBroker{
+		Name:     brokerName,
+		URL:      brokerURL,
+		Title:    brokerTitle,
+		Existing: true,
+	}, nil
 }
 
 // virtualBroker represents a GCP virtual broker.

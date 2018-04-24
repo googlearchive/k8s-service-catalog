@@ -21,6 +21,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 // Broker represents a Service Broker.
@@ -37,6 +38,33 @@ type CreateBrokerParams struct {
 	Project string
 	Name    string
 	Title   string
+}
+
+// GetCatalogParams is used as input to GetCatalog.
+type GetCatalogParams struct {
+	URL     string
+	Project string
+	Name    string
+}
+
+// GetCatalogResult is output of successful GetCatalog request.
+type GetCatalogResult struct {
+	Services []Service `json:"services"`
+}
+
+// Service corresponds to the Service Object in the Open Service Broker API.
+type Service struct {
+	ID string `json:"id"`
+}
+
+// BrokerError is the result of a failed broker request.
+type BrokerError struct {
+	// StatusCode is the HTTP status code returned by the broker.
+	StatusCode int
+	// ErrorDescription describes the failed result of the request.
+	ErrorDescription string
+	// ErrorBody is the response body returned by the broker.
+	ErrorBody string
 }
 
 type DoClient interface {
@@ -71,6 +99,26 @@ func (adapter *HttpAdapter) CreateBroker(params *CreateBrokerParams) (int, []byt
 	return adapter.doRequest(url, http.MethodPost, bytes.NewReader(postBody))
 }
 
+func (adapter *HttpAdapter) GetCatalog(params *GetCatalogParams) (*GetCatalogResult, error) {
+	url := fmt.Sprintf("%s/v1beta1/projects/%s/brokers/%s/v2/catalog", params.URL, params.Project, params.Name)
+
+	statusCode, body, err := adapter.doRequest(url, http.MethodGet, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if statusCode != http.StatusOK {
+		return nil, validateGCPFailureResponse(body, statusCode, "error fetching catalog")
+	}
+
+	res := &GetCatalogResult{}
+	err = json.Unmarshal(body, res)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshalling response body: %s\nerror: %v", string(body), err)
+	}
+	return res, nil
+}
+
 // doRequst is a helper function that performs the request, reads the body, checks the status code,
 // and returns an appropriate error message if anything goes wrong.
 func (adapter *HttpAdapter) doRequest(url, method string, reqBody io.Reader) (int, []byte, error) {
@@ -93,4 +141,48 @@ func (adapter *HttpAdapter) doRequest(url, method string, reqBody io.Reader) (in
 	}
 
 	return resp.StatusCode, body, nil
+}
+
+func validateGCPFailureResponse(body []byte, code int, desc string) error {
+	rb := &gcpBrokerFailureResponseBody{}
+	err := json.Unmarshal(body, rb)
+	if err != nil {
+		return &BrokerError{StatusCode: code, ErrorDescription: "error unmarshalling failure response body", ErrorBody: string(body)}
+	}
+
+	return &BrokerError{
+		StatusCode:       code,
+		ErrorDescription: desc,
+		ErrorBody:        string(body),
+	}
+}
+
+type gcpBrokerFailureResponseBody struct {
+	Error *gcpBrokerError `json:"error,omitempty"`
+}
+
+type gcpBrokerError struct {
+	Code    int            `json:"code,omitempty"`
+	Message string         `json:"message,omitempty"`
+	Status  string         `json:"status,omitempty"`
+	Details []*errorDetail `json:"details,omitempty"`
+}
+
+type errorDetail struct {
+	Detail *string `json:"detail,omitempty"`
+}
+
+// Error is the method inherited from "error" interface to print the error.
+func (e *BrokerError) Error() string {
+	code := "<nil>"
+	description := "<nil>"
+
+	if e.StatusCode != 0 {
+		code = strconv.Itoa(e.StatusCode)
+	}
+	if e.ErrorDescription != "" {
+		description = e.ErrorDescription
+	}
+
+	return fmt.Sprintf("StatusCode: %s\n Description: %s\n Details: %s", code, description, e.ErrorBody)
 }
