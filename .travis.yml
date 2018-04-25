@@ -5,8 +5,9 @@ os:
   - osx
 
 install:
-  - go get -t ./installer/cmd/sc
+  - go get -u -t ./installer/cmd/sc
   - go get -u github.com/jteeuwen/go-bindata/...
+  - go get -u -t ./broker-cli
 
 script:
   - ./scripts/build.sh

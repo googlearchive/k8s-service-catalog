@@ -25,6 +25,13 @@
 } \
   || { echo "Build failed."; exit 1; }
 
+{
+  echo "Building Broker CLI"
+  cd "${TRAVIS_BUILD_DIR}/broker-cli" \
+    && make
+} \
+  || { echo "Build failed."; exit 1; }
+
 if [[ -n "${TRAVIS_TAG}" ]]; then
   # Package the binary to a release file
 
