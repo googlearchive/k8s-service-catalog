@@ -309,13 +309,12 @@ func handleExistingBroker(host, projectID, brokerName, brokerTitle string, broke
 	}
 
 	if isEAPBroker {
-		return nil, fmt.Errorf("Your existing broker is an early version of the broker. Please delete your broker using broker-cli and re-run \"sc add-gcp-broker\".\n")
+		fmt.Printf("Your existing broker is an early version of the broker. Please delete your broker using broker-cli and re-run \"sc add-gcp-broker\"!!\n")
 	}
 
 	return &virtualBroker{
 		Name:     brokerName,
 		URL:      brokerURL,
-		Title:    brokerTitle,
 		Existing: true,
 	}, nil
 }
