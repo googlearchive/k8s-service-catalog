@@ -8,6 +8,7 @@ install:
   - go get -u -t ./installer/cmd/sc
   - go get -u github.com/jteeuwen/go-bindata/...
   - go get -u -t ./broker-cli
+  - go get -u github.com/cloudflare/cfssl/cmd/...
 
 script:
   - ./scripts/build.sh

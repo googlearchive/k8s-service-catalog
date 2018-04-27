@@ -49,12 +49,8 @@ if [[ -n "${TRAVIS_TAG}" ]]; then
 
   BIN="${TRAVIS_BUILD_DIR}/installer/output/bin"
   for pkg in cfssl cfssljson; do
-    url="https://pkg.cfssl.org/R1.2/${pkg}_${flavor}"
-    curl -o "${BIN}/${pkg}" "${url}" \
-      || { echo "Cannot download ${url}"; exit 1; }
-    curl -o "${BIN}/${pkg}.LICENSE" "https://raw.githubusercontent.com/cloudflare/cfssl/master/LICENSE" \
-      || { echo "Cannot download cfssl LICENSE"; exit 1; }
-    chmod +x "${BIN}/${pkg}"
+    cp "${GOPATH}/bin/${pkg}" "${BIN}/${pkg}"
+    cp "${GOPATH}/src/github.com/cloudflare/cfssl/LICENSE" "${BIN}/${pkg}.LICENSE"
   done
 
   tar --create --gzip \
