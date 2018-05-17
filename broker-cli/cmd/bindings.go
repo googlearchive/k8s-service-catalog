@@ -26,18 +26,17 @@ import (
 var (
 	bindingsFlags struct {
 		flags.BrokerURLConstructor
-		apiVersion        string
-		instanceID        string
-		bindingID         string
-		acceptsIncomplete bool
-		wait              bool
-		serviceID         string
-		planID            string
-		context           string
-		bindResource      string
-		appGUID           string
-		parameters        string
-		operationID       string
+		apiVersion   string
+		instanceID   string
+		bindingID    string
+		wait         bool
+		serviceID    string
+		planID       string
+		context      string
+		bindResource string
+		appGUID      string
+		parameters   string
+		operationID  string
 	}
 
 	// bindingsCmd represents the bindings command.
@@ -59,10 +58,11 @@ var (
 			if err != nil {
 				log.Fatalf("Error creating binding %s to instance %s: %v", bindingsFlags.bindingID, bindingsFlags.instanceID, err)
 			}
+
 			res, err := client.CreateBinding(&adapter.CreateBindingParams{
 				Server:            brokerURL,
 				APIVersion:        bindingsFlags.apiVersion,
-				AcceptsIncomplete: bindingsFlags.acceptsIncomplete,
+				AcceptsIncomplete: true,
 				InstanceID:        bindingsFlags.instanceID,
 				BindingID:         bindingsFlags.bindingID,
 				ServiceID:         bindingsFlags.serviceID,
@@ -74,11 +74,6 @@ var (
 			})
 			if err != nil {
 				log.Fatalf("Error creating binding %s to instance %s in broker %s: %v", bindingsFlags.bindingID, bindingsFlags.instanceID, brokerURL, err)
-			}
-
-			if !res.Async {
-				fmt.Printf("Successfully created the binding %s: %+v\n", bindingsFlags.bindingID, *res)
-				return
 			}
 
 			if !bindingsFlags.wait {
@@ -118,7 +113,7 @@ var (
 			res, err := client.DeleteBinding(&adapter.DeleteBindingParams{
 				Server:            brokerURL,
 				APIVersion:        bindingsFlags.apiVersion,
-				AcceptsIncomplete: bindingsFlags.acceptsIncomplete,
+				AcceptsIncomplete: true,
 				InstanceID:        bindingsFlags.instanceID,
 				BindingID:         bindingsFlags.bindingID,
 				ServiceID:         bindingsFlags.serviceID,
@@ -126,12 +121,6 @@ var (
 			})
 			if err != nil {
 				log.Fatalf("Error deleting binding %s to instance %s in broker %s: %v", bindingsFlags.bindingID, bindingsFlags.instanceID, brokerURL, err)
-			}
-
-			if !res.Async {
-				fmt.Printf("Successfully deleted the binding %s: %+v\n", bindingsFlags.bindingID, *res)
-
-				return
 			}
 
 			if !bindingsFlags.wait {
@@ -196,11 +185,8 @@ func init() {
 	bindingsCmd.PersistentFlags().MarkHidden(flags.HostLongName)
 
 	// Flags for `bindings create` command group.
-	flags.BoolFlag(bindingsCreateCmd.PersistentFlags(), &bindingsFlags.acceptsIncomplete, "asynchronous", "a",
-		"[Optional] If specified, the broker will execute the request asynchronously. (Default: FALSE)")
 	flags.BoolFlag(bindingsCreateCmd.PersistentFlags(), &bindingsFlags.wait, "wait", "w",
-		"[Optional] If specified, the broker will keep polling the last operation when the broker "+
-			"is executing the operation asynchronously. (Default: FALSE)")
+		"[Optional] If specified, the broker will keep polling the last operation. (Default: FALSE)")
 	flags.StringFlag(bindingsCreateCmd.PersistentFlags(), &bindingsFlags.serviceID, "service", "r",
 		"[Required] The service ID used to create the service binding.")
 	flags.StringFlag(bindingsCreateCmd.PersistentFlags(), &bindingsFlags.planID, "plan", "l",
@@ -216,11 +202,8 @@ func init() {
 		"[Optional] [JSON Object] Configuration options for the service binding.")
 
 	// Flags for `bindings delete` command group.
-	flags.BoolFlag(bindingsDeleteCmd.PersistentFlags(), &bindingsFlags.acceptsIncomplete, "asynchronous", "a",
-		"[Optional] If specified, the broker will execute the request asynchronously. (Default: FALSE)")
 	flags.BoolFlag(bindingsDeleteCmd.PersistentFlags(), &bindingsFlags.wait, "wait", "w",
-		"[Optional] If specified, the broker will keep polling the last operation when the broker "+
-			"is executing the operation asynchronously. (Default: FALSE)")
+		"[Optional] If specified, the broker will keep polling the last operation. (Default: FALSE)")
 	flags.StringFlag(bindingsDeleteCmd.PersistentFlags(), &bindingsFlags.serviceID, "service", "r",
 		"[Required] The service ID used by the service binding.")
 	flags.StringFlag(bindingsDeleteCmd.PersistentFlags(), &bindingsFlags.planID, "plan", "l",
