@@ -76,6 +76,11 @@ var (
 				log.Fatalf("Error creating binding %s to instance %s in broker %s: %v", bindingsFlags.bindingID, bindingsFlags.instanceID, brokerURL, err)
 			}
 
+			if !res.Async {
+				fmt.Printf("Successfully created the binding %s: %+v\n", bindingsFlags.bindingID, *res)
+				return
+			}
+
 			if !bindingsFlags.wait {
 				fmt.Printf("Successfully started the operation to create the binding %s: %+v\n", bindingsFlags.bindingID, *res)
 				return
@@ -121,6 +126,11 @@ var (
 			})
 			if err != nil {
 				log.Fatalf("Error deleting binding %s to instance %s in broker %s: %v", bindingsFlags.bindingID, bindingsFlags.instanceID, brokerURL, err)
+			}
+
+			if !res.Async {
+				fmt.Printf("Successfully deleted the binding %s: %+v\n", bindingsFlags.bindingID, *res)
+				return
 			}
 
 			if !bindingsFlags.wait {
