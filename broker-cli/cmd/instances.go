@@ -92,6 +92,11 @@ var (
 				log.Fatalf("Error creating instance %s in broker %s: %v", instancesFlags.instanceID, brokerURL, err)
 			}
 
+			if !res.Async {
+				fmt.Printf("Successfully created the instance %s: %+v\n", instancesFlags.instanceID, *res)
+				return
+			}
+
 			if !instancesFlags.wait {
 				fmt.Printf("Successfully started the operation to create instance %s: %+v\n", instancesFlags.instanceID, *res)
 				return
@@ -163,6 +168,11 @@ var (
 				log.Fatalf("Error deleting instance %s in broker %s: %v", instancesFlags.instanceID, brokerURL, err)
 			}
 
+			if !res.Async {
+				fmt.Printf("Successfully deleted the instance %s: %+v\n", instancesFlags.instanceID, *res)
+				return
+			}
+
 			if !instancesFlags.wait {
 				fmt.Printf("Successfully started the operation to delete instance %s: %+v\n", instancesFlags.instanceID, *res)
 				return
@@ -212,6 +222,11 @@ var (
 			})
 			if err != nil {
 				log.Fatalf("Error updating instance %s in broker %s: %v", instancesFlags.instanceID, brokerURL, err)
+			}
+
+			if !res.Async {
+				fmt.Printf("Successfully updated the instance %s: %+v\n", instancesFlags.instanceID, *res)
+				return
 			}
 
 			if !instancesFlags.wait {
