@@ -39,7 +39,7 @@ spec:
       containers:
       - name: apiserver
         image: {{ .ServiceCatalogImage }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         resources:
           requests:
             cpu: 100m

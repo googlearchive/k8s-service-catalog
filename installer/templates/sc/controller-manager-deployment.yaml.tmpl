@@ -37,7 +37,7 @@ spec:
       containers:
       - name: controller-manager
         image: {{ .ServiceCatalogImage }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         resources:
           requests:
             cpu: 100m

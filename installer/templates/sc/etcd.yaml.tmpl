@@ -31,7 +31,7 @@ spec:
       containers:
       - name: etcd
         image: gcr.io/google-containers/etcd:3.0.17
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         resources:
           requests:
             cpu: 100m
