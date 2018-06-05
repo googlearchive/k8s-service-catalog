@@ -241,7 +241,8 @@ func RemoveAllServiceAccountKeys(email string) error {
 
 		life := et.Sub(bt)
 		if life > 365*24*time.Hour {
-			RemoveServiceAccountKey(email, k.Name)
+			keyID := strings.Split(k.Name, "/")[strings.Count(k.Name, "/")]
+			RemoveServiceAccountKey(email, keyID)
 		}
 	}
 
