@@ -93,7 +93,7 @@ func (fi bindataFileInfo) Sys() interface{} {
 	return nil
 }
 
-var _templatesScApiRegistrationYamlTmpl = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xac\x93\x41\x6f\xe3\xb6\x13\xc5\xef\xfa\x14\x0f\xf1\xe5\xff\x07\x1c\xd9\xc9\xa5\x85\x7a\x72\xbc\x69\x2b\x24\xb5\x8d\xc8\xe9\x22\xa7\xc5\x98\x1a\xcb\x83\x50\x24\x4b\x52\xf6\x0a\x8b\xfd\xee\x05\x65\x39\xdd\x60\xdb\x53\xab\xe3\xcc\x9b\x99\x1f\xdf\x8c\x26\xff\xfa\xcb\x26\x58\x5a\xd7\x7b\x69\x0e\x11\xb7\xf3\x9b\x1f\xf0\x8b\xb5\x8d\x66\x94\x46\xe5\x59\x4a\x3f\x8a\x62\x13\xb8\x46\x67\x6a\xf6\x88\x07\xc6\xc2\x91\x3a\xf0\x25\x33\xc5\xef\xec\x83\x58\x83\xdb\x7c\x8e\xff\x25\xc1\xd5\x98\xba\xfa\xff\x4f\xd9\x04\xbd\xed\xd0\x52\x0f\x63\x23\xba\xc0\x88\x07\x09\xd8\x8b\x66\xf0\x67\xc5\x2e\x42\x0c\x94\x6d\x9d\x16\x32\x8a\x71\x92\x78\x18\xc6\x8c\x4d\xf2\x6c\x82\x97\xb1\x85\xdd\x45\x12\x03\x82\xb2\xae\x87\xdd\x7f\xab\x03\xc5\x01\x38\x7d\x87\x18\x5d\x28\x66\xb3\xd3\xe9\x94\xd3\x40\x9b\x5b\xdf\xcc\xf4\x59\x19\x66\x8f\xe5\xf2\x7e\x55\xdd\x5f\xdf\xe6\xf3\xa1\xe6\xd9\x68\x0e\x01\x9e\xff\xe8\xc4\x73\x8d\x5d\x0f\x72\x4e\x8b\xa2\x9d\x66\x68\x3a\xc1\x7a\x50\xe3\x99\x6b\x44\x9b\x80\x4f\x5e\xa2\x98\x66\x8a\x60\xf7\xf1\x44\x9e\xb3\x09\x6a\x09\xd1\xcb\xae\x8b\xef\xdc\xba\xe0\x49\x78\x27\xb0\x06\x64\x70\xb5\xa8\x50\x56\x57\xb8\x5b\x54\x65\x35\xcd\x26\xf8\x58\x6e\x7f\x5d\x3f\x6f\xf1\x71\xf1\xf4\xb4\x58\x6d\xcb\xfb\x0a\xeb\x27\x2c\xd7\xab\x0f\xe5\xb6\x5c\xaf\x2a\xac\x7f\xc6\x62\xf5\x82\x87\x72\xf5\x61\x0a\x96\x78\x60\x0f\xfe\xec\x7c\xe2\xb7\x1e\x92\x7c\xe4\x3a\x99\x56\x31\xbf\x03\xd8\xdb\x33\x50\x70\xac\x64\x2f\x0a\x9a\x4c\xd3\x51\xc3\x68\xec\x91\xbd\x11\xd3\xc0\xb1\x6f\x25\xa4\x6d\x06\x90\xa9\xb3\x09\xb4\xb4\x12\x29\x0e\x91\xef\x1e\x75\x3e\x91\x6d\xba\x89\x4d\x99\x9c\xf1\xdc\x48\x88\xec\x53\x71\xc2\xb2\xe1\x9b\x85\xb6\x24\x66\x46\x4d\xe3\xb9\xa1\x64\x41\xaa\x09\xec\x8f\xec\x13\xae\xa2\xbb\xce\xd4\x9a\xd1\x76\x21\x62\xc7\x20\x44\x6e\x9d\x1e\xa4\x47\xf2\x92\x76\x31\x1d\x1a\x8b\x09\xec\x53\xb8\xee\x0d\xb5\xa2\x48\xeb\xfe\x8c\xb2\x5c\x7c\xda\x3c\xdf\x3d\x96\xcb\x4f\x0f\xf7\x2f\x05\x94\x16\x36\x11\x8a\x7d\x4c\x2f\xa6\xc8\xa0\x2e\x1e\xac\x97\xd8\xc3\x75\x3b\x2d\x0a\xaf\xdc\xa7\xb3\x4c\x6f\x4d\x0e\xb5\x5d\xec\x48\x63\xfb\x58\x9d\xc1\x13\xf4\x14\xff\x44\x9d\xfd\x07\xbf\x20\x39\x19\xff\xa0\x02\xe4\xe4\x6c\xa1\x1f\x2c\xcf\x5f\x7f\x0c\xb9\xd8\xd9\xf1\x66\xc7\x91\x6e\xb2\x57\x31\x75\x91\x08\x2a\xf6\x47\x51\x9c\xb5\x1c\xa9\xa6\x48\x45\x06\x18\x6a\xb9\xc0\x28\xcd\xc3\x59\xa1\x28\x92\xb6\xcd\xd8\x28\x4b\xbb\x4f\xda\xc6\xdb\xce\x15\xf8\x7b\x11\x70\xbc\xf0\x5c\x06\x03\xce\xcb\x60\x5b\x81\xdb\xf9\xfc\xd2\x61\x33\x06\x7f\x13\x23\x6d\xd7\x0e\xb9\xf9\x5f\xf5\x9b\xb7\x9a\x9b\x14\x1d\xa7\xa5\xf9\x17\xda\x31\x74\x3d\x12\x5c\x93\x93\xb7\x6c\x70\xa4\xbe\x97\x64\x78\xbb\x94\x02\x5f\xbe\x20\x5f\x2e\x36\xc3\x22\x1f\xb8\xc7\xd7\xaf\xd9\x9f\x01\x00\x00\xff\xff\xc8\x63\x1a\x0e\x14\x05\x00\x00")
+var _templatesScApiRegistrationYamlTmpl = []byte("\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\xff\xac\x93\x41\x6f\xdb\x46\x10\x85\xef\xfc\x15\x0f\xd6\xa5\x05\x64\x4a\xf6\xa5\x05\x7b\x92\x15\xb7\x25\xec\x4a\x82\x29\x37\xf0\x29\x18\x2d\x47\xd4\xc0\xcb\xdd\xed\xee\x52\x0a\x11\xe4\xbf\x17\x4b\x51\x69\x8c\xb4\xa7\x86\xc7\x99\x37\x33\xdf\xbe\x19\x4e\xfe\xf7\x97\x4d\xb0\xb4\xae\xf7\xd2\x1c\x22\x6e\xe7\x37\x3f\xe1\x37\x6b\x1b\xcd\x28\x8d\xca\xb3\x94\x7e\x14\xc5\x26\x70\x8d\xce\xd4\xec\x11\x0f\x8c\x85\x23\x75\xe0\x4b\x66\x8a\x3f\xd9\x07\xb1\x06\xb7\xf9\x1c\x3f\x24\xc1\xd5\x98\xba\xfa\xf1\x97\x6c\x82\xde\x76\x68\xa9\x87\xb1\x11\x5d\x60\xc4\x83\x04\xec\x45\x33\xf8\xa3\x62\x17\x21\x06\xca\xb6\x4e\x0b\x19\xc5\x38\x49\x3c\x0c\x63\xc6\x26\x79\x36\xc1\xcb\xd8\xc2\xee\x22\x89\x01\x41\x59\xd7\xc3\xee\xbf\xd6\x81\xe2\x00\x9c\xbe\x43\x8c\x2e\x14\xb3\xd9\xe9\x74\xca\x69\xa0\xcd\xad\x6f\x66\xfa\xac\x0c\xb3\xc7\x72\x79\xbf\xaa\xee\xaf\x6f\xf3\xf9\x50\xf3\x6c\x34\x87\x00\xcf\x7f\x75\xe2\xb9\xc6\xae\x07\x39\xa7\x45\xd1\x4e\x33\x34\x9d\x60\x3d\xa8\xf1\xcc\x35\xa2\x4d\xc0\x27\x2f\x51\x4c\x33\x45\xb0\xfb\x78\x22\xcf\xd9\x04\xb5\x84\xe8\x65\xd7\xc5\x37\x6e\x5d\xf0\x24\xbc\x11\x58\x03\x32\xb8\x5a\x54\x28\xab\x2b\xdc\x2d\xaa\xb2\x9a\x66\x13\xbc\x2f\xb7\xbf\xaf\x9f\xb7\x78\xbf\x78\x7a\x5a\xac\xb6\xe5\x7d\x85\xf5\x13\x96\xeb\xd5\xbb\x72\x5b\xae\x57\x15\xd6\xbf\x62\xb1\x7a\xc1\x43\xb9\x7a\x37\x05\x4b\x3c\xb0\x07\x7f\x74\x3e\xf1\x5b\x0f\x49\x3e\x72\x9d\x4c\xab\x98\xdf\x00\xec\xed\x19\x28\x38\x56\xb2\x17\x05\x4d\xa6\xe9\xa8\x61\x34\xf6\xc8\xde\x88\x69\xe0\xd8\xb7\x12\xd2\x36\x03\xc8\xd4\xd9\x04\x5a\x5a\x89\x14\x87\xc8\x37\x8f\x3a\x9f\xc8\x36\xdd\xc4\xa6\x4c\xce\x78\x6e\x24\x44\xf6\xa9\x38\x61\xd9\xf0\xd5\x42\x5b\x12\x33\xa3\xa6\xf1\xdc\x50\xb2\x20\xd5\x04\xf6\x47\xf6\x09\x57\xd1\x5d\x67\x6a\xcd\x68\xbb\x10\xb1\x63\x10\x22\xb7\x4e\x0f\xd2\x23\x79\x49\xbb\x98\x0e\x8d\xc5\x04\xf6\x29\x5c\xf7\x86\x5a\x51\xa4\x75\x7f\x46\x59\x2e\x3e\x6c\x9e\xef\x1e\xcb\xe5\x87\x87\xfb\x97\x02\x4a\x0b\x9b\x08\xc5\x3e\xa6\x17\x53\x64\x50\x17\x0f\xd6\x4b\xec\xe1\xba\x9d\x16\x85\x57\xee\xd3\x59\xa6\xb7\x26\x87\xda\x2e\x76\xa4\xb1\x7d\xac\xce\xe0\x09\x7a\x8a\xff\xa2\xce\xbe\xc3\x2f\x48\x4e\xc6\x3f\xa8\x00\x39\x39\x5b\xe8\x07\xcb\xf3\xd7\x9f\x43\x2e\x76\x76\xbc\xd9\x71\xa4\x9b\xec\x55\x4c\x5d\x24\x82\x8a\xfd\x51\x14\x67\x2d\x47\xaa\x29\x52\x91\x01\x86\x5a\x2e\x30\x4a\xf3\x70\x56\x28\x8a\xa4\x6d\x33\x36\xca\xd2\xee\x93\xb6\xf1\xb6\x73\x05\xfe\x5d\x04\x1c\x2f\x3c\x97\xc1\x63\xc5\xc6\xcb\xe0\xdd\x1f\x62\xa4\xed\xda\x02\xb7\xf3\xf9\xfc\x1f\xfd\x25\x5d\xe0\x26\x45\xc7\xee\x69\xde\x85\x6e\x0c\x5d\x8f\x13\xaf\xc9\xc9\x97\x6c\x70\xa4\xbe\x95\x64\xf8\x72\x19\x05\x3e\x7d\x42\xbe\x5c\x6c\x86\xc5\x3d\x70\x8f\xcf\x9f\xb3\xbf\x03\x00\x00\xff\xff\x3d\x4d\xb9\x5b\x04\x05\x00\x00")
 
 func templatesScApiRegistrationYamlTmplBytes() ([]byte, error) {
 	return bindataRead(
@@ -108,7 +108,7 @@ func templatesScApiRegistrationYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/api-registration.yaml.tmpl", size: 1300, mode: os.FileMode(416), modTime: time.Unix(1509023713, 0)}
+	info := bindataFileInfo{name: "templates/sc/api-registration.yaml.tmpl", size: 1284, mode: os.FileMode(420), modTime: time.Unix(1542694470, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -128,7 +128,7 @@ func templatesScApiserverDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/apiserver-deployment.yaml.tmpl", size: 2739, mode: os.FileMode(416), modTime: time.Unix(1527273967, 0)}
+	info := bindataFileInfo{name: "templates/sc/apiserver-deployment.yaml.tmpl", size: 2739, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -148,7 +148,7 @@ func templatesScCa_configJson() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/ca_config.json", size: 133, mode: os.FileMode(416), modTime: time.Unix(1507129340, 0)}
+	info := bindataFileInfo{name: "templates/sc/ca_config.json", size: 133, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -168,7 +168,7 @@ func templatesScCa_csrJsonTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/ca_csr.json.tmpl", size: 206, mode: os.FileMode(416), modTime: time.Unix(1507129340, 0)}
+	info := bindataFileInfo{name: "templates/sc/ca_csr.json.tmpl", size: 206, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -188,7 +188,7 @@ func templatesScControllerManagerDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 2904, mode: os.FileMode(416), modTime: time.Unix(1527273967, 0)}
+	info := bindataFileInfo{name: "templates/sc/controller-manager-deployment.yaml.tmpl", size: 2904, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -208,7 +208,7 @@ func templatesScEtcdClusterWithBackupYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-cluster-with-backup.yaml.tmpl", size: 443, mode: os.FileMode(416), modTime: time.Unix(1513698304, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-cluster-with-backup.yaml.tmpl", size: 443, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -228,7 +228,7 @@ func templatesScEtcdOperatorDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-operator-deployment.yaml.tmpl", size: 587, mode: os.FileMode(416), modTime: time.Unix(1513698306, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-operator-deployment.yaml.tmpl", size: 587, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -248,7 +248,7 @@ func templatesScEtcdOperatorRbacBindingYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-operator-rbac-binding.yaml.tmpl", size: 276, mode: os.FileMode(416), modTime: time.Unix(1507818057, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-operator-rbac-binding.yaml.tmpl", size: 276, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -268,7 +268,7 @@ func templatesScEtcdOperatorRbacYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-operator-rbac.yaml.tmpl", size: 564, mode: os.FileMode(416), modTime: time.Unix(1507818057, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-operator-rbac.yaml.tmpl", size: 564, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -288,7 +288,7 @@ func templatesScEtcdOperatorServiceAccountYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-operator-service-account.yaml.tmpl", size: 97, mode: os.FileMode(416), modTime: time.Unix(1507818057, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-operator-service-account.yaml.tmpl", size: 97, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -308,7 +308,7 @@ func templatesScEtcdSvcYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd-svc.yaml.tmpl", size: 913, mode: os.FileMode(416), modTime: time.Unix(1507129340, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd-svc.yaml.tmpl", size: 913, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -328,7 +328,7 @@ func templatesScEtcdYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/etcd.yaml.tmpl", size: 2346, mode: os.FileMode(416), modTime: time.Unix(1527273967, 0)}
+	info := bindataFileInfo{name: "templates/sc/etcd.yaml.tmpl", size: 2346, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -348,7 +348,7 @@ func templatesScGencert_configJsonTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/gencert_config.json.tmpl", size: 122, mode: os.FileMode(416), modTime: time.Unix(1507129340, 0)}
+	info := bindataFileInfo{name: "templates/sc/gencert_config.json.tmpl", size: 122, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -368,7 +368,7 @@ func templatesScNamespaceYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/namespace.yaml.tmpl", size: 999, mode: os.FileMode(416), modTime: time.Unix(1512081439, 0)}
+	info := bindataFileInfo{name: "templates/sc/namespace.yaml.tmpl", size: 999, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -388,7 +388,7 @@ func templatesScRbacYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 5607, mode: os.FileMode(416), modTime: time.Unix(1513783806, 0)}
+	info := bindataFileInfo{name: "templates/sc/rbac.yaml.tmpl", size: 5607, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -408,7 +408,7 @@ func templatesScServiceAccountsYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/service-accounts.yaml.tmpl", size: 1129, mode: os.FileMode(416), modTime: time.Unix(1507129340, 0)}
+	info := bindataFileInfo{name: "templates/sc/service-accounts.yaml.tmpl", size: 1129, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -428,7 +428,7 @@ func templatesScServiceYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/service.yaml.tmpl", size: 1034, mode: os.FileMode(416), modTime: time.Unix(1507129340, 0)}
+	info := bindataFileInfo{name: "templates/sc/service.yaml.tmpl", size: 1034, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -448,7 +448,7 @@ func templatesScTlsCertSecretYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/sc/tls-cert-secret.yaml.tmpl", size: 1196, mode: os.FileMode(416), modTime: time.Unix(1525803557, 0)}
+	info := bindataFileInfo{name: "templates/sc/tls-cert-secret.yaml.tmpl", size: 1196, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -468,7 +468,7 @@ func templatesGcpGcpBrokerYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/gcp-broker.yaml.tmpl", size: 1782, mode: os.FileMode(416), modTime: time.Unix(1525803557, 0)}
+	info := bindataFileInfo{name: "templates/gcp/gcp-broker.yaml.tmpl", size: 1782, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -488,7 +488,7 @@ func templatesGcpGoogleOauthDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/google-oauth-deployment.yaml.tmpl", size: 1901, mode: os.FileMode(416), modTime: time.Unix(1525803557, 0)}
+	info := bindataFileInfo{name: "templates/gcp/google-oauth-deployment.yaml.tmpl", size: 1901, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -508,7 +508,7 @@ func templatesGcpGoogleOauthRbacYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/google-oauth-rbac.yaml.tmpl", size: 1571, mode: os.FileMode(416), modTime: time.Unix(1525803557, 0)}
+	info := bindataFileInfo{name: "templates/gcp/google-oauth-rbac.yaml.tmpl", size: 1571, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -528,7 +528,7 @@ func templatesGcpGoogleOauthServiceAccountYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/google-oauth-service-account.yaml.tmpl", size: 857, mode: os.FileMode(416), modTime: time.Unix(1525803557, 0)}
+	info := bindataFileInfo{name: "templates/gcp/google-oauth-service-account.yaml.tmpl", size: 857, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -548,7 +548,7 @@ func templatesGcpNamespaceYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/namespace.yaml.tmpl", size: 998, mode: os.FileMode(416), modTime: time.Unix(1525803557, 0)}
+	info := bindataFileInfo{name: "templates/gcp/namespace.yaml.tmpl", size: 998, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -568,7 +568,7 @@ func templatesGcpServiceAccountSecretYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp/service-account-secret.yaml.tmpl", size: 1644, mode: os.FileMode(416), modTime: time.Unix(1525803557, 0)}
+	info := bindataFileInfo{name: "templates/gcp/service-account-secret.yaml.tmpl", size: 1644, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -588,7 +588,7 @@ func templatesGcpDeprecatedGoogleOauthDeploymentYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp-deprecated/google-oauth-deployment.yaml.tmpl", size: 1913, mode: os.FileMode(420), modTime: time.Unix(1525803557, 0)}
+	info := bindataFileInfo{name: "templates/gcp-deprecated/google-oauth-deployment.yaml.tmpl", size: 1913, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -608,7 +608,7 @@ func templatesGcpDeprecatedServiceAccountSecretYamlTmpl() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "templates/gcp-deprecated/service-account-secret.yaml.tmpl", size: 1651, mode: os.FileMode(420), modTime: time.Unix(1525803557, 0)}
+	info := bindataFileInfo{name: "templates/gcp-deprecated/service-account-secret.yaml.tmpl", size: 1651, mode: os.FileMode(420), modTime: time.Unix(1542209924, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -665,32 +665,32 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"templates/sc/api-registration.yaml.tmpl":                    templatesScApiRegistrationYamlTmpl,
-	"templates/sc/apiserver-deployment.yaml.tmpl":                templatesScApiserverDeploymentYamlTmpl,
-	"templates/sc/ca_config.json":                                templatesScCa_configJson,
-	"templates/sc/ca_csr.json.tmpl":                              templatesScCa_csrJsonTmpl,
-	"templates/sc/controller-manager-deployment.yaml.tmpl":       templatesScControllerManagerDeploymentYamlTmpl,
-	"templates/sc/etcd-cluster-with-backup.yaml.tmpl":            templatesScEtcdClusterWithBackupYamlTmpl,
-	"templates/sc/etcd-operator-deployment.yaml.tmpl":            templatesScEtcdOperatorDeploymentYamlTmpl,
-	"templates/sc/etcd-operator-rbac-binding.yaml.tmpl":          templatesScEtcdOperatorRbacBindingYamlTmpl,
-	"templates/sc/etcd-operator-rbac.yaml.tmpl":                  templatesScEtcdOperatorRbacYamlTmpl,
-	"templates/sc/etcd-operator-service-account.yaml.tmpl":       templatesScEtcdOperatorServiceAccountYamlTmpl,
-	"templates/sc/etcd-svc.yaml.tmpl":                            templatesScEtcdSvcYamlTmpl,
-	"templates/sc/etcd.yaml.tmpl":                                templatesScEtcdYamlTmpl,
-	"templates/sc/gencert_config.json.tmpl":                      templatesScGencert_configJsonTmpl,
-	"templates/sc/namespace.yaml.tmpl":                           templatesScNamespaceYamlTmpl,
-	"templates/sc/rbac.yaml.tmpl":                                templatesScRbacYamlTmpl,
-	"templates/sc/service-accounts.yaml.tmpl":                    templatesScServiceAccountsYamlTmpl,
-	"templates/sc/service.yaml.tmpl":                             templatesScServiceYamlTmpl,
-	"templates/sc/tls-cert-secret.yaml.tmpl":                     templatesScTlsCertSecretYamlTmpl,
-	"templates/gcp/gcp-broker.yaml.tmpl":                         templatesGcpGcpBrokerYamlTmpl,
-	"templates/gcp/google-oauth-deployment.yaml.tmpl":            templatesGcpGoogleOauthDeploymentYamlTmpl,
-	"templates/gcp/google-oauth-rbac.yaml.tmpl":                  templatesGcpGoogleOauthRbacYamlTmpl,
-	"templates/gcp/google-oauth-service-account.yaml.tmpl":       templatesGcpGoogleOauthServiceAccountYamlTmpl,
-	"templates/gcp/namespace.yaml.tmpl":                          templatesGcpNamespaceYamlTmpl,
-	"templates/gcp/service-account-secret.yaml.tmpl":             templatesGcpServiceAccountSecretYamlTmpl,
+	"templates/sc/api-registration.yaml.tmpl": templatesScApiRegistrationYamlTmpl,
+	"templates/sc/apiserver-deployment.yaml.tmpl": templatesScApiserverDeploymentYamlTmpl,
+	"templates/sc/ca_config.json": templatesScCa_configJson,
+	"templates/sc/ca_csr.json.tmpl": templatesScCa_csrJsonTmpl,
+	"templates/sc/controller-manager-deployment.yaml.tmpl": templatesScControllerManagerDeploymentYamlTmpl,
+	"templates/sc/etcd-cluster-with-backup.yaml.tmpl": templatesScEtcdClusterWithBackupYamlTmpl,
+	"templates/sc/etcd-operator-deployment.yaml.tmpl": templatesScEtcdOperatorDeploymentYamlTmpl,
+	"templates/sc/etcd-operator-rbac-binding.yaml.tmpl": templatesScEtcdOperatorRbacBindingYamlTmpl,
+	"templates/sc/etcd-operator-rbac.yaml.tmpl": templatesScEtcdOperatorRbacYamlTmpl,
+	"templates/sc/etcd-operator-service-account.yaml.tmpl": templatesScEtcdOperatorServiceAccountYamlTmpl,
+	"templates/sc/etcd-svc.yaml.tmpl": templatesScEtcdSvcYamlTmpl,
+	"templates/sc/etcd.yaml.tmpl": templatesScEtcdYamlTmpl,
+	"templates/sc/gencert_config.json.tmpl": templatesScGencert_configJsonTmpl,
+	"templates/sc/namespace.yaml.tmpl": templatesScNamespaceYamlTmpl,
+	"templates/sc/rbac.yaml.tmpl": templatesScRbacYamlTmpl,
+	"templates/sc/service-accounts.yaml.tmpl": templatesScServiceAccountsYamlTmpl,
+	"templates/sc/service.yaml.tmpl": templatesScServiceYamlTmpl,
+	"templates/sc/tls-cert-secret.yaml.tmpl": templatesScTlsCertSecretYamlTmpl,
+	"templates/gcp/gcp-broker.yaml.tmpl": templatesGcpGcpBrokerYamlTmpl,
+	"templates/gcp/google-oauth-deployment.yaml.tmpl": templatesGcpGoogleOauthDeploymentYamlTmpl,
+	"templates/gcp/google-oauth-rbac.yaml.tmpl": templatesGcpGoogleOauthRbacYamlTmpl,
+	"templates/gcp/google-oauth-service-account.yaml.tmpl": templatesGcpGoogleOauthServiceAccountYamlTmpl,
+	"templates/gcp/namespace.yaml.tmpl": templatesGcpNamespaceYamlTmpl,
+	"templates/gcp/service-account-secret.yaml.tmpl": templatesGcpServiceAccountSecretYamlTmpl,
 	"templates/gcp-deprecated/google-oauth-deployment.yaml.tmpl": templatesGcpDeprecatedGoogleOauthDeploymentYamlTmpl,
-	"templates/gcp-deprecated/service-account-secret.yaml.tmpl":  templatesGcpDeprecatedServiceAccountSecretYamlTmpl,
+	"templates/gcp-deprecated/service-account-secret.yaml.tmpl": templatesGcpDeprecatedServiceAccountSecretYamlTmpl,
 }
 
 // AssetDir returns the file names below a certain
@@ -732,40 +732,39 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
-
 var _bintree = &bintree{nil, map[string]*bintree{
 	"templates": &bintree{nil, map[string]*bintree{
 		"gcp": &bintree{nil, map[string]*bintree{
-			"gcp-broker.yaml.tmpl":                   &bintree{templatesGcpGcpBrokerYamlTmpl, map[string]*bintree{}},
-			"google-oauth-deployment.yaml.tmpl":      &bintree{templatesGcpGoogleOauthDeploymentYamlTmpl, map[string]*bintree{}},
-			"google-oauth-rbac.yaml.tmpl":            &bintree{templatesGcpGoogleOauthRbacYamlTmpl, map[string]*bintree{}},
+			"gcp-broker.yaml.tmpl": &bintree{templatesGcpGcpBrokerYamlTmpl, map[string]*bintree{}},
+			"google-oauth-deployment.yaml.tmpl": &bintree{templatesGcpGoogleOauthDeploymentYamlTmpl, map[string]*bintree{}},
+			"google-oauth-rbac.yaml.tmpl": &bintree{templatesGcpGoogleOauthRbacYamlTmpl, map[string]*bintree{}},
 			"google-oauth-service-account.yaml.tmpl": &bintree{templatesGcpGoogleOauthServiceAccountYamlTmpl, map[string]*bintree{}},
-			"namespace.yaml.tmpl":                    &bintree{templatesGcpNamespaceYamlTmpl, map[string]*bintree{}},
-			"service-account-secret.yaml.tmpl":       &bintree{templatesGcpServiceAccountSecretYamlTmpl, map[string]*bintree{}},
+			"namespace.yaml.tmpl": &bintree{templatesGcpNamespaceYamlTmpl, map[string]*bintree{}},
+			"service-account-secret.yaml.tmpl": &bintree{templatesGcpServiceAccountSecretYamlTmpl, map[string]*bintree{}},
 		}},
 		"gcp-deprecated": &bintree{nil, map[string]*bintree{
 			"google-oauth-deployment.yaml.tmpl": &bintree{templatesGcpDeprecatedGoogleOauthDeploymentYamlTmpl, map[string]*bintree{}},
-			"service-account-secret.yaml.tmpl":  &bintree{templatesGcpDeprecatedServiceAccountSecretYamlTmpl, map[string]*bintree{}},
+			"service-account-secret.yaml.tmpl": &bintree{templatesGcpDeprecatedServiceAccountSecretYamlTmpl, map[string]*bintree{}},
 		}},
 		"sc": &bintree{nil, map[string]*bintree{
-			"api-registration.yaml.tmpl":              &bintree{templatesScApiRegistrationYamlTmpl, map[string]*bintree{}},
-			"apiserver-deployment.yaml.tmpl":          &bintree{templatesScApiserverDeploymentYamlTmpl, map[string]*bintree{}},
-			"ca_config.json":                          &bintree{templatesScCa_configJson, map[string]*bintree{}},
-			"ca_csr.json.tmpl":                        &bintree{templatesScCa_csrJsonTmpl, map[string]*bintree{}},
+			"api-registration.yaml.tmpl": &bintree{templatesScApiRegistrationYamlTmpl, map[string]*bintree{}},
+			"apiserver-deployment.yaml.tmpl": &bintree{templatesScApiserverDeploymentYamlTmpl, map[string]*bintree{}},
+			"ca_config.json": &bintree{templatesScCa_configJson, map[string]*bintree{}},
+			"ca_csr.json.tmpl": &bintree{templatesScCa_csrJsonTmpl, map[string]*bintree{}},
 			"controller-manager-deployment.yaml.tmpl": &bintree{templatesScControllerManagerDeploymentYamlTmpl, map[string]*bintree{}},
-			"etcd-cluster-with-backup.yaml.tmpl":      &bintree{templatesScEtcdClusterWithBackupYamlTmpl, map[string]*bintree{}},
-			"etcd-operator-deployment.yaml.tmpl":      &bintree{templatesScEtcdOperatorDeploymentYamlTmpl, map[string]*bintree{}},
-			"etcd-operator-rbac-binding.yaml.tmpl":    &bintree{templatesScEtcdOperatorRbacBindingYamlTmpl, map[string]*bintree{}},
-			"etcd-operator-rbac.yaml.tmpl":            &bintree{templatesScEtcdOperatorRbacYamlTmpl, map[string]*bintree{}},
+			"etcd-cluster-with-backup.yaml.tmpl": &bintree{templatesScEtcdClusterWithBackupYamlTmpl, map[string]*bintree{}},
+			"etcd-operator-deployment.yaml.tmpl": &bintree{templatesScEtcdOperatorDeploymentYamlTmpl, map[string]*bintree{}},
+			"etcd-operator-rbac-binding.yaml.tmpl": &bintree{templatesScEtcdOperatorRbacBindingYamlTmpl, map[string]*bintree{}},
+			"etcd-operator-rbac.yaml.tmpl": &bintree{templatesScEtcdOperatorRbacYamlTmpl, map[string]*bintree{}},
 			"etcd-operator-service-account.yaml.tmpl": &bintree{templatesScEtcdOperatorServiceAccountYamlTmpl, map[string]*bintree{}},
-			"etcd-svc.yaml.tmpl":                      &bintree{templatesScEtcdSvcYamlTmpl, map[string]*bintree{}},
-			"etcd.yaml.tmpl":                          &bintree{templatesScEtcdYamlTmpl, map[string]*bintree{}},
-			"gencert_config.json.tmpl":                &bintree{templatesScGencert_configJsonTmpl, map[string]*bintree{}},
-			"namespace.yaml.tmpl":                     &bintree{templatesScNamespaceYamlTmpl, map[string]*bintree{}},
-			"rbac.yaml.tmpl":                          &bintree{templatesScRbacYamlTmpl, map[string]*bintree{}},
-			"service-accounts.yaml.tmpl":              &bintree{templatesScServiceAccountsYamlTmpl, map[string]*bintree{}},
-			"service.yaml.tmpl":                       &bintree{templatesScServiceYamlTmpl, map[string]*bintree{}},
-			"tls-cert-secret.yaml.tmpl":               &bintree{templatesScTlsCertSecretYamlTmpl, map[string]*bintree{}},
+			"etcd-svc.yaml.tmpl": &bintree{templatesScEtcdSvcYamlTmpl, map[string]*bintree{}},
+			"etcd.yaml.tmpl": &bintree{templatesScEtcdYamlTmpl, map[string]*bintree{}},
+			"gencert_config.json.tmpl": &bintree{templatesScGencert_configJsonTmpl, map[string]*bintree{}},
+			"namespace.yaml.tmpl": &bintree{templatesScNamespaceYamlTmpl, map[string]*bintree{}},
+			"rbac.yaml.tmpl": &bintree{templatesScRbacYamlTmpl, map[string]*bintree{}},
+			"service-accounts.yaml.tmpl": &bintree{templatesScServiceAccountsYamlTmpl, map[string]*bintree{}},
+			"service.yaml.tmpl": &bintree{templatesScServiceYamlTmpl, map[string]*bintree{}},
+			"tls-cert-secret.yaml.tmpl": &bintree{templatesScTlsCertSecretYamlTmpl, map[string]*bintree{}},
 		}},
 	}},
 }}
@@ -816,3 +815,4 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
+
