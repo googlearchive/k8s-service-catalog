@@ -1,3 +1,7 @@
+**\[DEPRECATED\]**
+
+The Google Cloud Platform (GCP) Service Broker is being deprecated in favour of [GCP Config Connector](https://github.com/GoogleCloudPlatform/k8s-config-connector).
+
 # Service Catalog Installer
 
 Service Catalog Installer is a CLI tool to manage Service Catalog and Google
